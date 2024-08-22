@@ -30,7 +30,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .app-bar {
     position: fixed;
     top: 0;
@@ -38,7 +38,6 @@ export default {
     right: 0;
     background-color: #494444;
     color: white;
-    font-size: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -67,7 +66,8 @@ export default {
     background: none;
     border: none;
     color: white;
-    font-size: 1em;
+    font-family: 'Roboto-Extra-Light', 'sans-serif';
+    font-size: 18px;
     padding: 10px;
     cursor: pointer;
     border-radius: 5px;
