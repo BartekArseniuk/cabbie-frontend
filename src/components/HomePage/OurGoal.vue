@@ -9,7 +9,6 @@
 
 <script>
 export default {
-    name: 'OurGoal',
     data() {
         return {
             description: "Naszym priorytetem są klarowne i transparentne rozliczenia oraz system wynagradzania bez ukrytych prowizji, co stanowi solidną podstawę wzajemnego zaufania. Jesteśmy tu, by wspierać Cię na każdym etapie współpracy, traktując nasze relacje partnersko i z pełnym zrozumieniem."

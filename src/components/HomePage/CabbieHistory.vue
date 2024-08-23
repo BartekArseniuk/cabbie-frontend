@@ -1,13 +1,25 @@
 <template>
 <div class="cabbie-history">
     <div class="text-container">
-        <!-- Treść kontenera tekstowego -->
+        <p class="title">HISTORIA CABBIE</p>
+        <p class="description">{{ description }}</p>
     </div>
 </div>
 </template>
 
     
+<script>
+export default {
+    data() {
+        return {
+            description: "Firma Cabbie z Białegostoku to Twój doświadczony partner w branży przewozowej. Jako byli kierowcy, doskonale rozumiemy potrzeby osób pracujących w tej profesji. Zbudowaliśmy nasze doświadczenie na własnej praktyce za kierownicą, co pozwala nam na oferowanie usług najwyższej jakości."
+        };
+    }
+}
+</script>
+
 <style scoped>
+
 .cabbie-history {
     background-image: url('@/assets/images/woman-wanting-pay-taxi-services 1.svg');
     background-size: cover;
@@ -21,11 +33,65 @@
 }
 
 .text-container {
-    width: 1000px;
-    height: 400px;
-    background-color: transparent;
-    border-radius: 15px;
+    position: relative;
+    width: 70%;
+    background-image: linear-gradient(140deg, rgba(135, 135, 135, 0.1) 1%, rgba(135, 135, 135, 0.1) 100%);
+
     backdrop-filter: blur(10px);
-    border: 0.5px solid #C6C6C6; 
+    border-radius: 15px;
+    text-align: right;
+    padding: 50px;
+}
+
+.text-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    padding: 1px;
+    background: linear-gradient(to right, #C6C6C6, #727272);
+    transform: scale(1.002);
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+}
+
+.title {
+    font-size: 42px;
+    font-family: 'Roboto-Light', sans-serif;
+    color: #FCB331;
+}
+
+.description {
+    font-size: 32px;
+    font-family: 'Roboto-Extra-Light', sans-serif;
+    color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+    .cabbie-history {
+        height: auto;
+        padding-right: 0px;
+    }
+
+    .text-container {
+        margin: 20px 20px 20px 20px;
+    }
+
+    .title {
+        font-size: 36px;
+    }
+
+    .description {
+        font-size: 24px;
+    }
+
 }
 </style>
