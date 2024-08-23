@@ -1,7 +1,9 @@
 <template>
 <div>
     <div class="app-bar">
-        <div class="logo"></div>
+        <div class="app-logo">
+            <img src="@/assets/images/logo.svg" alt="cabbie">
+        </div>
         <button class="hamburger" @click="toggleNav">&#9776;</button>
         <nav :class="['nav', { 'nav--open': isNavOpen }]">
             <button>STRONA GŁÓWNA</button>
@@ -9,7 +11,7 @@
             <button>O NAS</button>
             <button>BLOG</button>
             <button>KONTAKT</button>
-            <button>LOGOWANIE</button>
+            <button class="login">LOGOWANIE</button>
         </nav>
     </div>
 </div>
@@ -121,5 +123,27 @@ body {
     .nav button {
         padding: 15px;
     }
+
+    .nav button.login {
+        margin-bottom: 20px;
+    }
+}
+
+.app-logo img {
+    height: 70px;
+    width: 70px;
+    margin-top: 10px;
+}
+
+.nav button.login {
+    color: #FCB331;
+    transition: all 0.3s ease;
+}
+
+.nav button.login:hover {
+    color: #1e1e1e;
+    background-color: #FCB331;
+    border-color: #1e1e1e;
+    font-family: 'Roboto-Light', 'sans-serif';
 }
 </style>

@@ -1,16 +1,28 @@
 <template>
 <div class="welcome-page">
     <div class="logo">
-        <img src="@/assets/images/cabbie-logo.svg" alt="cabbie">
+        <img src="@/assets/images/cabbie-logo.svg" alt="cabbie" />
     </div>
     <p class="title">PARTNER KIEROWCÓW APLIKACJI TAXI</p>
-    <button class="lets-begin">POZNAJMY SIĘ</button>
+    <button class="lets-begin" @click="scrollToGoal">POZNAJMY SIĘ</button>
 </div>
 </template>
 
 <script>
 export default {
     name: 'WelcomePage',
+    methods: {
+        scrollToGoal() {
+            // Find the element with id "ourgoal"
+            const goalElement = document.getElementById('ourgoal');
+            if (goalElement) {
+                // Scroll to the element with smooth behavior
+                goalElement.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }
+    }
 };
 </script>
 
@@ -45,7 +57,7 @@ export default {
 }
 
 .title {
-    color: #F0F0F0;
+    color: #f0f0f0;
     font-family: 'Roboto-Light', 'sans-serif';
     font-size: 42px;
     margin-top: 80px;
@@ -66,9 +78,9 @@ export default {
 }
 
 .lets-begin:hover {
-    color: #1E1E1E;
+    color: #1e1e1e;
     background-color: #FCB331;
-    border-color: #F0F0F0;
+    border-color: #1e1e1e;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -86,7 +98,7 @@ export default {
     }
 
     .title {
-        font-size: 36px;
+        font-size: 32px;
         margin-top: 100px;
     }
 }

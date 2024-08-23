@@ -4,7 +4,7 @@
         <WelcomePage />
     </section>
     <section id="our-goal">
-        <h1>Our Goal</h1>
+        <OurGoal />
     </section>
     <section id="history">
         <h1>Cabbie history</h1>
@@ -24,21 +24,25 @@
 </main>
 </template>
 
-    
 <script>
 import WelcomePage from './WelcomePage.vue';
+import OurGoal from './OurGoal.vue';
 
 export default {
     components: {
-        WelcomePage
+        WelcomePage,
+        OurGoal
     }
 };
 </script>
 
-    
 <style>
 main section {
     width: 100%;
     margin: 0;
+}
+
+section#welcome {
+    margin-bottom: 100px;
 }
 </style>
