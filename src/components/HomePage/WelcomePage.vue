@@ -13,15 +13,16 @@ export default {
     name: 'WelcomePage',
     methods: {
         scrollToGoal() {
-            // Find the element with id "ourgoal"
             const goalElement = document.getElementById('ourgoal');
             if (goalElement) {
-                // Scroll to the element with smooth behavior
-                goalElement.scrollIntoView({
+                const rect = goalElement.getBoundingClientRect();
+                window.scrollTo({
+                    top: window.pageYOffset + rect.top - 50,
                     behavior: 'smooth'
                 });
             }
         }
+
     }
 };
 </script>
