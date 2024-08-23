@@ -19,7 +19,7 @@
         <h1>Lets begin</h1>
     </section>
     <section id="contact">
-        <h1>Contact</h1>
+        <ContactForm />
     </section>
 </main>
 </template>
@@ -30,6 +30,7 @@ import OurGoal from './OurGoal.vue';
 import CabbieHistory from './CabbieHistory.vue';
 import OfferPage from './OfferPage.vue';
 import CheckOffer from './CheckOffer.vue';
+import ContactForm from '../ContactForm.vue';
 
 export default {
     components: {
@@ -37,7 +38,8 @@ export default {
         OurGoal,
         CabbieHistory,
         OfferPage,
-        CheckOffer
+        CheckOffer,
+        ContactForm
     }
 };
 </script>
