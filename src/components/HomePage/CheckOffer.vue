@@ -44,7 +44,7 @@
         height: 0.5px;
         border-radius: 25px;
         width: 60%;
-        background-color: black;
+        background-color: #1E1E1E;
         margin: 0 auto;
     }
 </style>

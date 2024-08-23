@@ -16,7 +16,7 @@
         <CheckOffer />
     </section>
     <section id="lets-begin">
-        <h1>Lets begin</h1>
+        <LetsBegin />
     </section>
     <section id="contact">
         <h1>Contact</h1>
@@ -30,6 +30,7 @@ import OurGoal from './OurGoal.vue';
 import CabbieHistory from './CabbieHistory.vue';
 import OfferPage from './OfferPage.vue';
 import CheckOffer from './CheckOffer.vue';
+import LetsBegin from './LetsBegin.vue';
 
 export default {
     components: {
@@ -37,7 +38,8 @@ export default {
         OurGoal,
         CabbieHistory,
         OfferPage,
-        CheckOffer
+        CheckOffer,
+        LetsBegin
     }
 };
 </script>
