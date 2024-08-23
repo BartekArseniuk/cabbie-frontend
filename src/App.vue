@@ -18,6 +18,21 @@
 <div class="content">
     <HomePage />
 </div>
+
+<footer>
+    <div class="name">
+        <img class="footer-logo" src="@/assets/images/ccabbiesinglelogobnw.svg" alt="Start Collaboration Image">
+        <p>CABBIE SP. Z O. O.</p>
+    </div>
+    <p>Numer REGON: 527419171</p>
+    <p>Numer NIP: 9662187143</p>
+    <p>ul. Węgierska 49, 15-641 Krupniki (Białystok)</p>
+    <p>+48 500061435</p>
+    <p>info@cabbie.pl</p>
+</footer>
+<div class="under-footer">
+    <p>WSZELKIE PRAWA AUTORSKIE ZASTRZEŻONE - CABBIE 2024</p>
+</div>
 </template>
 
 <script>
@@ -145,5 +160,28 @@ body {
     background-color: #FCB331;
     border-color: #1e1e1e;
     font-family: 'Roboto-Light', 'sans-serif';
+}
+
+footer {
+    padding: 30px;
+    background-color: #FCB331;
+    font-family: 'Roboto-Light', 'sans-serif';
+    color: #1E1E1E;
+}
+
+.name {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.footer-logo{
+    transform: scale(1);
+}
+
+.under-footer{
+    text-align: center;
+    font-family: 'Roboto-Light', 'sans-serif';
+    color: #8D8D8D;
 }
 </style>
