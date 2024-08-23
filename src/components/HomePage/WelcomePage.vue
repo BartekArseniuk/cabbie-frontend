@@ -17,7 +17,7 @@ export default {
             if (goalElement) {
                 const rect = goalElement.getBoundingClientRect();
                 window.scrollTo({
-                    top: window.pageYOffset + rect.top - 50,
+                    top: window.pageYOffset + rect.top - 100,
                     behavior: 'smooth'
                 });
             }

@@ -10,7 +10,7 @@
         <CabbieHistory />
     </section>
     <section id="offer">
-        <h1>Offer</h1>
+        <OfferPage />
     </section>
     <section id="check-offer">
         <h1>Check Offer</h1>
@@ -28,12 +28,14 @@
 import WelcomePage from './WelcomePage.vue';
 import OurGoal from './OurGoal.vue';
 import CabbieHistory from './CabbieHistory.vue';
+import OfferPage from './OfferPage.vue';
 
 export default {
     components: {
         WelcomePage,
         OurGoal,
-        CabbieHistory
+        CabbieHistory,
+        OfferPage
     }
 };
 </script>
