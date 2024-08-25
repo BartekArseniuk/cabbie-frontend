@@ -50,6 +50,7 @@
     color: #FFFFFF;
     transition: all 0.3s ease;
     flex: 1;
+    width: 100%;
 }
 
 .input-description {

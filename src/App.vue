@@ -6,8 +6,8 @@
         </div>
         <button class="hamburger" @click="toggleNav">&#9776;</button>
         <nav :class="['nav', { 'nav--open': isNavOpen }]">
-            <button>STRONA GŁÓWNA</button>
-            <button>OFERTA</button>
+            <button @click="navigateTo('Home')">STRONA GŁÓWNA</button>
+            <button @click="navigateTo('Offer')">OFERTA</button>
             <button>O NAS</button>
             <button>BLOG</button>
             <button>KONTAKT</button>
@@ -16,7 +16,7 @@
     </div>
 </div>
 <div class="content">
-    <HomePage />
+    <router-view />
 </div>
 
 <footer>
@@ -36,7 +36,6 @@
 </template>
 
 <script>
-import HomePage from './components/HomePage/HomePage.vue';
 
 export default {
     data() {
@@ -44,13 +43,13 @@ export default {
             isNavOpen: false
         };
     },
-    components: {
-        HomePage
-    },
     methods: {
         toggleNav() {
             this.isNavOpen = !this.isNavOpen;
-        }
+        },
+        navigateTo(page) {
+      this.$router.push({ name: page });
+    }
     }
 };
 </script>
