@@ -1,0 +1,90 @@
+<template>
+<div class="cabbie-history">
+    <div class="text-container">
+        <p class="title">FLOTA SAMOCHODÓW</p>
+        <p class="description">{{ description }}</p>
+    </div>
+</div>
+</template>
+
+<script>
+export default {
+    data() {
+        return {
+            description: "Posiadamy swoją flotę samochodów, wciąż dodając nowe modele do naszej oferty. Zapewniamy wsparcie w utrzymaniu pojazdów."
+        };
+    }
+}
+</script>
+
+<style scoped>
+.cabbie-history {
+    background-image: url('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 50px;
+    box-sizing: border-box;
+}
+
+.text-container {
+    position: relative;
+    width: 70%;
+    background-image: linear-gradient(140deg, rgba(135, 135, 135, 0.1) 1%, rgba(135, 135, 135, 0.1) 100%);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    text-align: right;
+    padding: 40px;
+}
+
+.text-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    padding: 1px;
+    background: linear-gradient(to right, #C6C6C6, #727272);
+    transform: scale(0.995);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+}
+
+.title {
+    font-size: 36px;
+    font-family: 'Roboto-Light', sans-serif;
+    color: #FCB331;
+}
+
+.description {
+    font-size: 28px;
+    font-family: 'Roboto-Extra-Light', sans-serif;
+    color: #f0f0f0;
+}
+
+@media (max-width: 768px) {
+    .cabbie-history {
+        height: auto;
+        padding-right: 0;
+    }
+
+    .text-container {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .title {
+        font-size: 30px;
+    }
+
+    .description {
+        font-size: 20px;
+    }
+}
+</style>

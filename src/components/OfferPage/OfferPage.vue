@@ -2,25 +2,37 @@
     <p class="title">NASZA OFERTA</p>
     <main>
         <section id="settlements">
-            <SettlementsPage />
+            <SettlementsSection />
         </section>
         <section id="car-fleet">
+            <CarFleetSection />
         </section>
         <section id="building-a-brand-together">
+            <BuildBrandSection />
         </section>
         <section id="lets-start-cooperation">
+            <LetsBeginSection />
         </section>
-        <section id="-contact">
+        <section id="contact">
+            <ContactForm />
         </section>
     </main>
 </template>
 
 <script>
-import SettlementsPage from './SettlementsPage.vue';
+import SettlementsSection from './SettlementsSection.vue';
+import CarFleetSection from './CarFleetSection.vue';
+import BuildBrandSection from './BuildBrandSection.vue';
+import LetsBeginSection from './LetsBeginSection.vue';
+import ContactForm from '../ContactForm.vue';
 
 export default {
     components: {
-        SettlementsPage
+        SettlementsSection,
+        CarFleetSection,
+        BuildBrandSection,
+        LetsBeginSection,
+        ContactForm
     }
 };
 </script>

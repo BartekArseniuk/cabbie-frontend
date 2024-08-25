@@ -1,22 +1,22 @@
 <template>
 <main>
     <section id="welcome">
-        <WelcomePage />
+        <WelcomePageSection />
     </section>
     <section id="our-goal">
-        <OurGoal />
+        <OurGoalSection />
     </section>
     <section id="history">
-        <CabbieHistory />
+        <CabbieHistorySection />
     </section>
     <section id="offer">
-        <OfferPage />
+        <OfferSection />
     </section>
     <section id="check-offer">
-        <CheckOffer />
+        <CheckOfferSection />
     </section>
     <section id="lets-begin">
-        <LetsBegin />
+        <LetsBeginSection />
     </section>
     <section id="contact">
         <ContactForm />
@@ -25,23 +25,23 @@
 </template>
 
 <script>
-import WelcomePage from './WelcomePage.vue';
-import OurGoal from './OurGoal.vue';
-import CabbieHistory from './CabbieHistory.vue';
-import OfferPage from './OfferPage.vue';
-import CheckOffer from './CheckOffer.vue';
+import WelcomePageSection from './WelcomePageSection.vue';
+import OurGoalSection from './OurGoalSection.vue';
+import CabbieHistorySection from './CabbieHistorySection.vue';
+import OfferSection from './OfferSection.vue';
+import CheckOfferSection from './CheckOfferSection.vue';
 import ContactForm from '../ContactForm.vue';
-import LetsBegin from './LetsBegin.vue';
+import LetsBeginSection from './LetsBeginSection.vue';
 
 export default {
     components: {
-        WelcomePage,
-        OurGoal,
-        CabbieHistory,
-        OfferPage,
-        CheckOffer,
+        WelcomePageSection,
+        OurGoalSection,
+        CabbieHistorySection,
+        OfferSection,
+        CheckOfferSection,
         ContactForm,
-        LetsBegin
+        LetsBeginSection
     }
 };
 </script>

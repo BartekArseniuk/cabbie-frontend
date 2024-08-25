@@ -36,7 +36,6 @@
 </template>
 
 <script>
-
 export default {
     data() {
         return {
@@ -48,8 +47,11 @@ export default {
             this.isNavOpen = !this.isNavOpen;
         },
         navigateTo(page) {
-      this.$router.push({ name: page });
-    }
+            this.$router.push({
+                name: page
+            });
+            this.toggleNav();
+        }
     }
 };
 </script>
@@ -174,11 +176,11 @@ footer {
     gap: 20px;
 }
 
-.footer-logo{
+.footer-logo {
     transform: scale(1);
 }
 
-.under-footer{
+.under-footer {
     text-align: center;
     font-family: 'Roboto-Light', 'sans-serif';
     color: #8D8D8D;
