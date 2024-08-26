@@ -58,6 +58,7 @@
     .title {
         font-size: 32px;
         margin-top: 100px;
+        padding: 10px;
     }
 }
 </style>
