@@ -1,10 +1,10 @@
 <template>
-<div class="settlements">
-    <div class="text-container">
-        <p class="title">ROZLICZENIA</p>
-        <p class="description">{{ description }}</p>
+    <div class="settlements">
+        <div class="text-container">
+            <p class="title">ROZLICZENIA</p>
+            <p class="description">{{ description }}</p>
+        </div>
     </div>
-</div>
 </template>
 
 <script>

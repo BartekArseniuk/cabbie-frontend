@@ -1,11 +1,11 @@
 <template>
-<div class="welcome-page">
-    <div class="logo">
-        <img src="@/assets/images/cabbie-logo.svg" alt="cabbie" />
+    <div class="welcome-page">
+        <div class="logo">
+            <img src="@/assets/images/cabbie-logo.svg" alt="cabbie" />
+        </div>
+        <p class="title">PARTNER KIEROWCÓW APLIKACJI TAXI</p>
+        <button class="lets-begin" @click="scrollToGoal">POZNAJMY SIĘ</button>
     </div>
-    <p class="title">PARTNER KIEROWCÓW APLIKACJI TAXI</p>
-    <button class="lets-begin" @click="scrollToGoal">POZNAJMY SIĘ</button>
-</div>
 </template>
 
 <script>

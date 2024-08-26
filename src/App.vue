@@ -8,7 +8,7 @@
         <nav :class="['nav', { 'nav--open': isNavOpen }]">
             <button @click="navigateTo('Home')">STRONA GŁÓWNA</button>
             <button @click="navigateTo('Offer')">OFERTA</button>
-            <button>O NAS</button>
+            <button @click="navigateTo('AboutUs')">O NAS</button>
             <button>BLOG</button>
             <button>KONTAKT</button>
             <button class="login">LOGOWANIE</button>

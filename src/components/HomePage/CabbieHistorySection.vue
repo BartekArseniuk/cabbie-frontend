@@ -1,10 +1,10 @@
 <template>
-<div class="cabbie-history">
-    <div class="text-container">
-        <p class="title">HISTORIA CABBIE</p>
-        <p class="description">{{ description }}</p>
+    <div class="cabbie-history">
+        <div class="text-container">
+            <p class="title">HISTORIA CABBIE</p>
+            <p class="description">{{ description }}</p>
+        </div>
     </div>
-</div>
 </template>
 
 <script>

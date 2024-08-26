@@ -12,7 +12,7 @@
             <p class="description">Jesteśmy zawsze otwarci na współpracę i wsparcie dla kierowców.</p>
         </div>
     </div>
-    </template>
+</template>
 
 <style>
     .cabbie-offer {

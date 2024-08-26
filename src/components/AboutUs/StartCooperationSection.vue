@@ -7,15 +7,13 @@
     
     <style scoped>
     .lets-begin {
-        background-image: url('@/assets/images/zacznijmy wspolprace zdj.svg');
-        background-size: cover;
-        background-position: center;
-        height: 100vh;
+        height: 50vh;
         display: flex;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         flex-direction: column;
+        border: 1px solid #363434        ;
     }
     
     

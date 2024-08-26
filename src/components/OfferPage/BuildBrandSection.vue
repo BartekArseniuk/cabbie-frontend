@@ -1,10 +1,10 @@
 <template>
-<div class="build-brand">
-    <div class="text-container">
-        <p class="title">WSPÓLNE BUDOWANIE MARKI</p>
-        <p class="description">{{ description }}</p>
+    <div class="build-brand">
+        <div class="text-container">
+            <p class="title">WSPÓLNE BUDOWANIE MARKI</p>
+            <p class="description">{{ description }}</p>
+        </div>
     </div>
-</div>
 </template>
 
 <script>

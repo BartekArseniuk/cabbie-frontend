@@ -1,8 +1,8 @@
 <template>
-<div class="lets-begin">
-    <p class="title">ZACZNIJMY WSPÓŁPRACĘ</p>
-    <button class="join">DOŁĄCZ</button>
-</div>
+    <div class="lets-begin">
+        <p class="title">ZACZNIJMY WSPÓŁPRACĘ</p>
+        <button class="join">DOŁĄCZ</button>
+    </div>
 </template>
 
 <style scoped>

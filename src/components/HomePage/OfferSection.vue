@@ -1,24 +1,24 @@
 <template>
-<div class="offer">
-    <p class="title">CO CI OFERUJEMY?</p>
-    <div class="row">
-        <div class="col">
-            <img src="@/assets/images/trust.svg" alt="Trust">
-            <p class="offer-title">ZAUFANIE</p>
-            <p class="description">Budujemy relacje oparte na zaufaniu i partnerskiej współpracy.</p>
-        </div>
-        <div class="col">
-            <img src="@/assets/images/Research Book.svg" alt="Research Book">
-            <p class="offer-title">TRANSPARENTNOŚĆ</p>
-            <p class="description">Stawiamy na przejrzystość w rozliczeniach i działaniu.</p>
-        </div>
-        <div class="col">
-            <img src="@/assets/images/Employee Rate.svg" alt="Employee Rate">
-            <p class="offer-title">WSPÓLNY ROZWÓJ</p>
-            <p class="description">Dążymy do ciągłego rozwoju, zarówno floty jak i naszej marki.</p>
+    <div class="offer">
+        <p class="title">CO CI OFERUJEMY?</p>
+        <div class="row">
+            <div class="col">
+                <img src="@/assets/images/trust.svg" alt="Trust">
+                <p class="offer-title">ZAUFANIE</p>
+                <p class="description">Budujemy relacje oparte na zaufaniu i partnerskiej współpracy.</p>
+            </div>
+            <div class="col">
+                <img src="@/assets/images/Research Book.svg" alt="Research Book">
+                <p class="offer-title">TRANSPARENTNOŚĆ</p>
+                <p class="description">Stawiamy na przejrzystość w rozliczeniach i działaniu.</p>
+            </div>
+            <div class="col">
+                <img src="@/assets/images/Employee Rate.svg" alt="Employee Rate">
+                <p class="offer-title">WSPÓLNY ROZWÓJ</p>
+                <p class="description">Dążymy do ciągłego rozwoju, zarówno floty jak i naszej marki.</p>
+            </div>
         </div>
     </div>
-</div>
 </template>
 
   

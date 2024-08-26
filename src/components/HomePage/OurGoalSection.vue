@@ -1,10 +1,10 @@
 <template>
-<div class="our-goal" id="ourgoal">
-    <div class="text-container">
-        <p class="title">NASZ WSPÓLNY CEL</p>
-        <p class="description">{{ description }}</p>
+    <div class="our-goal" id="ourgoal">
+        <div class="text-container">
+            <p class="title">NASZ WSPÓLNY CEL</p>
+            <p class="description">{{ description }}</p>
+        </div>
     </div>
-</div>
 </template>
 
 <script>

@@ -1,27 +1,27 @@
 <template>
-<main>
-    <section id="welcome">
-        <WelcomePageSection />
-    </section>
-    <section id="our-goal">
-        <OurGoalSection />
-    </section>
-    <section id="history">
-        <CabbieHistorySection />
-    </section>
-    <section id="offer">
-        <OfferSection />
-    </section>
-    <section id="check-offer">
-        <CheckOfferSection />
-    </section>
-    <section id="lets-begin">
-        <LetsBeginSection />
-    </section>
-    <section id="contact">
-        <ContactForm />
-    </section>
-</main>
+    <main>
+        <section id="welcome">
+            <WelcomePageSection />
+        </section>
+        <section id="our-goal">
+            <OurGoalSection />
+        </section>
+        <section id="history">
+            <CabbieHistorySection />
+        </section>
+        <section id="offer">
+            <OfferSection />
+        </section>
+        <section id="check-offer">
+            <CheckOfferSection />
+        </section>
+        <section id="lets-begin">
+            <LetsBeginSection />
+        </section>
+        <section id="contact">
+            <ContactForm />
+        </section>
+    </main>
 </template>
 
 <script>

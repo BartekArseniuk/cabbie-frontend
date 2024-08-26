@@ -1,16 +1,16 @@
 <template>
-<div class="contact">
-    <p class="title">SKONTAKTUJ SIĘ Z NAMI</p>
-    <form class="contact-form">
-        <div class="input-row">
-            <input type="text" placeholder="IMIĘ" class="input-field" />
-            <input type="text" placeholder="NAZWISKO" class="input-field" />
-            <input type="email" placeholder="E-MAIL" class="input-field" />
-        </div>
-        <textarea placeholder="TREŚĆ TWOJEJ WIADOMOŚCI" class="input-description"></textarea>
-        <button class="send">WYŚLIJ</button>
-    </form>
-</div>
+    <div class="contact">
+        <p class="title">SKONTAKTUJ SIĘ Z NAMI</p>
+        <form class="contact-form">
+            <div class="input-row">
+                <input type="text" placeholder="IMIĘ" class="input-field" />
+                <input type="text" placeholder="NAZWISKO" class="input-field" />
+                <input type="email" placeholder="E-MAIL" class="input-field" />
+            </div>
+            <textarea placeholder="TREŚĆ TWOJEJ WIADOMOŚCI" class="input-description"></textarea>
+            <button class="send">WYŚLIJ</button>
+        </form>
+    </div>
 </template>
 
 <style scoped>
