@@ -9,7 +9,7 @@
             <button @click="navigateTo('Home')">STRONA GŁÓWNA</button>
             <button @click="navigateTo('Offer')">OFERTA</button>
             <button @click="navigateTo('AboutUs')">O NAS</button>
-            <button>BLOG</button>
+            <button @click="navigateTo('Blog')">BLOG</button>
             <button>KONTAKT</button>
             <button class="login">LOGOWANIE</button>
         </nav>

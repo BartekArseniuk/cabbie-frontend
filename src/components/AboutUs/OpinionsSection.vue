@@ -23,5 +23,6 @@
     .opinion {
         font-size: 32px;
         color: white;
+        font-family: 'Roboto-Light', sans-serif;
     }
 </style>
