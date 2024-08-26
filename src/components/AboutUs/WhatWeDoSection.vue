@@ -20,10 +20,9 @@
     
     <style lang="scss" scoped>
     .what-we-do {
-        background-image: url('@/assets/images/zacznijmy wspolprace zdj.svg');
+        background-image: url('@/assets/images/Group_27.png');
         background-size: cover;
         background-position: center;
-        height: 100vh;
         display: flex;
         align-items: center;
         overflow: hidden;
@@ -58,5 +57,19 @@
     .our-approach{
         display: flex;
         flex-direction: row;
+    }
+
+    @media (max-width: 768px) {
+        .our-approach {
+            flex-direction: column;
+        }
+        .second-title {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+        .description {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
     }
     </style>
