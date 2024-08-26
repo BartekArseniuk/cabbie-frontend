@@ -7,7 +7,7 @@
             <OpinionsSection />
         </section>
         <section id="start-cooperation">
-            <StartCooperationSection />
+            <LetsBeginSection />
         </section>
         <section id="contact">
             <ContactForm />
@@ -18,14 +18,14 @@
     <script>
     import WhatWeDoSection from './WhatWeDoSection.vue';
     import OpinionsSection from './OpinionsSection.vue';
-    import StartCooperationSection from './StartCooperationSection.vue';
+    import LetsBeginSection from '../LetsBeginSection.vue';
     import ContactForm from '../ContactForm.vue';
 
     export default {
         components: {
             WhatWeDoSection,
             OpinionsSection,
-            StartCooperationSection,
+            LetsBeginSection,
             ContactForm
         }
     };

@@ -13,6 +13,7 @@
     justify-content: center;
     overflow: hidden;
     flex-direction: column;
+    border-top: 1px solid $secondary-color;
     border-bottom: 1px solid $secondary-color;
 }
 

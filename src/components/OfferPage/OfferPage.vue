@@ -23,7 +23,7 @@
 import SettlementsSection from './SettlementsSection.vue';
 import CarFleetSection from './CarFleetSection.vue';
 import BuildBrandSection from './BuildBrandSection.vue';
-import LetsBeginSection from './LetsBeginSection.vue';
+import LetsBeginSection from '../LetsBeginSection.vue';
 import ContactForm from '../ContactForm.vue';
 
 export default {
