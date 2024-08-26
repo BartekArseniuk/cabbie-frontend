@@ -37,13 +37,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 
 .title {
     text-align: center;
     font-size: 36px;
     font-family: 'Roboto-Light', sans-serif;
-    color: #FCB331;
+    color: $primary-color;
     margin-top: 100px;
 }
 

@@ -17,9 +17,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .build-brand {
-    background-color: #363434;
+    background-color: $secondary-color;
     display: flex;
     justify-content: left;
 }
@@ -32,14 +32,14 @@ export default {
 .title {
     font-size: 32px;
     font-family: 'Roboto-Light', sans-serif;
-    color: #FCB331;
+    color: $primary-color;
 }
 
 .description {
     width: 50%;
     font-size: 24px;
     font-family: 'Roboto-Extra-Light', sans-serif;
-    color: #f0f0f0;
+    color: $title-light-font;
 }
 
 @media (max-width: 768px) {

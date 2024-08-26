@@ -27,7 +27,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .welcome-page {
     background-image: url('@/assets/images/driver-dressed-elegant-costume 1.svg');
     background-size: cover;
@@ -41,7 +41,7 @@ export default {
 }
 
 .logo {
-    background-color: #FCB331;
+    background-color: $primary-color;
     height: 20vmin;
     width: 100%;
     display: flex;
@@ -58,7 +58,7 @@ export default {
 }
 
 .title {
-    color: #f0f0f0;
+    color: $title-light-font;
     font-family: 'Roboto-Light', 'sans-serif';
     font-size: 42px;
     margin-top: 80px;
@@ -67,9 +67,9 @@ export default {
 
 .lets-begin {
     background-color: transparent;
-    border: 2px solid #FCB331;
+    border: 2px solid $primary-color;
     border-radius: 8px;
-    color: #FCB331;
+    color: $primary-color;
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
     font-size: 28px;
@@ -79,9 +79,9 @@ export default {
 }
 
 .lets-begin:hover {
-    color: #1e1e1e;
-    background-color: #FCB331;
-    border-color: #1e1e1e;
+    color: $tertiary-color;
+    background-color: $primary-color;
+    border-color: $tertiary-color;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
 }
 

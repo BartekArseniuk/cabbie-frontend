@@ -13,7 +13,7 @@
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .contact {
     height: auto;
     padding: 0 200px;
@@ -23,7 +23,7 @@
     text-align: left;
     font-size: 36px;
     font-family: 'Roboto-Light', sans-serif;
-    color: #FFFFFF;
+    color: $white;
     margin-bottom: 20px;
 }
 
@@ -46,8 +46,8 @@
     border: none;
     border-radius: 15px;
     box-sizing: border-box;
-    background-color: #363434;
-    color: #FFFFFF;
+    background-color: $secondary-color;
+    color: $white;
     transition: all 0.3s ease;
     flex: 1;
     width: 100%;
@@ -60,8 +60,8 @@
     border: none;
     border-radius: 15px;
     box-sizing: border-box;
-    background-color: #363434;
-    color: #FFFFFF;
+    background-color: $secondary-color;
+    color: $white;
     transition: all 0.3s ease;
     height: 150px;
     resize: none;
@@ -71,14 +71,14 @@
 .input-field:focus,
 .input-description:hover,
 .input-description:focus {
-    border: 2px solid #FCB331;
+    border: 2px solid $primary-color;
     outline: none;
 }
 
 .send {
-    background-color: #FCB331;
-    color: white;
-    border: 2px solid #FCB331;
+    background-color: $primary-color;
+    color: $white;
+    border: 2px solid $primary-color;
     border-radius: 8px;
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
@@ -87,13 +87,13 @@
     width: 150px;
     margin-bottom: 50px;
     transition: all 0.3s ease;
-    color: #1e1e1e;
+    color: $tertiary-color;
 }
 
 .send:hover {
-    color: #FFFFFF;
-    background-color: #FCB331;
-    border: 2px solid #1E1E1E;
+    color: $white;
+    background-color: $primary-color;
+    border: 2px solid $tertiary-color;
 }
 
 @media (max-width: 768px) {

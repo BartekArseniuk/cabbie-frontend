@@ -14,9 +14,9 @@
     </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
     .cabbie-offer {
-        background-color: #FCB331;
+        background-color: $primary-color;
         height: auto;
         padding: 20px;
     }
@@ -44,7 +44,7 @@
         height: 0.5px;
         border-radius: 25px;
         width: 60%;
-        background-color: #1E1E1E;
+        background-color: $tertiary-color;
         margin: 0 auto;
     }
 </style>

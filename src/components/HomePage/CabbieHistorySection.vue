@@ -17,7 +17,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .cabbie-history {
     background-image: url('@/assets/images/woman-wanting-pay-taxi-services 1.svg');
     background-size: cover;
@@ -59,13 +59,13 @@ export default {
 .title {
     font-size: 36px;
     font-family: 'Roboto-Light', sans-serif;
-    color: #FCB331;
+    color: $primary-color;
 }
 
 .description {
     font-size: 28px;
     font-family: 'Roboto-Extra-Light', sans-serif;
-    color: #f0f0f0;
+    color: $title-light-font;
 }
 
 @media (max-width: 768px) {

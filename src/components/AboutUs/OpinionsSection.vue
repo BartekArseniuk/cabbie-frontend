@@ -4,7 +4,7 @@
     </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
     .opinions {
         height: 50vh;
         display: flex;
@@ -14,7 +14,7 @@
     }
 
     .title {
-        color: #FCB331;
+        color: $primary-color;
         font-family: 'Roboto-Light', 'sans-serif';
         font-size: 42px;
         text-align: center;

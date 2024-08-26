@@ -22,7 +22,7 @@
 </template>
 
   
-<style scoped>
+<style lang="scss" scoped>
 .offer {
     padding: 20px 0;
 }
@@ -31,7 +31,7 @@
     text-align: center;
     font-size: 36px;
     font-family: 'Roboto-Light', sans-serif;
-    color: #FCB331;
+    color: $primary-color;
 }
 
 .row {
@@ -54,13 +54,13 @@ img {
 }
 
 .offer-title {
-    color: #FFFFFF;
+    color: $white;
     font-family: 'Roboto-Light', sans-serif;
     font-size: 24px;
 }
 
 .description {
-    color: #FFFFFF;
+    color: $white;
     font-family: 'Roboto-Extra-Light', sans-serif;
     font-size: 18px;
     max-width: 100%;

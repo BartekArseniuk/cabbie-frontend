@@ -56,10 +56,10 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 body {
     margin: 0;
-    background-color: #1E1E1E;
+    background-color: $tertiary-color;
 }
 
 .app-bar {
@@ -67,8 +67,8 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background-color: #494444;
-    color: white;
+    background-color: $background-color;
+    color: $white;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -82,7 +82,7 @@ body {
     display: none;
     background: none;
     border: none;
-    color: white;
+    color: $white;
     font-size: 1.5em;
     cursor: pointer;
     transition: transform 0.3s ease;
@@ -96,17 +96,20 @@ body {
 .nav button {
     background: none;
     border: none;
-    color: white;
+    color: $white;
     font-family: 'Roboto-Extra-Light', 'sans-serif';
     font-size: 18px;
+    font-weight: 300;
     padding: 10px;
     cursor: pointer;
     border-radius: 5px;
-    transition: background-color 0.3s ease;
+    transition: color 0.3s ease, font-size 0.5s ease, font-weight 0.3s ease;
 }
 
 .nav button:hover {
-    color: #FCB331;
+    color: $primary-color;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .content {
@@ -119,7 +122,7 @@ body {
         position: absolute;
         top: 60px;
         right: 0;
-        background-color: #494444;
+        background-color: $background-color;
         width: 100%;
         max-height: 0;
         opacity: 0;
@@ -152,22 +155,22 @@ body {
 }
 
 .nav button.login {
-    color: #FCB331;
+    color: $primary-color;
     transition: all 0.3s ease;
 }
 
 .nav button.login:hover {
-    color: #1e1e1e;
-    background-color: #FCB331;
-    border-color: #1e1e1e;
+    color: $tertiary-color;
+    background-color: $primary-color;
+    border-color: $tertiary-color;
     font-family: 'Roboto-Light', 'sans-serif';
 }
 
 footer {
     padding: 30px;
-    background-color: #FCB331;
+    background-color: $primary-color;
     font-family: 'Roboto-Light', 'sans-serif';
-    color: #1E1E1E;
+    color: $tertiary-color;
 }
 
 .name {
@@ -183,6 +186,6 @@ footer {
 .under-footer {
     text-align: center;
     font-family: 'Roboto-Light', 'sans-serif';
-    color: #8D8D8D;
+    color: $footer-background;
 }
 </style>

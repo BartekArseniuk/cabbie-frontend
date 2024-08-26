@@ -18,7 +18,7 @@
     </div>
 </template>
     
-    <style scoped>
+    <style lang="scss" scoped>
     .what-we-do {
         background-image: url('@/assets/images/zacznijmy wspolprace zdj.svg');
         background-size: cover;
@@ -31,7 +31,7 @@
     }
 
     .title {
-        color: #FCB331;
+        color: $primary-color;
         font-family: 'Roboto-Light', 'sans-serif';
         font-size: 42px;
         text-align: center;
@@ -39,7 +39,7 @@
     }
 
     .second-title {
-        color: #FCB331;
+        color: $primary-color;
         font-family: 'Roboto-Light', 'sans-serif';
         font-size: 36px;
         text-align: center;
@@ -49,7 +49,7 @@
     .description {
         font-size: 20px;
         font-family: 'Roboto-Extra-Light', sans-serif;
-        color: #FFFFFF;
+        color: $white;
         text-align: center;
         padding-left: 100px;
         padding-right: 100px;

@@ -5,7 +5,7 @@
     </div>
 </template>
     
-    <style scoped>
+    <style lang="scss" scoped>
     .lets-begin {
         background-image: url('@/assets/images/zacznijmy wspolprace zdj.svg');
         background-size: cover;
@@ -20,16 +20,16 @@
     
     
     .title {
-        color: #f0f0f0;
+        color: $title-light-font;
         font-family: 'Roboto-Light', 'sans-serif';
         font-size: 42px;
         text-align: center;
     }
     
     .join {
-        background-color: #FCB331;
-        color: white;
-        border: 2px solid #FCB331;
+        background-color: $primary-color;
+        color: $white;
+        border: 2px solid $primary-color;
         border-radius: 8px;
         cursor: pointer;
         font-family: 'Roboto-Light', 'sans-serif';
@@ -39,9 +39,9 @@
     }
     
     .join:hover {
-        color: #1e1e1e;
-        background-color: #FCB331;
-        border: 2px solid #1E1E1E;
+        color: $tertiary-color;
+        background-color: $primary-color;
+        border: 2px solid $tertiary-color;
     }
     
     @media (max-width: 768px) {
