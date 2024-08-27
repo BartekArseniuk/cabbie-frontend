@@ -1,29 +1,41 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '@/components/HomePage/HomePage.vue';
 import OfferPage from '@/components/OfferPage/OfferPage.vue';
-import AboutUsPage from './components/AboutUs/AboutUsPage.vue';
-import BlogPage from './components/Blog/BlogPage.vue';
+import AboutUsPage from '@/components/AboutUs/AboutUsPage.vue';
+import BlogPage from '@/components/Blog/BlogPage.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomePage
+    component: HomePage,
+    meta: {
+      title: 'Cabbie'
+    }
   },
   {
-    path: '/Offer',
+    path: '/offer',
     name: 'Offer',
-    component: OfferPage
+    component: OfferPage,
+    meta: {
+      title: 'Cabbie - Oferta'
+    }
   },
   {
-    path: '/aboutUs',
+    path: '/about-us',
     name: 'AboutUs',
-    component: AboutUsPage
+    component: AboutUsPage,
+    meta: {
+      title: 'Cabbie - O nas'
+    }
   },
   {
     path: '/blog',
     name: 'Blog',
-    component: BlogPage
+    component: BlogPage,
+    meta: {
+      title: 'Cabbie - Blog'
+    }
   }
 ];
 
