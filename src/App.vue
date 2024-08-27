@@ -149,9 +149,8 @@ body {
 }
 
 .app-logo img {
-    height: 70px;
-    width: 70px;
-    margin-top: 10px;
+    height: 50px;
+    width: 50px;
 }
 
 .nav button.login {

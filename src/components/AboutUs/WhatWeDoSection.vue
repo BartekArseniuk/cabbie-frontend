@@ -34,7 +34,7 @@
         font-family: 'Roboto-Light', 'sans-serif';
         font-size: 42px;
         text-align: center;
-        margin-top: 100px
+        margin-top: 100px;
     }
 
     .second-title {
@@ -42,7 +42,6 @@
         font-family: 'Roboto-Light', 'sans-serif';
         font-size: 36px;
         text-align: center;
-        margin-top: 100px
     }
 
     .description {
