@@ -13,13 +13,20 @@ export default {
         return {
             description: "Firma Cabbie z Białegostoku to Twój doświadczony partner w branży przewozowej. Jako byli kierowcy, doskonale rozumiemy potrzeby osób pracujących w tej profesji. Zbudowaliśmy nasze doświadczenie na własnej praktyce za kierownicą, co pozwala nam na oferowanie usług najwyższej jakości."
         };
+    },
+    mounted() {
+        const image = new Image();
+        image.src = require('@/assets/images/woman-wanting-pay-taxi-services 1.svg'); // użycie require do dynamicznego ładowania obrazu
+        image.onload = () => {
+            this.$el.classList.add('loaded');
+        };
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .cabbie-history {
-    background-image: url('@/assets/images/woman-wanting-pay-taxi-services 1.svg');
+    background-image: url('@/assets/images/woman-wanting-pay-taxi-services 1-placeholder.png');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -28,6 +35,11 @@ export default {
     justify-content: flex-end;
     padding-right: 50px;
     box-sizing: border-box;
+    transition: background-image 0.5s ease-in-out;
+
+    &.loaded {
+        background-image: url('@/assets/images/woman-wanting-pay-taxi-services 1.svg');
+    }
 }
 
 .text-container {

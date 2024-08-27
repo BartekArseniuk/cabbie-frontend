@@ -13,13 +13,20 @@ export default {
         return {
             description: "Posiadamy swoją flotę samochodów, wciąż dodając nowe modele do naszej oferty. Zapewniamy wsparcie w utrzymaniu pojazdów."
         };
+    },
+    mounted() {
+        const image = new Image();
+        image.src = require('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg'); // użycie require do dynamicznego ładowania obrazu
+        image.onload = () => {
+            this.$el.classList.add('loaded');
+        };
     }
 }
 </script>
 
 <style lang="scss" scoped>
 .cabbie-history {
-    background-image: url('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg');
+    background-image: url('@/assets/images/elegant-uber-driver-giving-taxi-ride-placeholder.png');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -28,6 +35,11 @@ export default {
     justify-content: flex-end;
     padding-right: 50px;
     box-sizing: border-box;
+    transition: background-image 0.5s ease-in-out;
+
+    &.loaded {
+        background-image: url('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg');
+    }
 }
 
 .text-container {
