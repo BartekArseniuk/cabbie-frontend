@@ -1,12 +1,39 @@
 <template>
-    <div class="lets-begin">
+    <div :class="['lets-begin', { 'home-page': props.isHomePage, 'offer-page': !props.isHomePage }]">
         <p class="title">ZACZNIJMY WSPÓŁPRACĘ</p>
         <button class="join">DOŁĄCZ</button>
     </div>
 </template>
 
+<script setup>
+import { defineProps } from 'vue';
+
+const props = defineProps({
+    isHomePage: {
+        type: Boolean,
+        default: false
+    }
+});
+</script>
+
 <style lang="scss" scoped>
 .lets-begin {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: background-image 0.3s ease, height 0.3s ease;
+}
+
+.home-page {
+    background-image: url('@/assets/images/zacznijmy wspolprace zdj.svg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+}
+
+.offer-page {
+    background-image: none;
     height: 70vh;
     display: flex;
     align-items: center;
@@ -43,18 +70,6 @@
 }
 
 @media (max-width: 768px) {
-    .logo {
-        height: 50vmin;
-        margin-top: 10vh;
-    }
-
-    .logo img {
-        max-height: 50%;
-        max-width: 50%;
-        height: auto;
-        width: auto;
-    }
-
     .title {
         font-size: 32px;
         margin-top: 100px;

@@ -57,6 +57,7 @@
                     },
                     {
                         label: 'KONTAKT',
+                        route: 'Contact'
                     },
                     {
                         label: 'LOGOWANIE',

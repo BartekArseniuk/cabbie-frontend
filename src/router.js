@@ -3,6 +3,7 @@ import HomePage from './components/Views/HomePage/HomePage.vue';
 import OfferPage from './components/Views/OfferPage/OfferPage.vue';
 import AboutUsPage from './components/Views/AboutUs/AboutUsPage.vue';
 import BlogPage from './components/Views/Blog/BlogPage.vue';
+import ContactPage from './components/Views/ContactPage/ContactPage.vue';
 
 const routes = [
   {
@@ -35,6 +36,14 @@ const routes = [
     component: BlogPage,
     meta: {
       title: 'Cabbie - Blog'
+    }
+  },
+  {
+    path: '/contact',
+    name: 'Contact',
+    component: ContactPage,
+    meta: {
+      title: 'Cabbie - Kontakt'
     }
   }
 ];

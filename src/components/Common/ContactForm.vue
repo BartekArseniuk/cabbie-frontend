@@ -1,6 +1,6 @@
 <template>
     <div class="contact">
-        <p class="title">SKONTAKTUJ SIĘ Z NAMI</p>
+        <p v-if="props.showTitle" class="title">SKONTAKTUJ SIĘ Z NAMI</p>
         <form class="contact-form">
             <div class="input-row">
                 <input v-model="firstName" type="text" placeholder="IMIĘ" class="input-field" />
@@ -14,7 +14,14 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
+
+const props = defineProps({
+    showTitle: {
+        type: Boolean,
+        default: true
+    }
+});
 
 const firstName = ref('');
 const lastName = ref('');
