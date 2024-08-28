@@ -7,14 +7,10 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            description: "Dołącz do nas i pomóż w budowaniu marki Cabbie, zrzeszając jak najwięcej kierowców. Jesteśmy partnerem rozliczeniowym dla aplikacji przewozowych."
-        };
-    }
-}
+<script setup>
+import { ref } from 'vue';
+
+const description = ref("Dołącz do nas i pomóż w budowaniu marki Cabbie, zrzeszając jak najwięcej kierowców. Jesteśmy partnerem rozliczeniowym dla aplikacji przewozowych.");
 </script>
 
 <style lang="scss" scoped>

@@ -3,15 +3,24 @@
         <p class="title">SKONTAKTUJ SIĘ Z NAMI</p>
         <form class="contact-form">
             <div class="input-row">
-                <input type="text" placeholder="IMIĘ" class="input-field" />
-                <input type="text" placeholder="NAZWISKO" class="input-field" />
-                <input type="email" placeholder="E-MAIL" class="input-field" />
+                <input v-model="firstName" type="text" placeholder="IMIĘ" class="input-field" />
+                <input v-model="lastName" type="text" placeholder="NAZWISKO" class="input-field" />
+                <input v-model="email" type="email" placeholder="E-MAIL" class="input-field" />
             </div>
-            <textarea placeholder="TREŚĆ TWOJEJ WIADOMOŚCI" class="input-description"></textarea>
-            <button class="send">WYŚLIJ</button>
+            <textarea v-model="message" placeholder="TREŚĆ TWOJEJ WIADOMOŚCI" class="input-description"></textarea>
+            <button type="submit" class="send">WYŚLIJ</button>
         </form>
     </div>
 </template>
+
+<script setup>
+import { ref } from 'vue';
+
+const firstName = ref('');
+const lastName = ref('');
+const email = ref('');
+const message = ref('');
+</script>
 
 <style lang="scss" scoped>
 .contact {

@@ -24,7 +24,7 @@
     </main>
 </template>
 
-<script>
+<script setup>
 import WelcomePageSection from './WelcomePageSection.vue';
 import OurGoalSection from './OurGoalSection.vue';
 import CabbieHistorySection from './CabbieHistorySection.vue';
@@ -32,18 +32,6 @@ import OfferSection from './OfferSection.vue';
 import CheckOfferSection from './CheckOfferSection.vue';
 import ContactForm from '../ContactForm.vue';
 import LetsBeginSection from './LetsBeginSection.vue';
-
-export default {
-    components: {
-        WelcomePageSection,
-        OurGoalSection,
-        CabbieHistorySection,
-        OfferSection,
-        CheckOfferSection,
-        ContactForm,
-        LetsBeginSection
-    }
-};
 </script>
 
 <style>

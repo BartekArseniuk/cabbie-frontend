@@ -7,21 +7,18 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            description: "Posiadamy swoją flotę samochodów, wciąż dodając nowe modele do naszej oferty. Zapewniamy wsparcie w utrzymaniu pojazdów."
-        };
-    },
-    mounted() {
-        const image = new Image();
-        image.src = require('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg'); // użycie require do dynamicznego ładowania obrazu
-        image.onload = () => {
-            this.$el.classList.add('loaded');
-        };
-    }
-}
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const description = ref("Posiadamy swoją flotę samochodów, wciąż dodając nowe modele do naszej oferty. Zapewniamy wsparcie w utrzymaniu pojazdów.");
+
+onMounted(() => {
+    const image = new Image();
+    image.src = new URL('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg', import.meta.url).href; // Użycie URL z import.meta.url
+    image.onload = () => {
+        document.querySelector('.cabbie-history').classList.add('loaded');
+    };
+});
 </script>
 
 <style lang="scss" scoped>

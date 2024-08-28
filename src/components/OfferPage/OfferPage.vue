@@ -1,40 +1,32 @@
 <template>
-    <p class="title">NASZA OFERTA</p>
-    <main>
-        <section id="settlements">
-            <SettlementsSection />
-        </section>
-        <section id="car-fleet">
-            <CarFleetSection />
-        </section>
-        <section id="building-a-brand-together">
-            <BuildBrandSection />
-        </section>
-        <section id="lets-start-cooperation">
-            <LetsBeginSection />
-        </section>
-        <section id="contact">
-            <ContactForm />
-        </section>
-    </main>
+    <div class="offer">
+        <p class="title">NASZA OFERTA</p>
+        <main>
+            <section id="settlements">
+                <SettlementsSection />
+            </section>
+            <section id="car-fleet">
+                <CarFleetSection />
+            </section>
+            <section id="building-a-brand-together">
+                <BuildBrandSection />
+            </section>
+            <section id="lets-start-cooperation">
+                <LetsBeginSection />
+            </section>
+            <section id="contact">
+                <ContactForm />
+            </section>
+        </main>
+    </div>
 </template>
 
-<script>
+<script setup>
 import SettlementsSection from './SettlementsSection.vue';
 import CarFleetSection from './CarFleetSection.vue';
 import BuildBrandSection from './BuildBrandSection.vue';
 import LetsBeginSection from '../LetsBeginSection.vue';
 import ContactForm from '../ContactForm.vue';
-
-export default {
-    components: {
-        SettlementsSection,
-        CarFleetSection,
-        BuildBrandSection,
-        LetsBeginSection,
-        ContactForm
-    }
-};
 </script>
 
 <style lang="scss" scoped>

@@ -1,5 +1,5 @@
 <template>
-    <div class="cabbie-history">
+    <div :class="{ 'cabbie-history': true, loaded }">
         <div class="text-container">
             <p class="title">HISTORIA CABBIE</p>
             <p class="description">{{ description }}</p>
@@ -7,21 +7,19 @@
     </div>
 </template>
 
-<script>
-export default {
-    data() {
-        return {
-            description: "Firma Cabbie z Białegostoku to Twój doświadczony partner w branży przewozowej. Jako byli kierowcy, doskonale rozumiemy potrzeby osób pracujących w tej profesji. Zbudowaliśmy nasze doświadczenie na własnej praktyce za kierownicą, co pozwala nam na oferowanie usług najwyższej jakości."
-        };
-    },
-    mounted() {
-        const image = new Image();
-        image.src = require('@/assets/images/woman-wanting-pay-taxi-services 1.svg'); // użycie require do dynamicznego ładowania obrazu
-        image.onload = () => {
-            this.$el.classList.add('loaded');
-        };
-    }
-}
+<script setup>
+import { ref, onMounted } from 'vue';
+
+const description = "Firma Cabbie z Białegostoku to Twój doświadczony partner w branży przewozowej. Jako byli kierowcy, doskonale rozumiemy potrzeby osób pracujących w tej profesji. Zbudowaliśmy nasze doświadczenie na własnej praktyce za kierownicą, co pozwala nam na oferowanie usług najwyższej jakości.";
+const loaded = ref(false);
+
+onMounted(() => {
+    const image = new Image();
+    image.src = new URL('@/assets/images/woman-wanting-pay-taxi-services 1.svg', import.meta.url).href;
+    image.onload = () => {
+        loaded.value = true;
+    };
+});
 </script>
 
 <style lang="scss" scoped>
