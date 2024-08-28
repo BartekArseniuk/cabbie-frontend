@@ -21,15 +21,21 @@ export default {
                     behavior: 'smooth'
                 });
             }
+        },
+        mounted() {
+            const image = new Image();
+            image.src = require('@/assets/images/driver-dressed-elegant-costume 1.svg');
+            image.onload = () => {
+                this.$el.classList.add('loaded');
+            };
         }
-
     }
 };
 </script>
 
 <style lang="scss" scoped>
 .welcome-page {
-    background-image: url('@/assets/images/driver-dressed-elegant-costume 1.svg');
+    background-image: url('@/assets/images/driver-dressed-elegant-costume 1-placeholder.png');
     background-size: cover;
     background-position: center;
     height: 100vh;
@@ -38,6 +44,11 @@ export default {
     flex-direction: column;
     align-items: center;
     overflow: hidden;
+    transition: background-image 0.5s ease-in-out;
+
+    &.loaded {
+        background-image: url('@/assets/images/driver-dressed-elegant-costume 1.svg');
+    }
 }
 
 .logo {

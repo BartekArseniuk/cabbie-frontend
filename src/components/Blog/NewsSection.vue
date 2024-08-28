@@ -9,7 +9,7 @@
     export default {
         mounted() {
             const image = new Image();
-            image.src = require('@/assets/images/Group 26.svg'); // użycie require do dynamicznego ładowania obrazu
+            image.src = require('@/assets/images/Group 26.svg');
             image.onload = () => {
                 this.$el.classList.add('loaded');
             };
