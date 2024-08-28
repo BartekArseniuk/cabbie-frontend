@@ -10,7 +10,6 @@
 <script setup>
 import { ref } from 'vue';
 
-// Przechowujemy tekst opisu w zmiennej reaktywnej
 const description = ref("Przejrzysty i nowoczesny sposób rozliczeń i wypłat dla kierowców. Brak pobieranej prowizji od zarobków.");
 </script>
 

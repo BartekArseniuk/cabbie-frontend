@@ -11,7 +11,7 @@
 
 <script>
 import NewsSection from './NewsSection.vue';
-import LetsBeginSection from '../LetsBeginSection.vue';
+import LetsBeginSection from '../HomePage/LetsBeginSection.vue';
 
 export default {
     components: {

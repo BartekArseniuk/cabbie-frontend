@@ -16,7 +16,7 @@
 <script>
 import WhatWeDoSection from './WhatWeDoSection.vue';
 import OpinionsSection from './OpinionsSection.vue';
-import LetsBeginSection from '../LetsBeginSection.vue';
+import LetsBeginSection from '@/components/Common/LetsBeginSection.vue';
 
 export default {
     components: {

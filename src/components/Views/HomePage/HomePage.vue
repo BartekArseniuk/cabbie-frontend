@@ -30,7 +30,7 @@ import OurGoalSection from './OurGoalSection.vue';
 import CabbieHistorySection from './CabbieHistorySection.vue';
 import OfferSection from './OfferSection.vue';
 import CheckOfferSection from './CheckOfferSection.vue';
-import ContactForm from '../ContactForm.vue';
+import ContactForm from '@/components/Common/ContactForm.vue';
 import LetsBeginSection from './LetsBeginSection.vue';
 </script>
 

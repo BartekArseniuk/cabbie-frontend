@@ -25,8 +25,8 @@
 import SettlementsSection from './SettlementsSection.vue';
 import CarFleetSection from './CarFleetSection.vue';
 import BuildBrandSection from './BuildBrandSection.vue';
-import LetsBeginSection from '../LetsBeginSection.vue';
-import ContactForm from '../ContactForm.vue';
+import LetsBeginSection from '@/components/Common/LetsBeginSection.vue';
+import ContactForm from '@/components/Common/ContactForm.vue';
 </script>
 
 <style lang="scss" scoped>
