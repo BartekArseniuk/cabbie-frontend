@@ -10,7 +10,6 @@
 <script setup>
 import { ref } from 'vue';
 
-// Zdefiniuj dane jako reaktywną zmienną
 const description = ref(
     "Naszym priorytetem są klarowne i transparentne rozliczenia oraz system wynagradzania bez ukrytych prowizji, co stanowi solidną podstawę wzajemnego zaufania. Jesteśmy tu, by wspierać Cię na każdym etapie współpracy, traktując nasze relacje partnersko i z pełnym zrozumieniem."
 );

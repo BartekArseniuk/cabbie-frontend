@@ -1,94 +1,106 @@
 <template>
-<div>
-    <div class="app-bar">
+    <div>
+      <div class="app-bar">
         <div class="app-logo">
-            <img src="@/assets/images/logo.svg" alt="cabbie">
+          <img src="@/assets/images/logo.svg" alt="cabbie">
         </div>
         <button class="hamburger" @click="toggleNav">&#9776;</button>
         <nav ref="nav" :class="['nav', { 'nav--open': isNavOpen }]">
-            <button v-for="item in navItems" :key="item.name" @click="navigateTo(item.route)">
-                {{ item.label }}
-            </button>
+          <button v-for="item in navItems" 
+                  :key="item.name" 
+                  @click="handleNavItemClick(item)">
+            {{ item.label }}
+          </button>
         </nav>
-    </div>
-
-    <div class="content">
+      </div>
+  
+      <div class="content">
         <router-view />
-    </div>
-
-    <footer>
+      </div>
+  
+      <footer>
         <div class="name">
-            <img class="footer-logo" src="@/assets/images/ccabbiesinglelogobnw.svg" alt="Start Collaboration Image">
-            <p>CABBIE SP. Z O. O.</p>
+          <img class="footer-logo" src="@/assets/images/ccabbiesinglelogobnw.svg" alt="Start Collaboration Image">
+          <p>CABBIE SP. Z O. O.</p>
         </div>
         <p>Numer REGON: 527419171</p>
         <p>Numer NIP: 9662187143</p>
         <p>ul. Węgierska 49, 15-641 Krupniki (Białystok)</p>
         <p>+48 500061435</p>
         <p>info@cabbie.pl</p>
-    </footer>
-
-    <div class="under-footer">
+      </footer>
+  
+      <div class="under-footer">
         <p>WSZELKIE PRAWA AUTORSKIE ZASTRZEŻONE - CABBIE 2024</p>
+      </div>
+  
+      <LoginModal :isVisible="isLoginModalVisible" @close="closeLoginModal" />
     </div>
-</div>
-</template>
-
-<script>
-export default {
+  </template>
+  
+  <script>
+  import LoginModal from '@/components/Views/LoginRegister/LoginModal.vue';
+  
+  export default {
+    components: {
+      LoginModal
+    },
     data() {
-        return {
-            isNavOpen: false,
-            navItems: [{
-                    label: 'STRONA GŁÓWNA',
-                    route: 'Home'
-                },
-                {
-                    label: 'OFERTA',
-                    route: 'Offer'
-                },
-                {
-                    label: 'O NAS',
-                    route: 'AboutUs'
-                },
-                {
-                    label: 'BLOG',
-                    route: 'Blog'
-                },
-                {
-                    label: 'KONTAKT',
-                    route: 'Contact'
-                },
-                {
-                    label: 'LOGOWANIE'
-                },
-            ]
-        };
+      return {
+        isNavOpen: false,
+        isLoginModalVisible: false,
+        navItems: [
+          { label: 'STRONA GŁÓWNA', route: 'Home' },
+          { label: 'OFERTA', route: 'Offer' },
+          { label: 'O NAS', route: 'AboutUs' },
+          { label: 'BLOG', route: 'Blog' },
+          { label: 'KONTAKT', route: 'Contact' },
+          { label: 'LOGOWANIE' }
+        ]
+      };
     },
     methods: {
-        toggleNav() {
-            this.isNavOpen = !this.isNavOpen;
-        },
-        navigateTo(route) {
-            this.$router.push({
-                name: route
-            });
-            this.isNavOpen = false;
-        },
-        handleClickOutside(event) {
-            const nav = this.$refs.nav;
-            if (this.isNavOpen && nav && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
-                this.isNavOpen = false;
-            }
+      toggleNav() {
+        this.isNavOpen = !this.isNavOpen;
+      },
+      navigateTo(route) {
+        this.$router.push({ name: route });
+        this.isNavOpen = false;
+      },
+      openLoginModal() {
+        this.isLoginModalVisible = true;
+      },
+      closeLoginModal() {
+        this.isLoginModalVisible = false;
+      },
+      handleNavItemClick(item) {
+        if (item.route) {
+          this.navigateTo(item.route);
+        } else {
+          this.openLoginModal();
         }
+      },
+      handleClickOutside(event) {
+        const nav = this.$refs.nav;
+        if (this.isNavOpen && nav && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
+          this.isNavOpen = false;
+        }
+      },
+      handleKeyDown(event) {
+        if (event.key === 'Escape' && this.isLoginModalVisible) {
+        this.closeLoginModal();
+        }
+      }
     },
     mounted() {
-        document.addEventListener('click', this.handleClickOutside);
+      document.addEventListener('click', this.handleClickOutside);
+      document.addEventListener('keydown', this.handleKeyDown);
     },
     beforeUnmount() {
-        document.removeEventListener('click', this.handleClickOutside);
+      document.removeEventListener('click', this.handleClickOutside);
+      document.removeEventListener('keydown', this.handleKeyDown);
     }
-};
+  };
 </script>
 
 <style lang="scss">
@@ -110,7 +122,7 @@ body {
     padding: 0 20px;
     height: 60px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    z-index: 99;
+    z-index: 1;
 }
 
 .hamburger {
@@ -129,7 +141,7 @@ body {
 }
 
 .nav button {
-    background: none;
+    background-color: transparent;
     border: none;
     color: $white;
     font-family: 'Roboto-Extra-Light', 'sans-serif';
@@ -138,13 +150,12 @@ body {
     padding: 10px;
     cursor: pointer;
     border-radius: 5px;
-    transition: color 0.3s ease, font-size 0.5s ease, font-weight 0.3s ease;
+    transition: all 0.3s ease;
 }
 
 .nav button:hover {
     color: $primary-color;
-    font-size: 20px;
-    font-weight: bold;
+    background-color: $secondary-color;
 }
 
 .content {

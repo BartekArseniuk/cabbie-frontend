@@ -59,28 +59,30 @@ const message = ref('');
     padding: 10px;
     font-size: 24px;
     font-family: 'Roboto-Light', sans-serif;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 15px;
     box-sizing: border-box;
     background-color: $secondary-color;
     color: $white;
-    transition: all 0.3s ease;
+    transition: border 0.3s ease;
     flex: 1;
     width: 100%;
+    outline: none;
 }
 
 .input-description {
     padding: 15px;
     font-size: 24px;
     font-family: 'Roboto-Light', sans-serif;
-    border: none;
+    border: 2px solid transparent;
     border-radius: 15px;
     box-sizing: border-box;
     background-color: $secondary-color;
     color: $white;
-    transition: all 0.3s ease;
+    transition: border 0.3s ease;
     height: 150px;
     resize: none;
+    outline: none;
 }
 
 .input-field:hover,
@@ -88,7 +90,6 @@ const message = ref('');
 .input-description:hover,
 .input-description:focus {
     border: 2px solid $primary-color;
-    outline: none;
 }
 
 .send {

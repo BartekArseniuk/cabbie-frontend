@@ -14,12 +14,10 @@
   <script setup>
   import { ref } from 'vue';
   
-  // Załaduj obrazy
   import trustImage from '@/assets/images/trust.svg';
   import researchBookImage from '@/assets/images/Research Book.svg';
   import employeeRateImage from '@/assets/images/Employee Rate.svg';
   
-  // Lista ofert z załadowanymi obrazami
   const offers = ref([
     {
       image: trustImage,

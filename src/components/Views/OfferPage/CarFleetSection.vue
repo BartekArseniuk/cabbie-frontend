@@ -14,7 +14,7 @@ const description = ref("Posiadamy swoją flotę samochodów, wciąż dodając n
 
 onMounted(() => {
     const image = new Image();
-    image.src = new URL('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg', import.meta.url).href; // Użycie URL z import.meta.url
+    image.src = new URL('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg', import.meta.url).href;
     image.onload = () => {
         document.querySelector('.cabbie-history').classList.add('loaded');
     };
