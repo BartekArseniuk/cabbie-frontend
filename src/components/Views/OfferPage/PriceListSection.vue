@@ -14,32 +14,32 @@ export default {
         return {
             blocks: [{
                     title: 'Rozliczenie 1-3 aplikacji',
-                    price: '50 zł',
+                    price: '50 zł'
                 },
                 {
                     title: 'Składka do Umowy Zlecenie (za tydzień, w którym jeździsz)',
-                    price: '30 zł',
+                    price: '30 zł'
                 },
                 {
                     title: 'Obsługa Umowy Zlecenie',
-                    price: '10 zł',
+                    price: '10 zł'
                 },
                 {
                     title: 'BRAK PROWIZJI OD TWOICH ZAROBKÓW',
-                    price: '',
-                }
+                    price: ''
+                },
             ],
         };
     },
 };
 </script>
-
+  
 <style lang="scss" scoped>
 .price-list {
     background-image: url('@/assets/images/Group 40.png');
     background-size: cover;
     background-position: center;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -86,6 +86,10 @@ export default {
             color: $primary-color;
             font-size: 20px;
             font-family: 'Roboto-Light', sans-serif;
+        }
+
+        &:last-child {
+            margin-bottom: 10px;
         }
     }
 
