@@ -34,16 +34,16 @@
         <p>WSZELKIE PRAWA AUTORSKIE ZASTRZEŻONE - CABBIE 2024</p>
       </div>
   
-      <LoginModal :isVisible="isLoginModalVisible" @close="closeLoginModal" />
+      <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" />
     </div>
   </template>
   
   <script>
-  import LoginModal from '@/components/Views/LoginRegister/LoginModal.vue';
+  import ModalForm from './Views/LoginRegister/ModalForm.vue';
   
   export default {
     components: {
-      LoginModal
+      ModalForm
     },
     data() {
       return {
