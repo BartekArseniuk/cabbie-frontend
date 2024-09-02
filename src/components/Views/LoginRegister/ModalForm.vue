@@ -27,6 +27,13 @@ export default {
             closingModal: false,
         };
     },
+    watch: {
+        isVisible(val) {
+            if (val) {
+                this.isLogin = true;
+            }
+        }
+    },
     computed: {
         currentForm() {
             return this.isLogin ? LoginForm : RegisterForm;
@@ -47,6 +54,7 @@ export default {
         closeModal() {
             if (!this.closingModal) {
                 this.closingModal = true;
+                this.isLogin = true;
                 this.$emit('close');
             }
         },
@@ -83,7 +91,7 @@ export default {
         },
     },
 };
-</script>
+</script>    
 
 <style lang="scss" scoped>
 .modal-overlay {
