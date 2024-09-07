@@ -1,0 +1,24 @@
+.swal2-popup {
+    background-color: $secondary-color !important;
+    color: $white;
+    border-radius: 15px !important;
+}
+
+.swal2-title {
+    font-family: 'Roboto-Light', 'sans-serif' !important;
+}
+
+.swal2-html-container,
+.swal2-content {
+    font-family: 'Roboto-Extra-Light', 'sans-serif' !important;
+}
+
+.swal2-confirm {
+    background-color: $primary-color !important;
+    color: $secondary-color !important;
+    border-radius: 15px !important;
+}
+
+.swal2-confirm:hover {
+    background-color: $primary-color !important;
+}

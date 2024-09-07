@@ -9,8 +9,11 @@
         <div class="input-group">
             <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required>
         </div>
-        <div class="input-group">
-            <input class="input" type="password" id="password" placeholder="hasło" v-model="password" required>
+        <div class="input-group password-group">
+            <input class="input password-input" :type="showPassword ? 'text' : 'password'" id="password" placeholder="hasło (minimum 8 znaków)" v-model="password" required>
+            <button class="password-toggle" @click="togglePasswordVisibility" type="button">
+                <i :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+            </button>
         </div>
         <div class="buttons-group">
             <button class="button" type="submit">ZAREJESTRUJ</button>
@@ -20,8 +23,10 @@
 </div>
 </template>
 
-    
 <script>
+import Swal from 'sweetalert2';
+import apiService from '@/apiService';
+
 export default {
     data() {
         return {
@@ -29,25 +34,47 @@ export default {
             lastName: '',
             email: '',
             password: '',
+            showPassword: false
         };
     },
     methods: {
-        register() {
-            this.$emit('register', {
-                firstName: this.firstName,
-                lastName: this.lastName,
-                email: this.email,
-                password: this.password
-            });
+        async register() {
+            try {
+                await apiService.post('/register', {
+                    first_name: this.firstName,
+                    last_name: this.lastName,
+                    email: this.email,
+                    password: this.password
+                });
+
+                Swal.fire({
+                    title: 'Sukces!',
+                    text: 'Rejestracja przebiegła pomyślnie.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    this.switchToLogin();
+                });
+
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         },
         switchToLogin() {
             this.$emit('switch-form');
         },
-    },
+        togglePasswordVisibility() {
+            this.showPassword = !this.showPassword;
+        }
+    }
 };
 </script>
 
-    
 <style lang="scss" scoped>
 .title {
     text-align: center;
@@ -60,6 +87,26 @@ export default {
     margin-bottom: 10px;
     display: flex;
     gap: 10px;
+}
+
+.password-group {
+    position: relative;
+}
+
+.password-input {
+    padding-right: 50px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: $white;
 }
 
 .buttons-group {
@@ -93,6 +140,7 @@ export default {
     font-size: 22px;
     width: 100%;
     padding: 10px;
+    padding-right: 50px;
     background-color: $secondary-color;
     outline: none;
     border: 2px solid transparent;

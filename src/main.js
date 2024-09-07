@@ -1,7 +1,10 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import '@/styles/fonts.scss'
-import router from './router';
+import './styles/sweetalert2-custom.scss'
+import '@fortawesome/fontawesome-free/css/all.css';
+
+import router from './router'
 
 const app = createApp(App);
 
