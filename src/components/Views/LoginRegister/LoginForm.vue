@@ -105,6 +105,7 @@ export default {
 }
 
 .input {
+    color: $white;
     font-size: 22px;
     padding: 10px;
     background-color: $secondary-color;

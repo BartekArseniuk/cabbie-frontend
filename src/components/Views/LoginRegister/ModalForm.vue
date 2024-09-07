@@ -47,6 +47,7 @@ export default {
         closeModal() {
             if (!this.closingModal) {
                 this.closingModal = true;
+                this.isLogin = true;
                 this.$emit('close');
             }
         },

@@ -3,7 +3,8 @@
     <p class="title">REJESTRACJA</p>
     <form @submit.prevent="register">
         <div class="input-group">
-            <input class="input" type="text" id="name" placeholder="imię i nazwisko" v-model="login" required>
+            <input class="input" type="text" id="first_name" placeholder="imię" v-model="firstName" required>
+            <input class="input" type="text" id="last_name" placeholder="nazwisko" v-model="lastName" required>
         </div>
         <div class="input-group">
             <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required>
@@ -19,12 +20,13 @@
 </div>
 </template>
 
-  
+    
 <script>
 export default {
     data() {
         return {
-            login: '',
+            firstName: '',
+            lastName: '',
             email: '',
             password: '',
         };
@@ -32,7 +34,8 @@ export default {
     methods: {
         register() {
             this.$emit('register', {
-                login: this.login,
+                firstName: this.firstName,
+                lastName: this.lastName,
                 email: this.email,
                 password: this.password
             });
@@ -44,7 +47,7 @@ export default {
 };
 </script>
 
-  
+    
 <style lang="scss" scoped>
 .title {
     text-align: center;
@@ -55,6 +58,8 @@ export default {
 
 .input-group {
     margin-bottom: 10px;
+    display: flex;
+    gap: 10px;
 }
 
 .buttons-group {
@@ -84,13 +89,16 @@ export default {
 }
 
 .input {
+    color: $white;
     font-size: 22px;
+    width: 100%;
     padding: 10px;
     background-color: $secondary-color;
     outline: none;
     border: 2px solid transparent;
     transition: all 0.3s ease;
     border-radius: 15px;
+    flex: 1;
 }
 
 .input:hover,
