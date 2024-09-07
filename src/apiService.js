@@ -12,10 +12,6 @@ async function fetchCsrfToken() {
     }
 }
 
-fetchCsrfToken().catch((error) => {
-    console.error('Error during initial CSRF token fetch:', error);
-});
-
 const apiService = axios.create({
     baseURL: 'http://localhost:8000/',
     headers: {
@@ -24,12 +20,33 @@ const apiService = axios.create({
     withCredentials: true
 });
 
-apiService.interceptors.request.use((config) => {
-    if (csrfToken) {
-        config.headers['X-CSRF-TOKEN'] = csrfToken;
+apiService.interceptors.request.use(async (config) => {
+    try {
+        await fetchCsrfToken();
+        if (csrfToken) {
+            config.headers['X-CSRF-TOKEN'] = csrfToken;
+        }
+        return config;
+    } catch (error) {
+        return Promise.reject(error);
     }
-    return config;
 }, (error) => {
+    return Promise.reject(error);
+});
+
+apiService.interceptors.response.use(response => {
+    return response;
+}, async (error) => {
+    if (error.response && error.response.status === 419) {
+        try {
+            await fetchCsrfToken();
+            error.config.headers['X-CSRF-TOKEN'] = csrfToken;
+            return apiService.request(error.config);
+        } catch (tokenError) {
+            console.error('Error fetching new CSRF token:', tokenError);
+            return Promise.reject(tokenError);
+        }
+    }
     return Promise.reject(error);
 });
 
