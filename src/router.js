@@ -4,6 +4,7 @@ import OfferPage from './components/Views/OfferPage/OfferPage.vue';
 import AboutUsPage from './components/Views/AboutUs/AboutUsPage.vue';
 import BlogPage from './components/Views/Blog/BlogPage.vue';
 import ContactPage from './components/Views/ContactPage/ContactPage.vue';
+import ProfilePage from './components/Views/Profile/ProfilePage.vue';
 
 const routes = [
   {
@@ -45,7 +46,15 @@ const routes = [
     meta: {
       title: 'Cabbie - Kontakt'
     }
-  }
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: ProfilePage,
+    meta: {
+      title: 'Cabbie - Profil użytkownika'
+    }
+  },
 ];
 
 const router = createRouter({

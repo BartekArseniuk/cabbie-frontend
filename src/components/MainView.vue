@@ -6,22 +6,21 @@
         </div>
         <button class="hamburger" @click="toggleNav">&#9776;</button>
         <nav ref="nav" :class="['nav', { 'nav--open': isNavOpen }]">
-            <button v-for="item in navItems" :key="item.name" @click="handleNavItemClick(item)">
+            <button v-for="item in navItems" :key="item.route" @click="handleNavItemClick(item)">
                 {{ item.label }}
             </button>
             <div v-if="isAuthenticated">
-                <button @click="toggleProfileMenu">PROFIL</button>
+                <button class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
                 <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
-                    <button>DANE I DOKUMENTY</button>
-                    <button>WIADOMOŚCI</button>
-                    <button>PORTFEL</button>
-                    <button>FAKTURY</button>
-                    <button>USTAWIENIA ROZLICZEŃ</button>
-                    <button>RYCZAŁT</button>
+                    <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
+                        {{ menuItem }}
+                    </button>
                     <button @click="handleLogout">WYLOGUJ</button>
                 </div>
+                <!-- Dodanie przycisku wylogowania dla wersji mobilnej -->
+                <button class="mobile-logout-button" v-if="isMobile" @click="handleLogout">WYLOGUJ</button>
             </div>
-            <button v-else @click="openLoginModal">LOGOWANIE</button>
+            <button class="login-button" v-else @click="openLoginModal">LOGOWANIE</button>
         </nav>
     </div>
 
@@ -87,7 +86,16 @@ export default {
                     label: 'KONTAKT',
                     route: 'Contact'
                 }
-            ]
+            ],
+            profileMenuItems: [
+                'DANE I DOKUMENTY',
+                'WIADOMOŚCI',
+                'PORTFEL',
+                'FAKTURY',
+                'USTAWIENIA ROZLICZEŃ',
+                'RYCZAŁT'
+            ],
+            isMobile: window.innerWidth <= 768
         };
     },
     computed: {
@@ -108,12 +116,6 @@ export default {
             this.isNavOpen = false;
             this.isProfileMenuOpen = false;
         },
-        openLoginModal() {
-            this.isLoginModalVisible = true;
-        },
-        closeLoginModal() {
-            this.isLoginModalVisible = false;
-        },
         handleNavItemClick(item) {
             if (item.route) {
                 this.navigateTo(item.route);
@@ -121,19 +123,23 @@ export default {
                 this.openLoginModal();
             }
         },
-        handleClickOutside(event) {
-            const nav = this.$refs.nav;
-            if (this.isNavOpen && nav && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
-                this.isNavOpen = false;
-            }
-            if (this.isProfileMenuOpen && !nav.contains(event.target) && !event.target.closest('.profile-menu')) {
-                this.isProfileMenuOpen = false;
+        handleProfileButtonClick() {
+            if (this.isMobile) {
+                this.navigateTo('Profile');
+            } else {
+                this.toggleProfileMenu();
             }
         },
-        handleKeyDown(event) {
-            if (event.key === 'Escape' && this.isLoginModalVisible) {
-                this.closeLoginModal();
+        handleProfileMenuClick(menuItem) {
+            if (menuItem === 'DANE I DOKUMENTY' && !this.isMobile) {
+                this.navigateTo('Profile');
             }
+        },
+        openLoginModal() {
+            this.isLoginModalVisible = true;
+        },
+        closeLoginModal() {
+            this.isLoginModalVisible = false;
         },
         async handleLogout() {
             try {
@@ -146,6 +152,10 @@ export default {
                     text: 'Wylogowano pomyślnie.',
                     icon: 'success',
                     confirmButtonText: 'OK'
+                }).then(() => {
+                    this.$router.push({
+                        name: 'Home'
+                    });
                 });
             } catch (error) {
                 Swal.fire({
@@ -155,15 +165,34 @@ export default {
                     confirmButtonText: 'OK'
                 });
             }
+        },
+        handleClickOutside(event) {
+            const nav = this.$refs.nav;
+            if (this.isNavOpen && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
+                this.isNavOpen = false;
+            }
+            if (this.isProfileMenuOpen && !nav.contains(event.target) && !event.target.closest('.profile-menu')) {
+                this.isProfileMenuOpen = false;
+            }
+        },
+        handleKeyDown(event) {
+            if (event.key === 'Escape' && this.isLoginModalVisible) {
+                this.closeLoginModal();
+            }
+        },
+        updateMobileStatus() {
+            this.isMobile = window.innerWidth <= 768;
         }
     },
     mounted() {
         document.addEventListener('click', this.handleClickOutside);
         document.addEventListener('keydown', this.handleKeyDown);
+        window.addEventListener('resize', this.updateMobileStatus);
     },
     beforeUnmount() {
         document.removeEventListener('click', this.handleClickOutside);
         document.removeEventListener('keydown', this.handleKeyDown);
+        window.removeEventListener('resize', this.updateMobileStatus);
     }
 };
 </script>
@@ -215,15 +244,17 @@ body {
     padding: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 10px;
 }
 
 .nav button:hover {
     color: $primary-color;
+    background-color: $background-color;
 }
 
 .profile-menu {
     position: fixed;
-    top: 80px; // Keeps the menu below the app bar
+    top: 80px;
     right: 0;
     background-color: $secondary-color;
     border-bottom-left-radius: 20px;
@@ -246,11 +277,12 @@ body {
     border-bottom: 1px solid $background-color;
     color: $white;
     font-family: 'Roboto-Extra-Light', 'sans-serif';
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
     padding: 10px 20px;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-radius: 0;
 }
 
 .profile-menu button:last-child {
@@ -259,7 +291,7 @@ body {
 }
 
 .profile-menu button:hover {
-    color: $white;
+    color: $tertiary-color;
     background-color: $primary-color;
 }
 
@@ -305,14 +337,42 @@ body {
 
     .nav button {
         padding: 15px;
+        border-radius: 0;
+        width: 100%;
+        text-align: center;
     }
 
-    .nav button.login {
+    .nav button.login-button {
         margin-bottom: 20px;
     }
 
     .profile-menu {
-      top: 0;
+        top: 0;
+    }
+
+    .mobile-logout-button {
+        display: block;
+        background-color: transparent;
+        border: none;
+        color: $white;
+        font-family: 'Roboto-Extra-Light', 'sans-serif';
+        font-size: 16px;
+        font-weight: 300;
+        padding: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .mobile-logout-button:hover {
+        color: $tertiary-color;
+        background-color: $primary-color;
+    }
+
+    .profile-button {
+        width: 100%;
+        text-align: center;
     }
 }
 
@@ -321,16 +381,26 @@ body {
     width: 50px;
 }
 
-.nav button.login {
+.nav .login-button {
+    border-radius: 10px;
     color: $primary-color;
     transition: all 0.3s ease;
 }
 
-.nav button.login:hover {
+.nav .login-button:hover {
     color: $tertiary-color;
     background-color: $primary-color;
     border-color: $tertiary-color;
-    font-family: 'Roboto-Light', 'sans-serif';
+}
+
+.nav .profile-button {
+    color: $white;
+    transition: all 0.3s ease;
+}
+
+.nav .profile-button:hover {
+    color: $tertiary-color;
+    background-color: $primary-color;
 }
 
 footer {
