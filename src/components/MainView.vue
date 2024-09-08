@@ -1,106 +1,171 @@
 <template>
-    <div>
-      <div class="app-bar">
+<div>
+    <div class="app-bar">
         <div class="app-logo">
-          <img src="@/assets/images/logo.svg" alt="cabbie">
+            <img src="@/assets/images/logo.svg" alt="cabbie">
         </div>
         <button class="hamburger" @click="toggleNav">&#9776;</button>
         <nav ref="nav" :class="['nav', { 'nav--open': isNavOpen }]">
-          <button v-for="item in navItems" 
-                  :key="item.name" 
-                  @click="handleNavItemClick(item)">
-            {{ item.label }}
-          </button>
+            <button v-for="item in navItems" :key="item.name" @click="handleNavItemClick(item)">
+                {{ item.label }}
+            </button>
+            <div v-if="isAuthenticated">
+                <button @click="toggleProfileMenu">PROFIL</button>
+                <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
+                    <button>DANE I DOKUMENTY</button>
+                    <button>WIADOMOŚCI</button>
+                    <button>PORTFEL</button>
+                    <button>FAKTURY</button>
+                    <button>USTAWIENIA ROZLICZEŃ</button>
+                    <button>RYCZAŁT</button>
+                    <button @click="handleLogout">WYLOGUJ</button>
+                </div>
+            </div>
+            <button v-else @click="openLoginModal">LOGOWANIE</button>
         </nav>
-      </div>
-  
-      <div class="content">
+    </div>
+
+    <div class="content">
         <router-view />
-      </div>
-  
-      <footer>
+    </div>
+
+    <footer>
         <div class="name">
-          <img class="footer-logo" src="@/assets/images/ccabbiesinglelogobnw.svg" alt="Start Collaboration Image">
-          <p>CABBIE SP. Z O. O.</p>
+            <img class="footer-logo" src="@/assets/images/ccabbiesinglelogobnw.svg" alt="Start Collaboration Image">
+            <p>CABBIE SP. Z O. O.</p>
         </div>
         <p>Numer REGON: 527419171</p>
         <p>Numer NIP: 9662187143</p>
         <p>ul. Węgierska 49, 15-641 Krupniki (Białystok)</p>
         <p>+48 500061435</p>
         <p>info@cabbie.pl</p>
-      </footer>
-  
-      <div class="under-footer">
+    </footer>
+
+    <div class="under-footer">
         <p>WSZELKIE PRAWA AUTORSKIE ZASTRZEŻONE - CABBIE 2024</p>
-      </div>
-  
-      <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" />
     </div>
-  </template>
-  
-  <script>
-  import ModalForm from './Views/LoginRegister/ModalForm.vue';
-  
-  export default {
+
+    <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" />
+</div>
+</template>
+
+<script>
+import ModalForm from './Views/LoginRegister/ModalForm.vue';
+import apiService from '@/apiService';
+import Swal from 'sweetalert2';
+import {
+    mapGetters,
+    mapActions
+} from 'vuex';
+
+export default {
     components: {
-      ModalForm
+        ModalForm
     },
     data() {
-      return {
-        isNavOpen: false,
-        isLoginModalVisible: false,
-        navItems: [
-          { label: 'STRONA GŁÓWNA', route: 'Home' },
-          { label: 'OFERTA', route: 'Offer' },
-          { label: 'O NAS', route: 'AboutUs' },
-          { label: 'BLOG', route: 'Blog' },
-          { label: 'KONTAKT', route: 'Contact' },
-          { label: 'LOGOWANIE' }
-        ]
-      };
+        return {
+            isNavOpen: false,
+            isLoginModalVisible: false,
+            isProfileMenuOpen: false,
+            navItems: [{
+                    label: 'STRONA GŁÓWNA',
+                    route: 'Home'
+                },
+                {
+                    label: 'OFERTA',
+                    route: 'Offer'
+                },
+                {
+                    label: 'O NAS',
+                    route: 'AboutUs'
+                },
+                {
+                    label: 'BLOG',
+                    route: 'Blog'
+                },
+                {
+                    label: 'KONTAKT',
+                    route: 'Contact'
+                }
+            ]
+        };
+    },
+    computed: {
+        ...mapGetters(['isAuthenticated'])
     },
     methods: {
-      toggleNav() {
-        this.isNavOpen = !this.isNavOpen;
-      },
-      navigateTo(route) {
-        this.$router.push({ name: route });
-        this.isNavOpen = false;
-      },
-      openLoginModal() {
-        this.isLoginModalVisible = true;
-      },
-      closeLoginModal() {
-        this.isLoginModalVisible = false;
-      },
-      handleNavItemClick(item) {
-        if (item.route) {
-          this.navigateTo(item.route);
-        } else {
-          this.openLoginModal();
+        ...mapActions(['logout']),
+        toggleNav() {
+            this.isNavOpen = !this.isNavOpen;
+        },
+        toggleProfileMenu() {
+            this.isProfileMenuOpen = !this.isProfileMenuOpen;
+        },
+        navigateTo(route) {
+            this.$router.push({
+                name: route
+            });
+            this.isNavOpen = false;
+            this.isProfileMenuOpen = false;
+        },
+        openLoginModal() {
+            this.isLoginModalVisible = true;
+        },
+        closeLoginModal() {
+            this.isLoginModalVisible = false;
+        },
+        handleNavItemClick(item) {
+            if (item.route) {
+                this.navigateTo(item.route);
+            } else {
+                this.openLoginModal();
+            }
+        },
+        handleClickOutside(event) {
+            const nav = this.$refs.nav;
+            if (this.isNavOpen && nav && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
+                this.isNavOpen = false;
+            }
+            if (this.isProfileMenuOpen && !nav.contains(event.target) && !event.target.closest('.profile-menu')) {
+                this.isProfileMenuOpen = false;
+            }
+        },
+        handleKeyDown(event) {
+            if (event.key === 'Escape' && this.isLoginModalVisible) {
+                this.closeLoginModal();
+            }
+        },
+        async handleLogout() {
+            try {
+                await apiService.post('/logout');
+                localStorage.removeItem('authToken');
+                this.$store.dispatch('logout');
+
+                Swal.fire({
+                    title: 'Sukces!',
+                    text: 'Wylogowano pomyślnie.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem z wylogowaniem. Spróbuj ponownie.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
         }
-      },
-      handleClickOutside(event) {
-        const nav = this.$refs.nav;
-        if (this.isNavOpen && nav && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
-          this.isNavOpen = false;
-        }
-      },
-      handleKeyDown(event) {
-        if (event.key === 'Escape' && this.isLoginModalVisible) {
-        this.closeLoginModal();
-        }
-      }
     },
     mounted() {
-      document.addEventListener('click', this.handleClickOutside);
-      document.addEventListener('keydown', this.handleKeyDown);
+        document.addEventListener('click', this.handleClickOutside);
+        document.addEventListener('keydown', this.handleKeyDown);
     },
     beforeUnmount() {
-      document.removeEventListener('click', this.handleClickOutside);
-      document.removeEventListener('keydown', this.handleKeyDown);
+        document.removeEventListener('click', this.handleClickOutside);
+        document.removeEventListener('keydown', this.handleKeyDown);
     }
-  };
+};
 </script>
 
 <style lang="scss">
@@ -114,13 +179,13 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    background-color: $background-color;
+    background-color: $secondary-color;
     color: $white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
-    height: 60px;
+    height: 80px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
@@ -149,36 +214,89 @@ body {
     font-weight: 300;
     padding: 10px;
     cursor: pointer;
-    border-radius: 5px;
     transition: all 0.3s ease;
 }
 
 .nav button:hover {
     color: $primary-color;
+}
+
+.profile-menu {
+    position: fixed;
+    top: 80px; // Keeps the menu below the app bar
+    right: 0;
     background-color: $secondary-color;
+    border-bottom-left-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: scaleY(0);
+    transform-origin: top;
+    opacity: 0;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+}
+
+.profile-menu.open {
+    transform: scaleY(1);
+    opacity: 1;
+}
+
+.profile-menu button {
+    background-color: transparent;
+    text-align: right;
+    border-bottom: 1px solid $background-color;
+    color: $white;
+    font-family: 'Roboto-Extra-Light', 'sans-serif';
+    font-size: 18px;
+    font-weight: 300;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.profile-menu button:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 20px;
+}
+
+.profile-menu button:hover {
+    color: $white;
+    background-color: $primary-color;
+}
+
+.nav .profile-menu {
+    display: flex;
+    flex-direction: column;
 }
 
 .content {
-    margin-top: 60px;
+    margin-top: 80px;
 }
 
 @media (max-width: 768px) {
     .nav {
+        display: flex;
         flex-direction: column;
-        position: absolute;
-        top: 60px;
+        align-items: center;
+        gap: 20px;
+        position: fixed;
+        top: 80px;
         right: 0;
-        background-color: $background-color;
+        background-color: $secondary-color;
         width: 100%;
         max-height: 0;
         opacity: 0;
         overflow: hidden;
-        transition: max-height 0.3s ease, opacity 0.3s ease;
+        border-bottom-left-radius: 20px;
+        border-bottom-right-radius: 20px;
+        transition: max-height 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        transform: scaleY(0);
+        transform-origin: top;
     }
 
     .nav--open {
         max-height: 500px;
         opacity: 1;
+        transform: scaleY(1);
     }
 
     .hamburger {
@@ -191,6 +309,10 @@ body {
 
     .nav button.login {
         margin-bottom: 20px;
+    }
+
+    .profile-menu {
+      top: 0;
     }
 }
 

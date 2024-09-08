@@ -3,23 +3,30 @@
     <p class="title">LOGOWANIE</p>
     <form @submit.prevent="login">
         <div class="input-group">
-            <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required>
+            <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required />
         </div>
         <div class="input-group">
-            <input class="input" type="password" id="password" placeholder="hasło" v-model="password" required>
+            <input class="input" type="password" id="password" placeholder="hasło" v-model="password" required />
         </div>
         <div class="remind-password">
-            <button class="remind-password-button" type="button" @click="remindPassword">Nie pamiętam hasła</button>
+            <button class="remind-password-button" type="button" @click="remindPassword">
+                Nie pamiętam hasła
+            </button>
         </div>
         <div class="buttons-group">
             <button class="button" type="submit">ZALOGUJ</button>
-            <button class="button" type="button" @click="switchToRegister">ZAREJESTRUJ</button>
+            <button class="button" type="button" @click="switchToRegister">
+                ZAREJESTRUJ
+            </button>
         </div>
     </form>
 </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+import apiService from '@/apiService';
+
 export default {
     data() {
         return {
@@ -28,11 +35,32 @@ export default {
         };
     },
     methods: {
-        login() {
-            this.$emit('login', {
-                email: this.email,
-                password: this.password
-            });
+        async login() {
+            try {
+                const response = await apiService.post('/login', {
+                    email: this.email,
+                    password: this.password,
+                });
+
+                localStorage.setItem('authToken', response.data.token);
+                this.$store.dispatch('login', response.data.token);
+
+                Swal.fire({
+                    title: 'Sukces!',
+                    text: 'Logowanie przebiegło pomyślnie.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    this.$emit('login');
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem z logowaniem. Sprawdź dane i spróbuj ponownie.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
         },
         remindPassword() {
             // Handle remind password logic here

@@ -3,6 +3,7 @@ import App from './App.vue'
 import '@/styles/fonts.scss'
 import './styles/sweetalert2-custom.scss'
 import '@fortawesome/fontawesome-free/css/all.css';
+import store from './store';
 
 import router from './router'
 
@@ -14,4 +15,5 @@ router.beforeEach((to, from, next) => {
 });
 
 app.use(router);
+app.use(store);
 app.mount('#app');

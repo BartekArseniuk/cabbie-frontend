@@ -1,79 +1,112 @@
 <template>
-<div>
-    <p class="title">REJESTRACJA</p>
-    <form @submit.prevent="register">
+    <div>
+      <p class="title">REJESTRACJA</p>
+      <form @submit.prevent="register">
         <div class="input-group">
-            <input class="input" type="text" id="first_name" placeholder="imię" v-model="firstName" required>
-            <input class="input" type="text" id="last_name" placeholder="nazwisko" v-model="lastName" required>
+          <input
+            class="input"
+            type="text"
+            id="first_name"
+            placeholder="imię"
+            v-model="firstName"
+            required
+          />
+          <input
+            class="input"
+            type="text"
+            id="last_name"
+            placeholder="nazwisko"
+            v-model="lastName"
+            required
+          />
         </div>
         <div class="input-group">
-            <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required>
+          <input
+            class="input"
+            type="text"
+            id="email"
+            placeholder="e-mail"
+            v-model="email"
+            required
+          />
         </div>
         <div class="input-group password-group">
-            <input class="input password-input" :type="showPassword ? 'text' : 'password'" id="password" placeholder="hasło (minimum 8 znaków)" v-model="password" required>
-            <button class="password-toggle" @click="togglePasswordVisibility" type="button">
-                <i :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
-            </button>
+          <input
+            class="input password-input"
+            :type="showPassword ? 'text' : 'password'"
+            id="password"
+            placeholder="hasło (minimum 8 znaków)"
+            v-model="password"
+            required
+          />
+          <button
+            class="password-toggle"
+            @click="togglePasswordVisibility"
+            type="button"
+          >
+            <i :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"></i>
+          </button>
         </div>
         <div class="buttons-group">
-            <button class="button" type="submit">ZAREJESTRUJ</button>
-            <button class="button" type="button" @click="switchToLogin">ANULUJ</button>
+          <button class="button" type="submit">ZAREJESTRUJ</button>
+          <button class="button" type="button" @click="switchToLogin">
+            ANULUJ
+          </button>
         </div>
-    </form>
-</div>
-</template>
-
-<script>
-import Swal from 'sweetalert2';
-import apiService from '@/apiService';
-
-export default {
+      </form>
+    </div>
+  </template>
+  
+  <script>
+  import Swal from 'sweetalert2';
+  import apiService from '@/apiService';
+  
+  export default {
     data() {
-        return {
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-            showPassword: false
-        };
+      return {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        showPassword: false,
+      };
     },
     methods: {
-        async register() {
-            try {
-                await apiService.post('/register', {
-                    first_name: this.firstName,
-                    last_name: this.lastName,
-                    email: this.email,
-                    password: this.password
-                });
-
-                Swal.fire({
-                    title: 'Sukces!',
-                    text: 'Rejestracja przebiegła pomyślnie.',
-                    icon: 'success',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    this.switchToLogin();
-                });
-
-            } catch (error) {
-                Swal.fire({
-                    title: 'Błąd!',
-                    text: 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
-                    icon: 'error',
-                    confirmButtonText: 'OK'
-                });
-            }
-        },
-        switchToLogin() {
-            this.$emit('switch-form');
-        },
-        togglePasswordVisibility() {
-            this.showPassword = !this.showPassword;
+      async register() {
+        try {
+          await apiService.post('/register', {
+            first_name: this.firstName,
+            last_name: this.lastName,
+            email: this.email,
+            password: this.password,
+          });
+  
+          Swal.fire({
+            title: 'Sukces!',
+            text: 'Rejestracja przebiegła pomyślnie.',
+            icon: 'success',
+            confirmButtonText: 'OK',
+          }).then(() => {
+            this.switchToLogin();
+          });
+        } catch (error) {
+          Swal.fire({
+            title: 'Błąd!',
+            text: 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+          });
         }
-    }
-};
-</script>
+      },
+      switchToLogin() {
+        this.$emit('switch-form');
+      },
+      togglePasswordVisibility() {
+        this.showPassword = !this.showPassword;
+      },
+    },
+  };
+  </script>  
 
 <style lang="scss" scoped>
 .title {

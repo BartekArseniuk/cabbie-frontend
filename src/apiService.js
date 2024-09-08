@@ -1,11 +1,9 @@
 import axios from 'axios';
 
-let csrfToken = '';
-
 async function fetchCsrfToken() {
     try {
         const response = await axios.get('http://localhost:8000/csrf-token', { withCredentials: true });
-        csrfToken = response.data.csrfToken;
+        return response.data.csrfToken;
     } catch (error) {
         console.error('Error fetching CSRF token:', error);
         throw error;
@@ -22,7 +20,7 @@ const apiService = axios.create({
 
 apiService.interceptors.request.use(async (config) => {
     try {
-        await fetchCsrfToken();
+        const csrfToken = await fetchCsrfToken();
         if (csrfToken) {
             config.headers['X-CSRF-TOKEN'] = csrfToken;
         }
@@ -39,7 +37,7 @@ apiService.interceptors.response.use(response => {
 }, async (error) => {
     if (error.response && error.response.status === 419) {
         try {
-            await fetchCsrfToken();
+            const csrfToken = await fetchCsrfToken();
             error.config.headers['X-CSRF-TOKEN'] = csrfToken;
             return apiService.request(error.config);
         } catch (tokenError) {
