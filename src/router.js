@@ -5,6 +5,7 @@ import AboutUsPage from './components/Views/AboutUs/AboutUsPage.vue';
 import BlogPage from './components/Views/Blog/BlogPage.vue';
 import ContactPage from './components/Views/ContactPage/ContactPage.vue';
 import ProfilePage from './components/Views/Profile/ProfilePage.vue';
+import SurveyPage from './components/Views/Profile/SurveyPage.vue';
 
 const routes = [
   {
@@ -53,6 +54,14 @@ const routes = [
     component: ProfilePage,
     meta: {
       title: 'Cabbie - Profil użytkownika'
+    }
+  },
+  {
+    path: '/survey',
+    name: 'Survey',
+    component: SurveyPage,
+    meta: {
+      title: 'Cabbie - Formularz początkowy'
     }
   },
 ];
