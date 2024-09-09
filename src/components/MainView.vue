@@ -24,8 +24,8 @@
     </div>
 
     <div class="content">
-        <!-- <router-view /> -->
-         <SurveyPage />
+        <!-- <SurveyPage /> -->
+        <router-view />
     </div>
 
     <footer>
@@ -44,13 +44,13 @@
         <p>WSZELKIE PRAWA AUTORSKIE ZASTRZEŻONE - CABBIE 2024</p>
     </div>
 
-    <!-- <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" /> -->
+    <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" />
 </div>
 </template>
 
 <script>
-// import ModalForm from './Views/LoginRegister/ModalForm.vue';
-import SurveyPage from './Views/Profile/SurveyPage.vue';
+import ModalForm from './Views/LoginRegister/ModalForm.vue';
+//import SurveyPage from './Views/Profile/SurveyPage.vue';
 import apiService from '@/apiService';
 import Swal from 'sweetalert2';
 import {
@@ -60,8 +60,8 @@ import {
 
 export default {
     components: {
-        // ModalForm
-        SurveyPage
+        ModalForm
+        //SurveyPage
     },
     data() {
         return {

@@ -45,14 +45,27 @@ export default {
                 localStorage.setItem('authToken', response.data.token);
                 this.$store.dispatch('login', response.data.token);
 
-                Swal.fire({
-                    title: 'Sukces!',
-                    text: 'Logowanie przebiegło pomyślnie.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                }).then(() => {
-                    this.$emit('login');
-                });
+                // Check if this is the first login
+                if (response.data.firstLogin) {
+                    Swal.fire({
+                        title: 'Witamy!',
+                        text: 'Zalogowano pomyślnie. Zostaniesz przekierowany do formularza początkowego.',
+                        icon: 'info',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        this.$emit('login');
+                        this.$router.push({ name: 'Survey' });
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Sukces!',
+                        text: 'Logowanie przebiegło pomyślnie.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        this.$emit('login');
+                    });
+                }
             } catch (error) {
                 Swal.fire({
                     title: 'Błąd!',
