@@ -12,9 +12,12 @@
             <div v-if="isAuthenticated">
                 <button class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
                 <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
-                    <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
-                        {{ menuItem }}
-                    </button>
+                    <template v-if="getFirstLogin">
+                        <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
+                            {{ menuItem }}
+                        </button>
+                    </template>
+                    <button @click="goToSurvey">ANKIETA</button>
                     <button @click="handleLogout">WYLOGUJ</button>
                 </div>
                 <button class="mobile-logout-button" v-if="isMobile" @click="handleLogout">WYLOGUJ</button>
@@ -24,7 +27,6 @@
     </div>
 
     <div class="content">
-        <!-- <SurveyPage /> -->
         <router-view />
     </div>
 
@@ -50,18 +52,12 @@
 
 <script>
 import ModalForm from './Views/LoginRegister/ModalForm.vue';
-//import SurveyPage from './Views/Profile/SurveyPage.vue';
-import apiService from '@/apiService';
 import Swal from 'sweetalert2';
-import {
-    mapGetters,
-    mapActions
-} from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
     components: {
         ModalForm
-        //SurveyPage
     },
     data() {
         return {
@@ -101,7 +97,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['isAuthenticated'])
+        ...mapGetters(['isAuthenticated', 'getFirstLogin'])
     },
     methods: {
         ...mapActions(['logout']),
@@ -137,6 +133,9 @@ export default {
                 this.navigateTo('Profile');
             }
         },
+        goToSurvey() {
+            this.navigateTo('Survey');
+        },
         openLoginModal() {
             this.isLoginModalVisible = true;
         },
@@ -145,8 +144,6 @@ export default {
         },
         async handleLogout() {
             try {
-                await apiService.post('/logout');
-                localStorage.removeItem('authToken');
                 this.$store.dispatch('logout');
 
                 Swal.fire({

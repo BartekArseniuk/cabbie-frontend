@@ -57,10 +57,9 @@
     </div>
   </template>
   
-  <script>
+<script>
   import Swal from 'sweetalert2';
-  import apiService from '@/apiService';
-  
+
   export default {
     data() {
       return {
@@ -74,13 +73,13 @@
     methods: {
       async register() {
         try {
-          await apiService.post('/register', {
+          await this.$store.dispatch('register', {
             first_name: this.firstName,
             last_name: this.lastName,
             email: this.email,
             password: this.password,
           });
-  
+
           Swal.fire({
             title: 'Sukces!',
             text: 'Rejestracja przebiegła pomyślnie.',
@@ -90,12 +89,22 @@
             this.switchToLogin();
           });
         } catch (error) {
-          Swal.fire({
-            title: 'Błąd!',
-            text: 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
-            icon: 'error',
-            confirmButtonText: 'OK',
-          });
+          if (error.response && error.response.data) {
+            console.error('Błąd rejestracji:', error.response.data);
+            Swal.fire({
+              title: 'Błąd!',
+              text: error.response.data.message || 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+          } else {
+            Swal.fire({
+              title: 'Błąd!',
+              text: 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
+              icon: 'error',
+              confirmButtonText: 'OK',
+            });
+          }
         }
       },
       switchToLogin() {
@@ -106,7 +115,7 @@
       },
     },
   };
-  </script>  
+</script>
 
 <style lang="scss" scoped>
 .title {

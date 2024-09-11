@@ -6,6 +6,7 @@ export default createStore({
     isAuthenticated: !!localStorage.getItem('authToken'),
     user: null,
     userId: localStorage.getItem('userId') || null,
+    firstLogin: false,
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
@@ -18,14 +19,36 @@ export default createStore({
       state.userId = id;
       localStorage.setItem('userId', id);
     },
+    setFirstLogin(state, status) {
+      state.firstLogin = status;
+    },
   },
   actions: {
-    login({ commit }, { token, userId }) {
-      localStorage.setItem('authToken', token);
-      commit('SET_AUTHENTICATED', true);
-      commit('setUserId', userId);
+    async register({ commit }, { first_name, last_name, email, password }) {
+      try {
+        const response = await apiService.post('/register', { first_name, last_name, email, password });
+        commit('SET_AUTHENTICATED', false);
+        return response.data;
+      } catch (error) {
+        throw new Error('Register failed');
+      }
     },
-    logout({ commit }) {
+    async login({ commit }, { email, password }) {
+      try {
+        const response = await apiService.post('/login', { email, password });
+        const { token, userId, firstLogin } = response.data;
+
+        localStorage.setItem('authToken', token);
+        commit('SET_AUTHENTICATED', true);
+        commit('setUserId', userId);
+        commit('setFirstLogin', firstLogin);
+
+      } catch (error) {
+        throw new Error('Login failed');
+      }
+    },
+    async logout({ commit }) {
+      await apiService.post('/logout');
       localStorage.removeItem('authToken');
       localStorage.removeItem('userId');
       commit('SET_AUTHENTICATED', false);
@@ -50,5 +73,6 @@ export default createStore({
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,
+    getFirstLogin: state => state.firstLogin,
   },
 });
