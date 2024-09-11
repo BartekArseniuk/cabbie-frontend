@@ -42,11 +42,18 @@ export default {
                     password: this.password,
                 });
 
-                localStorage.setItem('authToken', response.data.token);
-                this.$store.dispatch('login', response.data.token);
+                // Extract token and userId from response
+                const { token, userId, firstLogin } = response.data;
+
+                // Store token and userId in localStorage
+                localStorage.setItem('authToken', token);
+                localStorage.setItem('userId', userId);
+
+                // Dispatch Vuex action to store the token and userId
+                this.$store.dispatch('login', { token, userId });
 
                 // Check if this is the first login
-                if (response.data.firstLogin) {
+                if (firstLogin) {
                     Swal.fire({
                         title: 'Witamy!',
                         text: 'Zalogowano pomyślnie. Zostaniesz przekierowany do formularza początkowego.',

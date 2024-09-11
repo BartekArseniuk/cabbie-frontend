@@ -1,26 +1,25 @@
 <template>
-<div class="driver-details">
-    <p class="title">Dane kierowcy</p>
-    <div class="input-row">
-        <input type="text" placeholder="IMIĘ" class="input-field" />
-        <input type="text" placeholder="NAZWISKO" class="input-field" />
-    </div>
-    <div class="input-row">
-        <input type="text" placeholder="E-MAIL" class="input-field" />
-        <input type="text" placeholder="NR TELEFONU" class="input-field" />
-    </div>
-    <div class="input-row single">
-        <input type="text" placeholder="NR PESEL" class="input-field pesel" />
-    </div>
-    <div class="input-row last-row">
-        <input type="text" placeholder="NAZWA BANKU" class="input-field" />
-        <input type="text" placeholder="NR KONTA BANKU" class="input-field" />
-    </div>
-    <div class="button-container">
-        <button class="edit">EDYTUJ</button>
-    </div>
-
-    <p class="second-title">Dokumenty</p>
+    <div class="driver-details">
+      <p class="title">Dane kierowcy</p>
+      <div class="input-row">
+        <input type="text" placeholder="IMIĘ" v-model="user.first_name" class="input-field" />
+        <input type="text" placeholder="NAZWISKO" v-model="user.last_name" class="input-field" />
+      </div>
+      <div class="input-row">
+        <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" />
+        <input type="text" placeholder="NR TELEFONU" v-model="user.phone_number" class="input-field" />
+      </div>
+      <div class="input-row single">
+        <input type="text" placeholder="NR PESEL" v-model="user.pesel" class="input-field pesel" />
+      </div>
+      <div class="input-row last-row">
+        <input type="text" placeholder="NAZWA BANKU" v-model="user.bank_name" class="input-field" />
+        <input type="text" placeholder="NR KONTA BANKU" v-model="user.bank_account_number" class="input-field" />
+      </div>
+      <div class="button-container">
+        <button class="edit" @click="updateUser">EDYTUJ</button>
+      </div>
+      <p class="second-title">Dokumenty</p>
     <div class="documents">
         <p class="subtitle">Do wgrania</p>
         <ul class="document-list">
@@ -30,10 +29,33 @@
             <li><a href="#link1" target="_blank">Umowa Zlecenie + Kwestionariusze do wypełnienia</a></li>
             <li><a href="#link2" target="_blank">Umowa Najmu</a></li>
         </ul>
+     </div>
     </div>
-</div>
-</template>
-
+  </template>
+  
+  <script>
+  import { mapGetters, mapActions } from 'vuex';
+  
+  export default {
+    computed: {
+      ...mapGetters(['getUser']),
+      user() {
+        return this.getUser || {};
+      },
+    },
+    methods: {
+      ...mapActions(['fetchUser']),
+      updateUser() {
+        // Logic to update user goes here
+        console.log('Update user:', this.user);
+      },
+    },
+    mounted() {
+      this.fetchUser(); // Fetch user data when the component mounts
+    },
+  };
+  </script>
+  
 <style lang="scss" scoped>
 .title,
 .second-title,
@@ -109,6 +131,7 @@
 
 .documents {
     margin-left: 30px;
+    margin-bottom: 50px;
 }
 
 .subtitle {
