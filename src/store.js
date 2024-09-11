@@ -32,10 +32,18 @@ export default createStore({
     },
     async fetchUser({ commit, state }) {
       try {
-        const response = await apiService.get(`http://localhost:8000/users/${state.userId}`);
+        const response = await apiService.get(`users/${state.userId}`);
         commit('setUser', response.data);
       } catch (error) {
         console.error('Error fetching user:', error);
+      }
+    },
+    async updateUser({ dispatch }, user) {
+      try {
+        await apiService.put(`users/${user.id}`, user);
+        await dispatch('fetchUser');
+      } catch (error) {
+        console.error('Error updating user:', error);
       }
     },
   },
