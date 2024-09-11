@@ -218,7 +218,7 @@ body {
     padding: 0 20px;
     height: 80px;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
-    z-index: 1;
+    z-index: 2;
 }
 
 .hamburger {
@@ -234,6 +234,7 @@ body {
 .nav {
     display: flex;
     gap: 20px;
+    z-index: 2;
 }
 
 .nav button {
