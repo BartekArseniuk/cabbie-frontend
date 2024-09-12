@@ -6,7 +6,7 @@ export default createStore({
     isAuthenticated: !!localStorage.getItem('authToken'),
     user: null,
     userId: localStorage.getItem('userId') || null,
-    firstLogin: false,
+    firstLogin: true,
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
@@ -33,25 +33,37 @@ export default createStore({
         throw new Error('Register failed');
       }
     },
-    async login({ commit }, { email, password }) {
+    async login({ commit, dispatch }, { email, password }) { 
       try {
         const response = await apiService.post('/login', { email, password });
-        const { token, userId, firstLogin } = response.data;
+        const { token, userId } = response.data;
 
         localStorage.setItem('authToken', token);
         commit('SET_AUTHENTICATED', true);
         commit('setUserId', userId);
-        commit('setFirstLogin', firstLogin);
-
+        await dispatch('fetchFirstLoginStatus'); 
       } catch (error) {
         throw new Error('Login failed');
       }
     },
     async logout({ commit }) {
-      await apiService.post('/logout');
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userId');
-      commit('SET_AUTHENTICATED', false);
+      try {
+        await apiService.post('/logout');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userId');
+        commit('SET_AUTHENTICATED', false);
+        commit('setFirstLogin', null);
+      } catch (error) {
+        console.error('Logout failed', error);
+      }
+    },
+    async fetchFirstLoginStatus({ commit }) {
+      try {
+        const response = await apiService.get('/first-login-status');
+        commit('setFirstLogin', response.data.is_first_login);
+      } catch (error) {
+        console.error('Error fetching firstLogin status:', error);
+      }
     },
     async fetchUser({ commit, state }) {
       try {

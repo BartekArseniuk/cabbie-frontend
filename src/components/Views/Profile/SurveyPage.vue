@@ -63,6 +63,7 @@
           </div>
         </div>
         <button class="send" @click="submitSurvey">WYŚLIJ</button>
+        <button class="send" @click="skipSurvey">POMIŃ</button>
       </div>
     </div>
   </template>
@@ -81,7 +82,7 @@
         selectedStartTime: null,
         weeklyHours: '',
         selectedSource: null,
-        isActive: null,  // Track the active button
+        isActive: null,
       };
     },
   
@@ -136,7 +137,7 @@
           foundVia: this.selectedSource,
         };
   
-        console.log(surveyAnswers); // Dodaj to, aby zobaczyć, co jest wysyłane
+        console.log(surveyAnswers);
   
         try {
           await apiService.post('/submit-survey', surveyAnswers);
@@ -146,7 +147,8 @@
             icon: 'success',
             confirmButtonText: 'OK'
           }).then(() => {
-            this.$router.push({ name: 'Home' }); // lub inna trasa
+            this.$store.dispatch('fetchFirstLoginStatus');
+            this.$router.push({ name: 'Home' });
           });
         } catch (error) {
           Swal.fire({
@@ -156,7 +158,10 @@
             confirmButtonText: 'OK'
           });
         }
-      }
+      },
+      skipSurvey () {
+        this.$router.push({ name: 'Home' });
+      },
     }
   };
   </script>
