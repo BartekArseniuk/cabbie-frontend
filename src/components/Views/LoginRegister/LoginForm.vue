@@ -70,10 +70,10 @@
                 }
             },
             remindPassword() {
-                // Handle remind password logic here
+                this.$emit('switch-form', 'RemindPassword');
             },
             switchToRegister() {
-                this.$emit('switch-form');
+                this.$emit('switch-form', 'RegisterForm');
             },
         },
     };

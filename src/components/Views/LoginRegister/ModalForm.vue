@@ -13,6 +13,7 @@
 <script>
 import LoginForm from './LoginForm.vue';
 import RegisterForm from './RegisterForm.vue';
+import RemindPassword from './RemindPasswordForm.vue';
 
 export default {
     props: {
@@ -36,12 +37,27 @@ export default {
     },
     computed: {
         currentForm() {
-            return this.isLogin ? LoginForm : RegisterForm;
+            if (this.isLogin) {
+                return LoginForm;
+            } else if (this.isRegister) {
+                return RegisterForm;
+            } else {
+                return RemindPassword;
+            }
         },
     },
     methods: {
-        toggleForm() {
-            this.isLogin = !this.isLogin;
+        toggleForm(formName) {
+            if (formName === 'RegisterForm') {
+                this.isLogin = false;
+                this.isRegister = true;
+            } else if (formName === 'RemindPassword') {
+                this.isLogin = false;
+                this.isRegister = false;
+            } else {
+                this.isLogin = true;
+                this.isRegister = false;
+            }
         },
         handleLogin(credentials) {
             console.log('Logging in with', credentials);
@@ -51,10 +67,15 @@ export default {
             console.log('Registering with', credentials);
             this.closeModal();
         },
+        handleRemindPassword() {
+            console.log('Handling password reminder');
+            this.closeModal();
+        },
         closeModal() {
             if (!this.closingModal) {
                 this.closingModal = true;
                 this.isLogin = true;
+                this.isRegister = false;
                 this.$emit('close');
             }
         },
