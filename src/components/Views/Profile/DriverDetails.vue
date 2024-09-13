@@ -7,7 +7,7 @@
     </div>
     <div class="input-row">
         <div class="input-container">
-            <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" :readonly="!isEditing" />
+            <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" readonly />
             <i v-if="dataLoaded && !isEmailVerified" class="warning-icon fas fa-circle-exclamation" title="Nie zweryfikowano maila"></i>
             <i v-if="dataLoaded && isEmailVerified" class="verified-icon fas fa-check-circle" title="E-mail zweryfikowany"></i>
         </div>
@@ -145,7 +145,7 @@ export default {
     box-sizing: border-box;
     background-color: $secondary-color;
     color: $placeholder-color;
-    transition: border 0.3s ease;
+    transition: border 0.3s ease, background-color 0.3s ease, color 0.3s ease;
     outline: none;
     z-index: 1;
 }
