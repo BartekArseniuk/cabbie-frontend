@@ -125,6 +125,11 @@
     font-family: 'Roboto-Light', 'sans-serif';
 }
 
+form {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
 .input-group {
     margin-bottom: 10px;
     display: flex;
@@ -154,8 +159,9 @@
 .buttons-group {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 70%;
     margin: 0 auto;
+    margin-top: 20px;
 }
 
 .button {
@@ -194,5 +200,21 @@
 .input:hover,
 .input:focus {
     border: 2px solid $primary-color;
+}
+
+@media (max-width: 768px) {
+  form {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .input-group {
+    flex-direction: column;
+    max-width: 75%;
+  }
+
+  .password-toggle {
+    right: -50px;
+  }
 }
 </style>

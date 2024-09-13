@@ -151,6 +151,7 @@
   .toggle-sidebar-btn.collapsed {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
+    z-index: 1;
   }
   
   .toggle-sidebar-btn.expanded {
