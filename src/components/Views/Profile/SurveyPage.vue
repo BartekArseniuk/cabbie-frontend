@@ -1,170 +1,175 @@
 <template>
-    <div class="survey-page">
-      <p class="title">Witaj w załodze Cabbie!</p>
-      <p class="second-title">Prosimy o wypełnienie formularza początkowego.</p>
-  
-      <div class="survey">
+<div class="survey-page">
+    <p class="title">Witaj w załodze Cabbie!</p>
+    <p class="second-title">Prosimy o wypełnienie formularza początkowego.</p>
+
+    <div class="survey">
         <div class="question-container" id="first-question-container">
-          <p class="question">Czy jesteś aktywnym kierowcą aplikacji Taxi?</p>
-          <div class="button-group">
-            <button class="answer-button" :class="{ active: selectedDriverOption === 'Tak' }" @click="setDriverOption('Tak')">Tak</button>
-            <button class="answer-button" :class="{ active: selectedDriverOption === 'Nie' }" @click="setDriverOption('Nie')">Nie</button>
-          </div>
-        </div>
-  
-        <div class="question-container" id="car-question-container">
-          <p class="question">Samochód:</p>
-          <div class="button-group">
-            <button class="answer-button" :class="{ active: selectedCarType === 'Własny' }" @click="setCarType('Własny')">Własny</button>
-            <button class="answer-button" :class="{ active: selectedCarType === 'Chcę wynająć' }" @click="setCarType('Chcę wynająć')">Chcę wynająć</button>
-          </div>
-          <div class="additional-question" id="taxi-question">
-            <p class="question">Czy posiada wpis TAXI w dowodzie?</p>
+            <p class="question">Czy jesteś aktywnym kierowcą aplikacji Taxi?</p>
             <div class="button-group">
-              <button class="additional-button" :class="{ active: selectedTaxiRegistry === 'Tak' }" @click="setTaxiRegistry('Tak')">Tak</button>
-              <button class="additional-button" :class="{ active: selectedTaxiRegistry === 'Nie' }" @click="setTaxiRegistry('Nie')">Nie</button>
+                <button class="answer-button" :class="{ active: selectedDriverOption === 'Tak' }" @click="setDriverOption('Tak')">Tak</button>
+                <button class="answer-button" :class="{ active: selectedDriverOption === 'Nie' }" @click="setDriverOption('Nie')">Nie</button>
             </div>
-          </div>
         </div>
-  
-        <div class="question-container">
-          <p class="question">Jaki jest Twój obecny status zawodowy?</p>
-          <div class="button-group">
-            <button class="answer-button" :class="{ active: selectedJobStatus === 'Student' }" @click="setJobStatus('Student')">Student</button>
-            <button class="answer-button" :class="{ active: selectedJobStatus === 'Inna umowa zlecenie' }" @click="setJobStatus('Inna umowa zlecenie')">Inna umowa zlecenie</button>
-            <button class="answer-button" :class="{ active: selectedJobStatus === 'Umowa o pracę' }" @click="setJobStatus('Umowa o pracę')">Umowa o pracę</button>
-            <button class="answer-button" :class="{ active: selectedJobStatus === 'B2B' }" @click="setJobStatus('B2B')">B2B</button>
-            <button class="answer-button" :class="{ active: selectedJobStatus === 'Bezrobotny/a' }" @click="setJobStatus('Bezrobotny/a')">Bezrobotny/a</button>
-          </div>
+
+        <div class="question-container" id="car-question-container">
+            <p class="question">Samochód:</p>
+            <div class="button-group">
+                <button class="answer-button" :class="{ active: selectedCarType === 'Własny' }" @click="setCarType('Własny')">Własny</button>
+                <div class="additional-question" id="taxi-question">
+                    <p class="question">Czy posiada wpis TAXI w dowodzie?</p>
+                    <div class="button-group">
+                        <button class="additional-button" :class="{ active: selectedTaxiRegistry === 'Tak' }" @click="setTaxiRegistry('Tak')">Tak</button>
+                        <button class="additional-button" :class="{ active: selectedTaxiRegistry === 'Nie' }" @click="setTaxiRegistry('Nie')">Nie</button>
+                    </div>
+                </div>
+                <button class="answer-button" :class="{ active: selectedCarType === 'Chcę wynająć' }" @click="setCarType('Chcę wynająć')">Chcę wynająć</button>
+            </div>
         </div>
-  
+
         <div class="question-container">
-          <p class="question">Jak szybko chcesz rozpocząć pracę?</p>
-          <div class="button-group">
-            <button class="answer-button" :class="{ active: selectedStartTime === 'Jak najszybciej' }" @click="setStartTime('Jak najszybciej')">Jak najszybciej</button>
-            <button class="answer-button" :class="{ active: selectedStartTime === 'Do dwóch tygodni' }" @click="setStartTime('Do dwóch tygodni')">Do dwóch tygodni</button>
-            <button class="answer-button" :class="{ active: selectedStartTime === 'Do miesiąca' }" @click="setStartTime('Do miesiąca')">Do miesiąca</button>
-          </div>
+            <p class="question">Jaki jest Twój obecny status zawodowy?</p>
+            <div class="button-group">
+                <button class="answer-button" :class="{ active: selectedJobStatus === 'Student' }" @click="setJobStatus('Student')">Student</button>
+                <button class="answer-button" :class="{ active: selectedJobStatus === 'Inna umowa zlecenie' }" @click="setJobStatus('Inna umowa zlecenie')">Inna umowa zlecenie</button>
+                <button class="answer-button" :class="{ active: selectedJobStatus === 'Umowa o pracę' }" @click="setJobStatus('Umowa o pracę')">Umowa o pracę</button>
+                <button class="answer-button" :class="{ active: selectedJobStatus === 'B2B' }" @click="setJobStatus('B2B')">B2B</button>
+                <button class="answer-button" :class="{ active: selectedJobStatus === 'Bezrobotny/a' }" @click="setJobStatus('Bezrobotny/a')">Bezrobotny/a</button>
+            </div>
         </div>
-  
+
         <div class="question-container">
-          <p class="question">Ile czasu tygodniowo chcesz przeznaczyć na pracę jako kierowca Taxi?</p>
-          <input type="text" class="text-input" v-model="weeklyHours" placeholder="Wpisz przedział godzinowy">
+            <p class="question">Jak szybko chcesz rozpocząć pracę?</p>
+            <div class="button-group">
+                <button class="answer-button" :class="{ active: selectedStartTime === 'Jak najszybciej' }" @click="setStartTime('Jak najszybciej')">Jak najszybciej</button>
+                <button class="answer-button" :class="{ active: selectedStartTime === 'Do dwóch tygodni' }" @click="setStartTime('Do dwóch tygodni')">Do dwóch tygodni</button>
+                <button class="answer-button" :class="{ active: selectedStartTime === 'Do miesiąca' }" @click="setStartTime('Do miesiąca')">Do miesiąca</button>
+            </div>
         </div>
-  
+
         <div class="question-container">
-          <p class="question">Skąd dowiedziałeś się o Cabbie?</p>
-          <div class="button-group">
-            <button class="answer-button" :class="{ active: selectedSource === 'Facebook' }" @click="setSource('Facebook')">Facebook</button>
-            <button class="answer-button" :class="{ active: selectedSource === 'Instagram' }" @click="setSource('Instagram')">Instagram</button>
-            <button class="answer-button" :class="{ active: selectedSource === 'Google' }" @click="setSource('Google')">Google</button>
-            <button class="answer-button" :class="{ active: selectedSource === 'Z polecenia' }" @click="setSource('Z polecenia')">Z polecenia</button>
-            <button class="answer-button" :class="{ active: selectedSource === 'Inne' }" @click="setSource('Inne')">Inne</button>
-          </div>
+            <p class="question">Ile czasu tygodniowo chcesz przeznaczyć na pracę jako kierowca Taxi?</p>
+            <input type="text" class="text-input" v-model="weeklyHours" placeholder="Wpisz przedział godzinowy">
+        </div>
+
+        <div class="question-container">
+            <p class="question">Skąd dowiedziałeś się o Cabbie?</p>
+            <div class="button-group">
+                <button class="answer-button" :class="{ active: selectedSource === 'Facebook' }" @click="setSource('Facebook')">Facebook</button>
+                <button class="answer-button" :class="{ active: selectedSource === 'Instagram' }" @click="setSource('Instagram')">Instagram</button>
+                <button class="answer-button" :class="{ active: selectedSource === 'Google' }" @click="setSource('Google')">Google</button>
+                <button class="answer-button" :class="{ active: selectedSource === 'Z polecenia' }" @click="setSource('Z polecenia')">Z polecenia</button>
+                <button class="answer-button" :class="{ active: selectedSource === 'Inne' }" @click="setSource('Inne')">Inne</button>
+            </div>
         </div>
         <button class="send" @click="submitSurvey">WYŚLIJ</button>
         <button class="send" @click="skipSurvey">POMIŃ</button>
-      </div>
     </div>
-  </template>
+</div>
+</template>
+
   
-  <script>
-  import Swal from 'sweetalert2';
-  import apiService from '@/apiService';
-  
-  export default {
+<script>
+import Swal from 'sweetalert2';
+import apiService from '@/apiService';
+
+export default {
     data() {
-      return {
-        selectedDriverOption: null,
-        selectedCarType: null,
-        selectedTaxiRegistry: null,
-        selectedJobStatus: null,
-        selectedStartTime: null,
-        weeklyHours: '',
-        selectedSource: null,
-        isActive: null,
-      };
-    },
-  
-    methods: {
-      setDriverOption(option) {
-        this.selectedDriverOption = option;
-      },
-  
-      setCarType(type) {
-        this.selectedCarType = type;
-        if (type === 'Własny') {
-          document.getElementById('taxi-question').style.display = 'flex';
-          setTimeout(() => {
-            document.getElementById('taxi-question').classList.add('expand');
-          }, 10);
-          this.isActive = null;
-        } else {
-          const taxiQuestion = document.getElementById('taxi-question');
-          taxiQuestion.classList.remove('expand');
-          setTimeout(() => {
-            taxiQuestion.style.display = 'none';
-          }, 300);
-          this.selectedTaxiRegistry = null;
-          this.isActive = null;
-        }
-      },
-  
-      setTaxiRegistry(option) {
-        this.selectedTaxiRegistry = option;
-      },
-  
-      setJobStatus(status) {
-        this.selectedJobStatus = status;
-      },
-  
-      setStartTime(time) {
-        this.selectedStartTime = time;
-      },
-  
-      setSource(source) {
-        this.selectedSource = source;
-      },
-  
-      async submitSurvey() {
-        const surveyAnswers = {
-          isDriver: this.selectedDriverOption,
-          carType: this.selectedCarType,
-          taxiRegistry: this.selectedTaxiRegistry,
-          jobStatus: this.selectedJobStatus,
-          startTime: this.selectedStartTime,
-          weeklyHours: this.weeklyHours,
-          foundVia: this.selectedSource,
+        return {
+            selectedDriverOption: null,
+            selectedCarType: null,
+            selectedTaxiRegistry: null,
+            selectedJobStatus: null,
+            selectedStartTime: null,
+            weeklyHours: '',
+            selectedSource: null,
+            isActive: null,
         };
-  
-        console.log(surveyAnswers);
-  
-        try {
-          await apiService.post('/submit-survey', surveyAnswers);
-          Swal.fire({
-            title: 'Dziękujemy!',
-            text: 'Twoje odpowiedzi zostały zapisane.',
-            icon: 'success',
-            confirmButtonText: 'OK'
-          }).then(() => {
-            this.$store.dispatch('fetchFirstLoginStatus');
-            this.$router.push({ name: 'Home' });
-          });
-        } catch (error) {
-          Swal.fire({
-            title: 'Błąd!',
-            text: 'Wystąpił problem podczas zapisywania odpowiedzi.',
-            icon: 'error',
-            confirmButtonText: 'OK'
-          });
-        }
-      },
-      skipSurvey () {
-        this.$router.push({ name: 'Home' });
-      },
+    },
+
+    methods: {
+        setDriverOption(option) {
+            this.selectedDriverOption = option;
+        },
+
+        setCarType(type) {
+            this.selectedCarType = type;
+            if (type === 'Własny') {
+                document.getElementById('taxi-question').style.display = 'flex';
+                setTimeout(() => {
+                    document.getElementById('taxi-question').classList.add('expand');
+                }, 10);
+                this.isActive = null;
+            } else {
+                const taxiQuestion = document.getElementById('taxi-question');
+                taxiQuestion.classList.remove('expand');
+                setTimeout(() => {
+                    taxiQuestion.style.display = 'none';
+                }, 300);
+                this.selectedTaxiRegistry = null;
+                this.isActive = null;
+            }
+        },
+
+        setTaxiRegistry(option) {
+            this.selectedTaxiRegistry = option;
+        },
+
+        setJobStatus(status) {
+            this.selectedJobStatus = status;
+        },
+
+        setStartTime(time) {
+            this.selectedStartTime = time;
+        },
+
+        setSource(source) {
+            this.selectedSource = source;
+        },
+
+        async submitSurvey() {
+            const surveyAnswers = {
+                isDriver: this.selectedDriverOption,
+                carType: this.selectedCarType,
+                taxiRegistry: this.selectedTaxiRegistry,
+                jobStatus: this.selectedJobStatus,
+                startTime: this.selectedStartTime,
+                weeklyHours: this.weeklyHours,
+                foundVia: this.selectedSource,
+            };
+
+            console.log(surveyAnswers);
+
+            try {
+                await apiService.post('/submit-survey', surveyAnswers);
+                Swal.fire({
+                    title: 'Dziękujemy!',
+                    text: 'Twoje odpowiedzi zostały zapisane.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    this.$store.dispatch('fetchFirstLoginStatus');
+                    this.$router.push({
+                        name: 'Home'
+                    });
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem podczas zapisywania odpowiedzi.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        },
+        skipSurvey() {
+            this.$router.push({
+                name: 'Home'
+            });
+        },
     }
-  };
-  </script>
+};
+</script>
 
 <style lang="scss" scoped>
 .title {

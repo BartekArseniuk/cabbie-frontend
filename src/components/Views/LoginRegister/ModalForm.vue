@@ -1,8 +1,10 @@
 <template>
-<transition name="fade" @before-enter="beforeEnter" @enter="enter" @leave="leave">
+<transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
     <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
         <div class="modal-content">
-            <component :is="currentForm" @login="handleLogin" @register="handleRegister" @switch-form="toggleForm" />
+            <transition @before-enter="beforeEnterForm" @enter="enterForm" @leave="leaveForm">
+                <component :is="currentForm" @login="handleLogin" @register="handleRegister" @switch-form="toggleForm" />
+            </transition>
         </div>
     </div>
 </transition>
@@ -22,7 +24,15 @@ export default {
     data() {
         return {
             isLogin: true,
+            closingModal: false,
         };
+    },
+    watch: {
+        isVisible(val) {
+            if (val) {
+                this.isLogin = true;
+            }
+        }
     },
     computed: {
         currentForm() {
@@ -33,25 +43,48 @@ export default {
         toggleForm() {
             this.isLogin = !this.isLogin;
         },
-        handleLogin() {
+        handleLogin(credentials) {
+            console.log('Logging in with', credentials);
             this.closeModal();
         },
-        handleRegister() {
+        handleRegister(credentials) {
+            console.log('Registering with', credentials);
             this.closeModal();
         },
         closeModal() {
-            this.$emit('close');
+            if (!this.closingModal) {
+                this.closingModal = true;
+                this.isLogin = true;
+                this.$emit('close');
+            }
         },
-        beforeEnter(el) {
+        beforeEnterOverlay(el) {
             el.style.opacity = 0;
         },
-        enter(el, done) {
+        enterOverlay(el, done) {
             el.offsetHeight;
             el.style.transition = 'opacity 0.3s ease';
             el.style.opacity = 1;
             done();
         },
-        leave(el, done) {
+        leaveOverlay(el, done) {
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = 0;
+            setTimeout(() => {
+                this.closingModal = false;
+                done();
+            }, 300);
+        },
+        beforeEnterForm(el) {
+            el.style.opacity = 0;
+        },
+        enterForm(el, done) {
+            el.offsetHeight;
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = 1;
+            done();
+        },
+        leaveForm(el, done) {
             el.style.transition = 'opacity 0.3s ease';
             el.style.opacity = 0;
             done();
@@ -85,15 +118,5 @@ export default {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.3s ease;
-}
-
-.fade-enter,
-.fade-leave-to {
-    opacity: 0;
 }
 </style>
