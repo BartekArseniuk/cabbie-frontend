@@ -1,86 +1,96 @@
 <template>
-<div class="profile-container">
-    <aside class="sidebar" :class="{ 'hidden': isMobile }">
+    <div class="profile-container">
+      <aside class="sidebar" :class="{ 'hidden': isMobile }">
         <button>DANE I DOKUMENTY</button>
-        <button>WIADOMOŚCI</button>
-        <button>PORTFEL</button>
-        <button>FAKTURY</button>
-        <button>USTAWIENIA</button>
-        <button>RYCZAŁT</button>
-    </aside>
-
-    <div v-if="isMobile" class="mobile-menu">
+        <button :class="{ 'disabled': !isEmailVerified }">WIADOMOŚCI</button>
+        <button :class="{ 'disabled': !isEmailVerified }">PORTFEL</button>
+        <button :class="{ 'disabled': !isEmailVerified }">FAKTURY</button>
+        <button :class="{ 'disabled': !isEmailVerified }">USTAWIENIA ROZLICZEŃ</button>
+        <button :class="{ 'disabled': !isEmailVerified }">RYCZAŁT</button>
+      </aside>
+  
+      <div v-if="isMobile" class="mobile-menu">
         <button class="toggle-sidebar-btn" :class="{ 'collapsed': !isSidebarOpen, 'expanded': isSidebarOpen }" @click="toggleSidebar">
-            <i :class="isSidebarOpen ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
+          <i :class="isSidebarOpen ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
         </button>
         <div class="mobile-menu-content" :class="{ 'open': isSidebarOpen }">
-            <button>DANE I DOKUMENTY</button>
-            <button>WIADOMOŚCI</button>
-            <button>PORTFEL</button>
-            <button>FAKTURY</button>
-            <button>USTAWIENIA</button>
-            <button>RYCZAŁT</button>
+          <button>DANE I DOKUMENTY</button>
+          <button :class="{ 'disabled': !isEmailVerified }">WIADOMOŚCI</button>
+          <button :class="{ 'disabled': !isEmailVerified }">PORTFEL</button>
+          <button :class="{ 'disabled': !isEmailVerified }">FAKTURY</button>
+          <button :class="{ 'disabled': !isEmailVerified }">USTAWIENIA ROZLICZEŃ</button>
+          <button :class="{ 'disabled': !isEmailVerified }">RYCZAŁT</button>
         </div>
         <div v-if="isSidebarOpen" class="overlay" @click="toggleSidebar"></div> <!-- Nakładka -->
-    </div>
-
-    <div class="driver-details-container">
-        <DriverDetails />
-    </div>
-</div>
-</template>
-
+      </div>
   
-<script>
-import DriverDetails from './DriverDetails.vue';
-
-export default {
+      <div class="driver-details-container">
+        <DriverDetails />
+      </div>
+    </div>
+  </template>
+  
+  <script>
+  import DriverDetails from './DriverDetails.vue';
+  import { mapGetters, mapActions } from 'vuex';
+  
+  export default {
     components: {
-        DriverDetails
+      DriverDetails
     },
     data() {
-        return {
-            isSidebarOpen: false,
-            isMobile: window.innerWidth <= 768
-        };
+      return {
+        isSidebarOpen: false,
+        isMobile: window.innerWidth <= 768,
+        isEmailVerified: false
+      };
+    },
+    computed: {
+      ...mapGetters(['getUser']),
+      user() {
+        return this.getUser || {};
+      }
     },
     methods: {
-        toggleSidebar() {
-            this.isSidebarOpen = !this.isSidebarOpen;
-        },
-        handleResize() {
-            this.isMobile = window.innerWidth <= 768;
-            if (!this.isMobile) {
-                this.isSidebarOpen = false;
-            }
-        },
-        handleClickOutside(event) {
-            const menu = this.$el.querySelector('.mobile-menu');
-            if (menu && !menu.contains(event.target) && this.isSidebarOpen) {
-                this.isSidebarOpen = false;
-            }
+      ...mapActions(['fetchUser', 'updateUser']),
+      toggleSidebar() {
+        this.isSidebarOpen = !this.isSidebarOpen;
+      },
+      handleResize() {
+        this.isMobile = window.innerWidth <= 768;
+        if (!this.isMobile) {
+          this.isSidebarOpen = false;
         }
+      },
+      handleClickOutside(event) {
+        const menu = this.$el.querySelector('.mobile-menu');
+        if (menu && !menu.contains(event.target) && this.isSidebarOpen) {
+          this.isSidebarOpen = false;
+        }
+      }
     },
-    mounted() {
-        window.addEventListener('resize', this.handleResize);
-        this.handleResize();
-        document.addEventListener('mousedown', this.handleClickOutside);
+    async mounted() {
+      window.addEventListener('resize', this.handleResize);
+      this.handleResize();
+      document.addEventListener('mousedown', this.handleClickOutside);
+      await this.fetchUser(); // Fetch user data
+      this.isEmailVerified = !!this.user.email_verified_at; // Set email verified status
     },
     beforeUnmount() {
-        window.removeEventListener('resize', this.handleResize);
-        document.removeEventListener('mousedown', this.handleClickOutside);
+      window.removeEventListener('resize', this.handleResize);
+      document.removeEventListener('mousedown', this.handleClickOutside);
     }
-};
-</script>
-
-<style lang="scss">
-.profile-container {
+  };
+  </script>
+  
+  <style lang="scss">
+  .profile-container {
     display: flex;
     height: auto;
     position: relative;
-}
-
-.sidebar {
+  }
+  
+  .sidebar {
     width: 200px;
     background-color: $secondary-color;
     padding: 20px;
@@ -89,17 +99,19 @@ export default {
     transition: transform 0.3s ease-in-out;
     position: relative;
     z-index: 0;
-}
-
-.sidebar.hidden {
+  }
+  
+  .sidebar.hidden {
     display: none;
-}
-
-.sidebar button {
+  }
+  
+  .sidebar button {
     display: block;
     width: 100%;
     padding: 15px;
     font-size: 16px;
+    white-space: nowrap;
+    border-radius: 15px;
     font-family: 'Roboto-Light', 'sans-serif';
     background-color: transparent;
     color: $title-light-font;
@@ -107,14 +119,19 @@ export default {
     cursor: pointer;
     text-align: left;
     transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.sidebar button:hover {
+  }
+  
+  .sidebar button.disabled {
+    color: $placeholder-color;
+    cursor: not-allowed;
+  }
+  
+  .sidebar button:hover:not(.disabled) {
     font-weight: 700;
     background-color: rgba(0, 0, 0, 0.1);
-}
-
-.toggle-sidebar-btn {
+  }
+  
+  .toggle-sidebar-btn {
     background-color: $secondary-color;
     border: none;
     font-size: 24px;
@@ -128,20 +145,20 @@ export default {
     left: 50%;
     transform: translateX(-50%);
     margin-top: 20px;
-    z-index: 1;
-}
-
-.toggle-sidebar-btn.collapsed {
+    z-index: 3;
+  }
+  
+  .toggle-sidebar-btn.collapsed {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-}
-
-.toggle-sidebar-btn.expanded {
+  }
+  
+  .toggle-sidebar-btn.expanded {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-}
-
-.mobile-menu-content {
+  }
+  
+  .mobile-menu-content {
     display: flex;
     flex-direction: column;
     background-color: $secondary-color;
@@ -151,20 +168,20 @@ export default {
     transform: translateX(-50%) scaleY(0);
     transform-origin: top;
     width: 80%;
-    z-index: 1;
+    z-index: 3;
     transition: transform 0.4s ease, opacity 0.4s ease;
     opacity: 0;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     align-items: center;
-}
-
-.mobile-menu-content.open {
+  }
+  
+  .mobile-menu-content.open {
     transform: translateX(-50%) scaleY(1);
     opacity: 1;
-}
-
-.mobile-menu-content button {
+  }
+  
+  .mobile-menu-content button {
     width: 100%;
     margin: 10px 0;
     padding: 15px;
@@ -176,35 +193,39 @@ export default {
     cursor: pointer;
     text-align: center;
     transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-.mobile-menu-content button:hover {
+  }
+  
+  .mobile-menu-content button.disabled {
+    color: $placeholder-color;
+    cursor: not-allowed;
+  }
+  
+  .mobile-menu-content button:hover:not(.disabled) {
     font-weight: 700;
-    background-color: rgba(0, 0, 0, 0.1);
     transform: scale(1.02);
-}
-
-@media (min-width: 769px) {
+  }
+  
+  @media (min-width: 769px) {
     .mobile-menu {
-        display: none;
+      display: none;
     }
-}
-
-.driver-details-container {
+  }
+  
+  .driver-details-container {
     margin-left: 100px;
     margin-right: 20px;
-}
-
-@media (max-width: 768px) {
+  }
+  
+  @media (max-width: 768px) {
     .driver-details-container {
-        margin-left: auto;
-        margin-right: auto;
-        width: 90%;
-        margin-top: 100px;
+      margin-left: auto;
+      margin-right: auto;
+      width: 90%;
+      margin-top: 100px;
     }
-}
-
-.overlay {
+  }
+  
+  .overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -212,11 +233,11 @@ export default {
     height: 100%;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
-    z-index: 0;
+    z-index: 2;
     display: none;
-}
-
-.mobile-menu .overlay {
+  }
+  
+  .mobile-menu .overlay {
     display: block;
-}
-</style>
+  }
+  </style>  

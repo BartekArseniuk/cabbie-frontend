@@ -6,7 +6,11 @@
         <input type="text" placeholder="NAZWISKO" v-model="user.last_name" class="input-field" :readonly="!isEditing" />
     </div>
     <div class="input-row">
-        <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" :readonly="!isEditing" />
+        <div class="input-container">
+            <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" :readonly="!isEditing" />
+            <i v-if="dataLoaded && !isEmailVerified" class="warning-icon fas fa-circle-exclamation" title="Nie zweryfikowano maila"></i>
+            <i v-if="dataLoaded && isEmailVerified" class="verified-icon fas fa-check-circle" title="E-mail zweryfikowany"></i>
+        </div>
         <input type="text" placeholder="NR TELEFONU" v-model="user.phone_number" class="input-field" :readonly="!isEditing" />
     </div>
     <div class="input-row single">
@@ -47,6 +51,7 @@ export default {
         return {
             isEditing: false,
             originalUser: {},
+            dataLoaded: false
         };
     },
     computed: {
@@ -54,6 +59,9 @@ export default {
         user() {
             return this.getUser || {};
         },
+        isEmailVerified() {
+            return !!this.user.email_verified_at;
+        }
     },
     methods: {
         ...mapActions(['fetchUser', 'updateUser']),
@@ -90,11 +98,12 @@ export default {
             this.isEditing = false;
         },
     },
-    mounted() {
-        this.fetchUser();
+    async mounted() {
+        await this.fetchUser();
+        this.dataLoaded = true;
     },
 };
-</script>  
+</script>
 
 <style lang="scss" scoped>
 .title,
@@ -122,6 +131,10 @@ export default {
     justify-content: left;
 }
 
+.input-container {
+    position: relative;
+}
+
 .input-field {
     padding: 10px;
     width: 400px;
@@ -134,6 +147,7 @@ export default {
     color: $placeholder-color;
     transition: border 0.3s ease;
     outline: none;
+    z-index: 1;
 }
 
 .input-field[readonly] {
@@ -154,7 +168,50 @@ export default {
     max-width: 100%;
 }
 
-.edit {
+.warning-icon,
+.verified-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.warning-icon {
+    color: $warning-color;
+}
+
+.verified-icon {
+    color: $success-color;
+}
+
+.warning-icon::after,
+.verified-icon::after {
+    content: attr(title);
+    position: absolute;
+    right: 100%;
+    top: 50%;
+    transform: translateY(-50%) translateX(-10px);
+    padding: 5px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-family: 'Roboto-Extra-Light', sans-serif;
+    font-size: 15px;
+    display: none;
+}
+
+.warning-icon:hover::after,
+.verified-icon:hover::after {
+    display: block;
+}
+
+.edit,
+.save,
+.cancel {
     background-color: $primary-color;
     color: $white;
     border: 2px solid $primary-color;
@@ -167,25 +224,7 @@ export default {
     transition: all 0.3s ease;
 }
 
-.edit:hover {
-    color: $tertiary-color;
-    background-color: $primary-color;
-    border: 2px solid $tertiary-color;
-}
-
-.save {
-    background-color: $primary-color;
-    color: $white;
-    border: 2px solid $primary-color;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 18px;
-    padding: 10px 20px;
-    margin-top: 50px;
-    transition: all 0.3s ease;
-}
-
+.edit:hover,
 .save:hover {
     color: $tertiary-color;
     background-color: $primary-color;
@@ -194,16 +233,8 @@ export default {
 
 .cancel {
     background-color: $quaternary-color;
-    color: $white;
     border: 2px solid $quaternary-color;
-    border-radius: 8px;
-    cursor: pointer;
-    font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 18px;
-    padding: 10px 20px;
-    margin-top: 50px;
     margin-left: 10px;
-    transition: all 0.3s ease;
 }
 
 .cancel:hover {
@@ -267,7 +298,7 @@ a:hover {
     }
 
     .input-field {
-        width: auto;
+        width: 100%;
     }
 }
 </style>
