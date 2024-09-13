@@ -10,14 +10,16 @@
                     {{ item.label }}
                 </button>
                 <div v-if="isAuthenticated">
-                    <button class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
+                    <button v-if="isMobile && !isFirstLogin" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
+                    <button v-if="isMobile && isFirstLogin" class="profile-button" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
+                    <button v-if="!isMobile" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
                     <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
                         <template v-if="!isFirstLogin">
                             <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
                                 {{ menuItem }}
                             </button>
                         </template>
-                        <button @click="goToSurvey">ANKIETA</button>
+                        <button v-if="isFirstLogin" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
                         <button @click="handleLogout">WYLOGUJ</button>
                     </div>
                     <button class="mobile-logout-button" v-if="isMobile" @click="handleLogout">WYLOGUJ</button>
