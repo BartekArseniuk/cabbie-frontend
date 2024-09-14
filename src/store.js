@@ -81,6 +81,14 @@ export default createStore({
         console.error('Error updating user:', error);
       }
     },
+    async resendVerificationEmail({ state }) {
+      try {
+        const response = await apiService.post(`/resend-verification/${state.user.id}`);
+        console.log('Verification email sent:', response.data);
+      } catch (error) {
+        console.error('Error resending verification email:', error);
+      }
+    }    
   },
   getters: {
     isAuthenticated: state => state.isAuthenticated,

@@ -5,6 +5,7 @@
         <input type="text" placeholder="IMIĘ" v-model="user.first_name" class="input-field" :readonly="!isEditing" />
         <input type="text" placeholder="NAZWISKO" v-model="user.last_name" class="input-field" :readonly="!isEditing" />
     </div>
+    
     <div class="input-row">
         <div class="input-container">
             <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" readonly />
@@ -13,23 +14,30 @@
         </div>
         <input type="text" placeholder="NR TELEFONU" v-model="user.phone_number" class="input-field" :readonly="!isEditing" />
     </div>
+
     <div class="input-row single">
         <input type="text" placeholder="NR PESEL" v-model="user.pesel" class="input-field pesel" :readonly="!isEditing" />
     </div>
+
     <div class="input-row last-row">
         <input type="text" placeholder="NAZWA BANKU" v-model="user.bank_name" class="input-field" :readonly="!isEditing" />
         <input type="text" placeholder="NR KONTA BANKU" v-model="user.bank_account_number" class="input-field" :readonly="!isEditing" />
     </div>
+
+    <div v-if="!isEmailVerified && dataLoaded" class="resend-verification-container">
+        <button class="resend-verification" @click="resendVerificationEmail(user.id)">Wyślij ponownie e-mail weryfikacyjny</button>
+    </div>
+
     <div class="button-container">
         <button v-if="!isEditing" class="edit" @click="startEditing">EDYTUJ</button>
         <button v-if="isEditing" class="save" @click="saveChanges">ZAPISZ</button>
         <button v-if="isEditing" class="cancel" @click="cancelEditing">ANULUJ</button>
     </div>
+
     <p class="second-title">Dokumenty</p>
     <div class="documents">
         <p class="subtitle">Do wgrania</p>
-        <ul class="document-list">
-        </ul>
+        <ul class="document-list"></ul>
         <p class="subtitle">Do pobrania</p>
         <ul class="document-list">
             <li><a href="#link1" target="_blank">Umowa Zlecenie + Kwestionariusze do wypełnienia</a></li>
@@ -51,7 +59,7 @@ export default {
         return {
             isEditing: false,
             originalUser: {},
-            dataLoaded: false
+            dataLoaded: false,
         };
     },
     computed: {
@@ -61,10 +69,10 @@ export default {
         },
         isEmailVerified() {
             return !!this.user.email_verified_at;
-        }
+        },
     },
     methods: {
-        ...mapActions(['fetchUser', 'updateUser']),
+        ...mapActions(['fetchUser', 'updateUser', 'resendVerificationEmail']),
         startEditing() {
             this.isEditing = true;
             this.originalUser = {
@@ -96,6 +104,25 @@ export default {
                 ...this.originalUser
             };
             this.isEditing = false;
+        },
+        async resendVerificationEmail(userId) {
+            try {
+                await this.$store.dispatch('resendVerificationEmail', userId);
+                Swal.fire({
+                    title: 'E-mail wysłany!',
+                    text: 'Nowy e-mail weryfikacyjny został wysłany pomyślnie.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                });
+            } catch (error) {
+                console.error('Error resending verification email:', error);
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Nie udało się wysłać ponownie e-maila weryfikacyjnego.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
         },
     },
     async mounted() {
@@ -207,6 +234,26 @@ export default {
 .warning-icon:hover::after,
 .verified-icon:hover::after {
     display: block;
+}
+
+.resend-verification-container {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.resend-verification {
+    margin-left: 5px;
+    background: none;
+    color: $title-light-font;
+    border: none;
+    font-family: 'Roboto-Light', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.resend-verification:hover {
+    text-decoration: underline;
 }
 
 .edit,
