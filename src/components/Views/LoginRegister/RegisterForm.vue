@@ -48,38 +48,36 @@ export default {
     methods: {
         async register() {
             try {
-                await this.$store.dispatch('register', {
-                    first_name: this.firstName,
-                    last_name: this.lastName,
-                    email: this.email,
-                    password: this.password,
-                });
+            await this.$store.dispatch('register', {
+                first_name: this.firstName,
+                last_name: this.lastName,
+                email: this.email,
+                password: this.password,
+            });
 
-                Swal.fire({
-                    title: 'Sukces!',
-                    text: 'Rejestracja przebiegła pomyślnie.',
-                    icon: 'success',
-                    confirmButtonText: 'OK',
-                }).then(() => {
-                    this.switchToLogin();
-                });
+            Swal.fire({
+                title: 'Sukces!',
+                text: 'Rejestracja przebiegła pomyślnie.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                this.switchToLogin();
+            });
             } catch (error) {
-                if (error.response && error.response.data) {
-                    console.error('Błąd rejestracji:', error.response.data);
-                    Swal.fire({
-                        title: 'Błąd!',
-                        text: error.response.data.message || 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                    });
-                } else {
-                    Swal.fire({
-                        title: 'Błąd!',
-                        text: 'Wystąpił problem z rejestracją. Spróbuj ponownie.',
-                        icon: 'error',
-                        confirmButtonText: 'OK',
-                    });
-                }
+            let errorMessage = 'Wystąpił problem z rejestracją. Spróbuj ponownie.';
+            
+            if (error.message === 'Email already taken') {
+                errorMessage = 'Adres e-mail jest już zajęty.';
+            } else if (error.message === 'Incorrect password') {
+                errorMessage = 'Hasło jest nieprawidłowe.';
+            }
+            
+            Swal.fire({
+                title: 'Błąd!',
+                text: errorMessage,
+                icon: 'error',
+                confirmButtonText: 'OK',
+            });
             }
         },
         switchToLogin() {

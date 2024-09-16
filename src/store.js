@@ -30,6 +30,14 @@ export default createStore({
         commit('SET_AUTHENTICATED', false);
         return response.data;
       } catch (error) {
+        if (error.response && error.response.data) {
+          if (error.response.data.errors && error.response.data.errors.email) {
+            throw new Error('Email already taken');
+          }
+          if (error.response.data.errors && error.response.data.errors.password) {
+            throw new Error('Incorrect password');
+          }
+        }
         throw new Error('Register failed');
       }
     },
