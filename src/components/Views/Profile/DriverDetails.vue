@@ -5,7 +5,7 @@
         <input type="text" placeholder="IMIĘ" v-model="user.first_name" class="input-field" :readonly="!isEditing" />
         <input type="text" placeholder="NAZWISKO" v-model="user.last_name" class="input-field" :readonly="!isEditing" />
     </div>
-    
+
     <div class="input-row">
         <div class="input-container">
             <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" readonly />
@@ -178,7 +178,7 @@ export default {
 }
 
 .input-field[readonly] {
-    cursor: not-allowed;
+    cursor: default;
 }
 
 .input-field:not([readonly]) {

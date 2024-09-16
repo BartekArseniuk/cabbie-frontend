@@ -49,11 +49,11 @@ const routes = [
     }
   },
   {
-    path: '/profile',
+    path: '/profile/:section?',
     name: 'Profile',
     component: ProfilePage,
     meta: {
-      title: 'Cabbie - Profil użytkownika'
+      title: 'Cabbie - Panel użytkownika'
     }
   },
   {

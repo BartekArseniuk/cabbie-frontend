@@ -118,10 +118,33 @@
                 }
             },
             handleProfileMenuClick(menuItem) {
-                if (menuItem === 'DANE I DOKUMENTY' && !this.isMobile) {
-                    this.navigateTo('Profile');
-                }
-            },
+    let section = '';
+    switch(menuItem) {
+        case 'DANE I DOKUMENTY':
+            section = 'details';
+            break;
+        case 'WIADOMOŚCI':
+            section = 'messages';
+            break;
+        case 'PORTFEL':
+            section = 'wallet';
+            break;
+        case 'FAKTURY':
+            section = 'invoices';
+            break;
+        case 'USTAWIENIA ROZLICZEŃ':
+            section = 'billing-settings';
+            break;
+        case 'RYCZAŁT':
+            section = 'lump-sum';
+            break;
+    }
+    if (section) {
+        this.$router.push({ name: 'Profile', params: { section } });
+        this.isProfileMenuOpen = false; // Zamknij menu po kliknięciu
+    }
+},
+
             goToSurvey() {
                 this.navigateTo('Survey');
             },
