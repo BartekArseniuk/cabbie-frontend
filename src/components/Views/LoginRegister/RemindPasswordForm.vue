@@ -7,13 +7,15 @@
             </div>
             <div class="button-group">
                 <button class="button" type="submit">WYŚLIJ</button>
-                <button class="button" @click="switchToLogin" >ANULUJ</button>
+                <button class="button" @click="switchToLogin">ANULUJ</button>
             </div>
         </form>
     </div>
 </template>
 
 <script>
+import Swal from 'sweetalert2';
+
 export default {
     data() {
         return {
@@ -21,8 +23,26 @@ export default {
         };
     },
     methods: {
-        remindPassword() {
-            this.$emit('remind-password', this.email);
+        async remindPassword() {
+            try {
+                await this.$store.dispatch('forgotPassword', this.email);
+                
+                Swal.fire({
+                    title: 'Sukces!',
+                    text: 'Na podany adres e-mail został wysłany link do resetowania hasła.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                }).then(() => {
+                    this.switchToLogin();
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem z wysyłką linku do resetowania hasła. Spróbuj ponownie.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
         },
         switchToLogin() {
             this.$emit('switch-form', 'LoginForm');
@@ -30,7 +50,6 @@ export default {
     },
 };
 </script>
-
 
 <style lang="scss" scoped>
 .title {

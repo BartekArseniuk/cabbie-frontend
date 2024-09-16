@@ -16,14 +16,14 @@
             </button>
         </div>
         <p class="password-requirements">
-  Hasło musi mieć co najmniej 12 znaków i zawierać:
-  <ul>
-    <li>Jedną małą literę</li>
-    <li>Jedną wielką literę</li>
-    <li>Jedną cyfrę</li>
-    <li>Jeden znak specjalny (np. !, @, #, $)</li>
-  </ul>
-</p>
+            Hasło musi mieć co najmniej 12 znaków i zawierać:
+            <ul>
+                <li>Jedną małą literę</li>
+                <li>Jedną wielką literę</li>
+                <li>Jedną cyfrę</li>
+                <li>Jeden znak specjalny (np. !, @, #, $)</li>
+            </ul>
+        </p>
         <div class="buttons-group">
             <button class="button" type="submit">ZAREJESTRUJ</button>
             <button class="button" type="button" @click="switchToLogin">ANULUJ</button>

@@ -88,7 +88,16 @@ export default createStore({
       } catch (error) {
         console.error('Error resending verification email:', error);
       }
-    }    
+    },
+    async forgotPassword(_, email) {
+      try {
+        const response = await apiService.post('/forgot-password', { email });
+        return response.data;
+      } catch (error) {
+        console.error('Password reset failed:', error.response ? error.response.data : error.message);
+        throw new Error('Password reset failed');
+      }
+    }
   },
   getters: {
     isAuthenticated: state => state.isAuthenticated,
