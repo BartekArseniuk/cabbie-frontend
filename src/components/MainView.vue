@@ -349,7 +349,6 @@ body {
     .nav button {
         padding: 15px;
         border-radius: 0;
-        width: 100%;
         text-align: center;
     }
 

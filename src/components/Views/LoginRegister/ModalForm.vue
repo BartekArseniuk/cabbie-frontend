@@ -9,7 +9,7 @@
     </div>
 </transition>
 </template>
- 
+
 <script>
 import LoginForm from './LoginForm.vue';
 import RegisterForm from './RegisterForm.vue';
@@ -152,12 +152,16 @@ export default {
 
 .large-modal {
     width: 600px;
-    height: 450px;
+    height: 550px;
 }
 
 @media (max-width: 768px) {
     .modal-content {
         margin: 30px;
+    }
+
+    .large-modal {
+        height: 600px;
     }
 }
 </style>
