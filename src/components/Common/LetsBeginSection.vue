@@ -1,20 +1,38 @@
 <template>
-    <div :class="['lets-begin', { 'home-page': props.isHomePage, 'offer-page': !props.isHomePage }]">
-        <p class="title">ZACZNIJMY WSPÓŁPRACĘ</p>
-        <button class="join">DOŁĄCZ</button>
+    <div v-if="!isAuthenticated" :class="['lets-begin', { 'home-page': props.isHomePage, 'offer-page': !props.isHomePage }]">
+      <p class="title">ZACZNIJMY WSPÓŁPRACĘ</p>
+      <button class="join" @click="openModal">DOŁĄCZ</button>
+  
+      <ModalForm :isVisible="isModalVisible" @close="closeModal" />
     </div>
-</template>
-
-<script setup>
-import { defineProps } from 'vue';
-
-const props = defineProps({
+  </template>
+  
+  <script setup>
+  import { ref, computed } from 'vue';
+  import { defineProps } from 'vue';
+  import { useStore } from 'vuex';
+  import ModalForm from '../Views/LoginRegister/ModalForm.vue';
+  
+  const props = defineProps({
     isHomePage: {
-        type: Boolean,
-        default: false
-    }
-});
-</script>
+      type: Boolean,
+      default: false,
+    },
+  });
+  
+  const store = useStore();
+  const isAuthenticated = computed(() => store.getters.isAuthenticated);
+  
+  const isModalVisible = ref(false);
+  
+  const openModal = () => {
+    isModalVisible.value = true;
+  };
+  
+  const closeModal = () => {
+    isModalVisible.value = false;
+  };
+  </script>
 
 <style lang="scss" scoped>
 .lets-begin {

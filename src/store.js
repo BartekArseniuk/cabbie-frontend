@@ -54,6 +54,21 @@ export default createStore({
         throw new Error('Login failed');
       }
     },
+    async checkLoginStatus({ commit }) {
+      try {
+        const response = await apiService.get('/user-status');
+        if (response.data.authenticated) {
+          commit('SET_AUTHENTICATED', true);
+          commit('setUser', response.data.user);
+        } else {
+          commit('SET_AUTHENTICATED', false);
+          commit('setUser', null);
+        }
+      } catch (error) {
+        commit('SET_AUTHENTICATED', false);
+        commit('setUser', null);
+      }
+    },
     async logout({ commit }) {
       try {
         await apiService.post('/logout');
