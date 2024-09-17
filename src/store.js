@@ -7,10 +7,14 @@ export default createStore({
     user: null,
     userId: localStorage.getItem('userId') || null,
     firstLogin: true,
+    isLoggedIn: false,
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
       state.isAuthenticated = status;
+    },
+    SET_LOGGED_IN(state, status) {
+      state.isLoggedIn = status;
     },
     setUser(state, userData) {
       state.user = userData;
@@ -50,6 +54,10 @@ export default createStore({
         commit('SET_AUTHENTICATED', true);
         commit('setUserId', userId);
         await dispatch('fetchFirstLoginStatus'); 
+
+          // Wywołanie zapytania '/test-session'
+          const testSessionResponse = await apiService.get('/test-session');
+          console.log('Test session response:', testSessionResponse.data);
       } catch (error) {
         throw new Error('Login failed');
       }
@@ -69,6 +77,25 @@ export default createStore({
         commit('setUser', null);
       }
     },
+    async isLogged({ commit, dispatch }) {
+      try {
+        const response = await apiService.get('/api/check-session');
+        if (response.data.logged_in) {
+          commit('SET_LOGGED_IN', true);
+          console.log('User is logged in:', response.data);
+        } else {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('userId');
+          commit('SET_AUTHENTICATED', false);
+          commit('setFirstLogin', null);
+          commit('SET_LOGGED_IN', false);
+          console.log('User is not logged in:');
+        }
+      } catch (error) {
+        console.log('Error:', error);
+        dispatch('logout');
+      }
+    },
     async logout({ commit }) {
       try {
         await apiService.post('/logout');
@@ -76,6 +103,7 @@ export default createStore({
         localStorage.removeItem('userId');
         commit('SET_AUTHENTICATED', false);
         commit('setFirstLogin', null);
+        commit('SET_LOGGED_IN', false);
       } catch (error) {
         console.error('Logout failed', error);
       }
