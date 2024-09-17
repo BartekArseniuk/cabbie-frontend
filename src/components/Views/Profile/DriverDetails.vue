@@ -190,11 +190,6 @@ export default {
     color: $placeholder-color;
 }
 
-.input-field.pesel {
-    width: 400px;
-    max-width: 100%;
-}
-
 .warning-icon,
 .verified-icon {
     position: absolute;

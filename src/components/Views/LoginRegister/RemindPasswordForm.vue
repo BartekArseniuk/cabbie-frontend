@@ -96,7 +96,6 @@ export default {
     font-size: 22px;
     width: 100%;
     padding: 10px;
-    padding-right: 50px;
     background-color: $secondary-color;
     outline: none;
     border: 2px solid transparent;

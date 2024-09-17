@@ -1,34 +1,34 @@
 <template>
-    <div>
-        <div class="app-bar">
-            <div class="app-logo">
+<div>
+    <div class="app-bar">
+        <div class="app-logo">
             <img src="@/assets/images/logo.svg" alt="cabbie">
         </div>
         <button class="hamburger" @click="toggleNav">&#9776;</button>
         <nav ref="nav" :class="['nav', { 'nav--open': isNavOpen }]">
-                <button v-for="item in navItems" :key="item.route" @click="handleNavItemClick(item)">
-                    {{ item.label }}
-                </button>
-                <div v-if="isAuthenticated">
-                    <button v-if="isMobile && !isFirstLogin" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
-                    <button v-if="isMobile && isFirstLogin" class="profile-button" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
-                    <button v-if="!isMobile" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
-                    <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
-                        <template v-if="!isFirstLogin">
-                            <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
-                                {{ menuItem }}
-                            </button>
-                        </template>
-                        <button v-if="isFirstLogin" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
-                        <button @click="handleLogout">WYLOGUJ</button>
-                    </div>
-                    <button class="mobile-logout-button" v-if="isMobile" @click="handleLogout">WYLOGUJ</button>
+            <button v-for="item in navItems" :key="item.route" @click="handleNavItemClick(item)">
+                {{ item.label }}
+            </button>
+            <div v-if="isAuthenticated">
+                <button v-if="isMobile && !isFirstLogin" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
+                <button v-if="isMobile && isFirstLogin" class="profile-button" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
+                <button v-if="!isMobile" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
+                <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
+                    <template v-if="!isFirstLogin">
+                        <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
+                            {{ menuItem }}
+                        </button>
+                    </template>
+                    <button v-if="isFirstLogin" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
+                    <button @click="handleLogout">WYLOGUJ</button>
                 </div>
-                <button class="login-button" v-else @click="openLoginModal">LOGOWANIE</button>
-            </nav>
-        </div>
-    
-        <div class="content">
+                <button class="mobile-logout-button" v-if="isMobile" @click="handleLogout">WYLOGUJ</button>
+            </div>
+            <button class="login-button" v-else @click="openLoginModal">LOGOWANIE</button>
+        </nav>
+    </div>
+
+    <div class="content">
         <router-view />
     </div>
 
@@ -47,165 +47,191 @@
     <div class="under-footer">
         <p>WSZELKIE PRAWA AUTORSKIE ZASTRZEŻONE - CABBIE 2024</p>
     </div>
-    
-        <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" />
-    </div>
-    </template>
-    
-    <script>
-    import ModalForm from './Views/LoginRegister/ModalForm.vue';
-    import Swal from 'sweetalert2';
-    import { mapGetters, mapActions } from 'vuex';
-    
-    export default {
-        components: {
-            ModalForm
-        },
-        data() {
-            return {
-                isNavOpen: false,
-                isLoginModalVisible: false,
-                isProfileMenuOpen: false,
-                navItems: [
-                    { label: 'STRONA GŁÓWNA', route: 'Home' },
-                    { label: 'OFERTA', route: 'Offer' },
-                    { label: 'O NAS', route: 'AboutUs' },
-                    { label: 'BLOG', route: 'Blog' },
-                    { label: 'KONTAKT', route: 'Contact' }
-                ],
-                profileMenuItems: [
-                    'DANE I DOKUMENTY', 'WIADOMOŚCI', 'PORTFEL', 'FAKTURY', 'USTAWIENIA ROZLICZEŃ', 'RYCZAŁT'
-                ],
-                isMobile: window.innerWidth <= 768
-            };
-        },
-        computed: {
-            ...mapGetters(['isAuthenticated', 'getFirstLogin']),
-            isFirstLogin() {
-                return this.getFirstLogin;
-            }       
-        },
 
-        created() {
-            this.$store.dispatch('fetchFirstLoginStatus');
+    <ModalForm :isVisible="isLoginModalVisible" @close="closeLoginModal" />
+</div>
+</template>
+
+<script>
+import ModalForm from './Views/LoginRegister/ModalForm.vue';
+import Swal from 'sweetalert2';
+import {
+    mapGetters,
+    mapActions
+} from 'vuex';
+
+export default {
+    components: {
+        ModalForm
+    },
+    data() {
+        return {
+            isNavOpen: false,
+            isLoginModalVisible: false,
+            isProfileMenuOpen: false,
+            navItems: [{
+                    label: 'STRONA GŁÓWNA',
+                    route: 'Home'
+                },
+                {
+                    label: 'OFERTA',
+                    route: 'Offer'
+                },
+                {
+                    label: 'O NAS',
+                    route: 'AboutUs'
+                },
+                {
+                    label: 'BLOG',
+                    route: 'Blog'
+                },
+                {
+                    label: 'KONTAKT',
+                    route: 'Contact'
+                }
+            ],
+            profileMenuItems: [
+                'DANE I DOKUMENTY', 'WIADOMOŚCI', 'PORTFEL', 'FAKTURY', 'USTAWIENIA ROZLICZEŃ', 'RYCZAŁT'
+            ],
+            isMobile: window.innerWidth <= 768
+        };
+    },
+    computed: {
+        ...mapGetters(['isAuthenticated', 'getFirstLogin']),
+        isFirstLogin() {
+            return this.getFirstLogin;
+        }
+    },
+
+    created() {
+        this.$store.dispatch('fetchFirstLoginStatus');
+    },
+
+    methods: {
+        ...mapActions(['logout']),
+        toggleNav() {
+            this.isNavOpen = !this.isNavOpen;
         },
-
-        methods: {
-            ...mapActions(['logout']),
-            toggleNav() {
-                this.isNavOpen = !this.isNavOpen;
-            },
-            toggleProfileMenu() {
-                this.isProfileMenuOpen = !this.isProfileMenuOpen;
-            },
-            navigateTo(route) {
-                this.$router.push({ name: route });
-                this.isNavOpen = false;
-                this.isProfileMenuOpen = false;
-            },
-            handleNavItemClick(item) {
-                if (item.route) {
-                    this.navigateTo(item.route);
-                } else {
-                    this.openLoginModal();
-                }
-            },
-            handleProfileButtonClick() {
-                if (this.isMobile) {
-                    this.navigateTo('Profile');
-                } else {
-                    this.toggleProfileMenu();
-                }
-            },
-            handleProfileMenuClick(menuItem) {
-    let section = '';
-    switch(menuItem) {
-        case 'DANE I DOKUMENTY':
-            section = 'details';
-            break;
-        case 'WIADOMOŚCI':
-            section = 'messages';
-            break;
-        case 'PORTFEL':
-            section = 'wallet';
-            break;
-        case 'FAKTURY':
-            section = 'invoices';
-            break;
-        case 'USTAWIENIA ROZLICZEŃ':
-            section = 'billing-settings';
-            break;
-        case 'RYCZAŁT':
-            section = 'lump-sum';
-            break;
-    }
-    if (section) {
-        this.$router.push({ name: 'Profile', params: { section } });
-        this.isProfileMenuOpen = false; // Zamknij menu po kliknięciu
-    }
-},
-
-            goToSurvey() {
-                this.navigateTo('Survey');
-            },
-            openLoginModal() {
-                this.isLoginModalVisible = true;
-            },
-            closeLoginModal() {
-                this.isLoginModalVisible = false;
-            },
-            async handleLogout() {
-                try {
-                    await this.logout();
-    
-                    Swal.fire({
-                        title: 'Sukces!',
-                        text: 'Wylogowano pomyślnie.',
-                        icon: 'success',
-                        confirmButtonText: 'OK'
-                    }).then(() => {
-                        this.$router.push({ name: 'Home' });
-                    });
-                } catch (error) {
-                    Swal.fire({
-                        title: 'Błąd!',
-                        text: 'Wystąpił problem z wylogowaniem. Spróbuj ponownie.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
-                }
-            },
-            handleClickOutside(event) {
-                const nav = this.$refs.nav;
-                if (this.isNavOpen && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
-                    this.isNavOpen = false;
-                }
-                if (this.isProfileMenuOpen && !nav.contains(event.target) && !event.target.closest('.profile-menu')) {
-                    this.isProfileMenuOpen = false;
-                }
-            },
-            handleKeyDown(event) {
-                if (event.key === 'Escape' && this.isLoginModalVisible) {
-                    this.closeLoginModal();
-                }
-            },
-            updateMobileStatus() {
-                this.isMobile = window.innerWidth <= 768;
+        toggleProfileMenu() {
+            this.isProfileMenuOpen = !this.isProfileMenuOpen;
+        },
+        navigateTo(route) {
+            this.$router.push({
+                name: route
+            });
+            this.isNavOpen = false;
+            this.isProfileMenuOpen = false;
+        },
+        handleNavItemClick(item) {
+            if (item.route) {
+                this.navigateTo(item.route);
+            } else {
+                this.openLoginModal();
             }
         },
-        mounted() {
-            document.addEventListener('click', this.handleClickOutside);
-            document.addEventListener('keydown', this.handleKeyDown);
-            window.addEventListener('resize', this.updateMobileStatus);
-            console.log('getFirstLogin value:', this.getFirstLogin);
+        handleProfileButtonClick() {
+            if (this.isMobile) {
+                this.navigateTo('Profile');
+            } else {
+                this.toggleProfileMenu();
+            }
         },
-        beforeUnmount() {
-            document.removeEventListener('click', this.handleClickOutside);
-            document.removeEventListener('keydown', this.handleKeyDown);
-            window.removeEventListener('resize', this.updateMobileStatus);
+        handleProfileMenuClick(menuItem) {
+            let section = '';
+            switch (menuItem) {
+                case 'DANE I DOKUMENTY':
+                    section = 'details';
+                    break;
+                case 'WIADOMOŚCI':
+                    section = 'messages';
+                    break;
+                case 'PORTFEL':
+                    section = 'wallet';
+                    break;
+                case 'FAKTURY':
+                    section = 'invoices';
+                    break;
+                case 'USTAWIENIA ROZLICZEŃ':
+                    section = 'billing-settings';
+                    break;
+                case 'RYCZAŁT':
+                    section = 'lump-sum';
+                    break;
+            }
+            if (section) {
+                this.$router.push({
+                    name: 'Profile',
+                    params: {
+                        section
+                    }
+                });
+                this.isProfileMenuOpen = false; // Zamknij menu po kliknięciu
+            }
+        },
+
+        goToSurvey() {
+            this.navigateTo('Survey');
+        },
+        openLoginModal() {
+            this.isLoginModalVisible = true;
+        },
+        closeLoginModal() {
+            this.isLoginModalVisible = false;
+        },
+        async handleLogout() {
+            try {
+                await this.logout();
+
+                Swal.fire({
+                    title: 'Sukces!',
+                    text: 'Wylogowano pomyślnie.',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    this.$router.push({
+                        name: 'Home'
+                    });
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem z wylogowaniem. Spróbuj ponownie.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        },
+        handleClickOutside(event) {
+            const nav = this.$refs.nav;
+            if (this.isNavOpen && !nav.contains(event.target) && !event.target.closest('.hamburger')) {
+                this.isNavOpen = false;
+            }
+            if (this.isProfileMenuOpen && !nav.contains(event.target) && !event.target.closest('.profile-menu')) {
+                this.isProfileMenuOpen = false;
+            }
+        },
+        handleKeyDown(event) {
+            if (event.key === 'Escape' && this.isLoginModalVisible) {
+                this.closeLoginModal();
+            }
+        },
+        updateMobileStatus() {
+            this.isMobile = window.innerWidth <= 768;
         }
-    };
-    </script>
+    },
+    mounted() {
+        document.addEventListener('click', this.handleClickOutside);
+        document.addEventListener('keydown', this.handleKeyDown);
+        window.addEventListener('resize', this.updateMobileStatus);
+        console.log('getFirstLogin value:', this.getFirstLogin);
+    },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
+        document.removeEventListener('keydown', this.handleKeyDown);
+        window.removeEventListener('resize', this.updateMobileStatus);
+    }
+};
+</script>
 
 <style lang="scss">
 body {
