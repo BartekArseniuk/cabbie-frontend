@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import apiService from './apiService';
+import Swal from 'sweetalert2';
 
 export default createStore({
   state: {
@@ -45,7 +46,7 @@ export default createStore({
         throw new Error('Register failed');
       }
     },
-    async login({ commit, dispatch }, { email, password }) { 
+    async login({ commit, dispatch }, { email, password }) {
       try {
         const response = await apiService.post('/login', { email, password });
         const { token, userId } = response.data;
@@ -53,11 +54,9 @@ export default createStore({
         localStorage.setItem('authToken', token);
         commit('SET_AUTHENTICATED', true);
         commit('setUserId', userId);
-        await dispatch('fetchFirstLoginStatus'); 
+        await dispatch('fetchFirstLoginStatus');
 
-          // Wywołanie zapytania '/test-session'
-          const testSessionResponse = await apiService.get('/test-session');
-          console.log('Test session response:', testSessionResponse.data);
+        await apiService.get('/test-session');
       } catch (error) {
         throw new Error('Login failed');
       }
@@ -82,14 +81,21 @@ export default createStore({
         const response = await apiService.get('/api/check-session');
         if (response.data.logged_in) {
           commit('SET_LOGGED_IN', true);
-          console.log('User is logged in:', response.data);
         } else {
           localStorage.removeItem('authToken');
           localStorage.removeItem('userId');
           commit('SET_AUTHENTICATED', false);
           commit('setFirstLogin', null);
           commit('SET_LOGGED_IN', false);
-          console.log('User is not logged in:');
+
+          Swal.fire({
+            title: 'Sesja wygasła',
+            text: 'Zostałeś wylogowany z powodu nieaktywności.',
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            window.location.href = '/';
+          });
         }
       } catch (error) {
         console.log('Error:', error);

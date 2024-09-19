@@ -64,16 +64,13 @@ export default {
                 this.isRegister = false;
             }
         },
-        handleLogin(credentials) {
-            console.log('Logging in with', credentials);
+        handleLogin() {
             this.closeModal();
         },
-        handleRegister(credentials) {
-            console.log('Registering with', credentials);
+        handleRegister() {
             this.closeModal();
         },
         handleRemindPassword() {
-            console.log('Handling password reminder');
             this.closeModal();
         },
         closeModal() {
