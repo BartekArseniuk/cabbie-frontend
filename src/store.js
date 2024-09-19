@@ -1,12 +1,18 @@
 import { createStore } from 'vuex';
 import apiService from './apiService';
 import Swal from 'sweetalert2';
+import CryptoJS from 'crypto-js';
+
+const encryptionKey = 'FD89S7JHKFSD845JHKL0';  
+
+const encrypt = (data) => CryptoJS.AES.encrypt(data, encryptionKey).toString();
+const decrypt = (ciphertext) => CryptoJS.AES.decrypt(ciphertext, encryptionKey).toString(CryptoJS.enc.Utf8);
 
 export default createStore({
   state: {
-    isAuthenticated: !!localStorage.getItem('authToken'),
+    isAuthenticated: !!localStorage.getItem('T94&hgK%'),
     user: null,
-    userId: localStorage.getItem('userId') || null,
+    userId: null,
     firstLogin: true,
     isLoggedIn: false,
   },
@@ -22,7 +28,8 @@ export default createStore({
     },
     setUserId(state, id) {
       state.userId = id;
-      localStorage.setItem('userId', id);
+      const encryptedUserId = encrypt(id.toString());
+      localStorage.setItem('U&58hf*p', encryptedUserId);
     },
     setFirstLogin(state, status) {
       state.firstLogin = status;
@@ -36,26 +43,21 @@ export default createStore({
         return response.data;
       } catch (error) {
         if (error.response && error.response.data) {
-            const { data } = error.response;
-    
-            if (data.errors && data.errors.email) {
-                if (data.errors.email.includes('The email has already been taken.')) {
-                    throw new Error('E-mail jest już zajęty.');
-                }
-    
-                if (data.errors.email.includes('The email field must be a valid email address.')) {
-                    throw new Error('Niepoprawny format adresu E-mail.');
-                }
+          const { data } = error.response;
+          if (data.errors && data.errors.email) {
+            if (data.errors.email.includes('The email has already been taken.')) {
+              throw new Error('E-mail jest już zajęty.');
             }
-    
-            if (data.errors && data.errors.password) {
-                throw new Error('Hasło nie spełnia wymagań.');
+            if (data.errors.email.includes('The email field must be a valid email address.')) {
+              throw new Error('Niepoprawny format adresu E-mail.');
             }
+          }
+          if (data.errors && data.errors.password) {
+            throw new Error('Hasło nie spełnia wymagań.');
+          }
         }
-    
         throw new Error('Błąd rejestracji.');
-    }
-    
+      }
     },
 
     async login({ commit, dispatch }, { email, password }) {
@@ -63,7 +65,8 @@ export default createStore({
         const response = await apiService.post('/login', { email, password });
         const { token, userId } = response.data;
 
-        localStorage.setItem('authToken', token);
+        const encryptedToken = encrypt(token);
+        localStorage.setItem('T94&hgK%', encryptedToken);
         commit('SET_AUTHENTICATED', true);
         commit('setUserId', userId);
         await dispatch('fetchFirstLoginStatus');
@@ -94,8 +97,8 @@ export default createStore({
         if (response.data.logged_in) {
           commit('SET_LOGGED_IN', true);
         } else {
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('userId');
+          localStorage.removeItem('T94&hgK%');
+          localStorage.removeItem('U&58hf*p');
           commit('SET_AUTHENTICATED', false);
           commit('setFirstLogin', null);
           commit('SET_LOGGED_IN', false);
@@ -117,8 +120,8 @@ export default createStore({
     async logout({ commit }) {
       try {
         await apiService.post('/logout');
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('userId');
+        localStorage.removeItem('T94&hgK%');
+        localStorage.removeItem('U&58hf*p');
         commit('SET_AUTHENTICATED', false);
         commit('setFirstLogin', null);
         commit('SET_LOGGED_IN', false);
@@ -134,9 +137,11 @@ export default createStore({
         console.error('Error fetching firstLogin status:', error);
       }
     },
-    async fetchUser({ commit, state }) {
+    async fetchUser({ commit }) {
       try {
-        const response = await apiService.get(`users/${state.userId}`);
+        const encryptedUserId = localStorage.getItem('U&58hf*p');
+        const userId = decrypt(encryptedUserId);
+        const response = await apiService.get(`users/${userId}`);
         commit('setUser', response.data);
       } catch (error) {
         console.error('Error fetching user:', error);
@@ -144,15 +149,19 @@ export default createStore({
     },
     async updateUser({ dispatch }, user) {
       try {
-        await apiService.put(`users/${user.id}`, user);
+        const encryptedUserId = localStorage.getItem('U&58hf*p');
+        const userId = decrypt(encryptedUserId);
+        await apiService.put(`users/${userId}`, user);
         await dispatch('fetchUser');
       } catch (error) {
         console.error('Error updating user:', error);
       }
     },
-    async resendVerificationEmail({ state }) {
+    async resendVerificationEmail() {
       try {
-        const response = await apiService.post(`/resend-verification/${state.user.id}`);
+        const encryptedUserId = localStorage.getItem('U&58hf*p');
+        const userId = decrypt(encryptedUserId);
+        const response = await apiService.post(`/resend-verification/${userId}`);
         console.log('Verification email sent:', response.data);
       } catch (error) {
         console.error('Error resending verification email:', error);
@@ -168,6 +177,7 @@ export default createStore({
       }
     }
   },
+
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,

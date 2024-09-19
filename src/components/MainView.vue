@@ -115,10 +115,7 @@ export default {
         try {
             if (this.isAuthenticated) {
                 await this.$store.dispatch('isLogged');
-
-                if (this.$store.state.loggedIn) {
-                    await this.$store.dispatch('fetchFirstLoginStatus');
-                }
+                await this.$store.dispatch('fetchFirstLoginStatus');
             }
 
             const response = await apiService.get('/api/check-session');
@@ -492,7 +489,7 @@ body {
 }
 
 .nav-overlay {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
