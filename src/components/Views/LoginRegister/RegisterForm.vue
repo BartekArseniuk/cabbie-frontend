@@ -99,12 +99,21 @@ export default {
                     this.switchToLogin();
                 });
             } catch (error) {
-                let errorMessage = 'Wystąpił problem z rejestracją. Spróbuj ponownie.';
+                console.log('Pełny obiekt błędu:', error);
 
-                if (error.message === 'Email already taken') {
-                    errorMessage = 'Adres e-mail jest już zajęty.';
-                } else if (error.message === 'Incorrect password') {
-                    errorMessage = 'Hasło jest nieprawidłowe.';
+                let errorMessage = error;
+
+                if (error.response && error.response.data) {
+                    const {
+                        message,
+                        errors
+                    } = error.response.data;
+
+                    if (errors && errors.email) {
+                        errorMessage = errors.email.join(' ');
+                    } else if (message) {
+                        errorMessage = message;
+                    }
                 }
 
                 Swal.fire({
@@ -118,6 +127,7 @@ export default {
                 this.isLoading = false;
             }
         },
+
         switchToLogin() {
             this.$emit('switch-form');
         },
@@ -142,7 +152,6 @@ export default {
 };
 </script>
 
-  
 <style lang="scss" scoped>
 .title {
     text-align: center;

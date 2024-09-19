@@ -36,16 +36,28 @@ export default createStore({
         return response.data;
       } catch (error) {
         if (error.response && error.response.data) {
-          if (error.response.data.errors && error.response.data.errors.email) {
-            throw new Error('Email already taken');
-          }
-          if (error.response.data.errors && error.response.data.errors.password) {
-            throw new Error('Incorrect password');
-          }
+            const { data } = error.response;
+    
+            if (data.errors && data.errors.email) {
+                if (data.errors.email.includes('The email has already been taken.')) {
+                    throw new Error('E-mail jest już zajęty.');
+                }
+    
+                if (data.errors.email.includes('The email field must be a valid email address.')) {
+                    throw new Error('Niepoprawny format adresu E-mail.');
+                }
+            }
+    
+            if (data.errors && data.errors.password) {
+                throw new Error('Hasło nie spełnia wymagań.');
+            }
         }
-        throw new Error('Register failed');
-      }
+    
+        throw new Error('Błąd rejestracji.');
+    }
+    
     },
+
     async login({ commit, dispatch }, { email, password }) {
       try {
         const response = await apiService.post('/login', { email, password });
