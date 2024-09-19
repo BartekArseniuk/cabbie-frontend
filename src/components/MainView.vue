@@ -28,8 +28,14 @@
         </nav>
     </div>
 
-    <div class="content">
-        <router-view />
+	<div class="content">
+        <div class="router-view-container">
+            <router-view />
+        </div>
+
+        <transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
+        <div class="nav-overlay" v-if="isNavOpen"></div>
+        </transition>
     </div>
 
     <footer>
@@ -240,8 +246,25 @@ export default {
             }
         },
         updateMobileStatus() {
-            this.isMobile = window.innerWidth <= 768;
-        }
+                this.isMobile = window.innerWidth <= 768;
+        },
+        beforeEnterOverlay(el) {
+            el.style.opacity = 0;
+        },
+        enterOverlay(el, done) {
+            el.offsetHeight;
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = 1;
+            done();
+        },
+        leaveOverlay(el, done) {
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = 0;
+            setTimeout(() => {
+                this.closingModal = false;
+                done();
+            }, 300);
+        },
     },
     mounted() {
         document.addEventListener('click', this.handleClickOutside);
@@ -364,6 +387,10 @@ body {
     margin-top: 80px;
 }
 
+.router-view-container {
+    z-index: 1;
+}
+
 @media (max-width: 768px) {
     .nav {
         display: flex;
@@ -462,6 +489,20 @@ body {
 .nav .profile-button:hover {
     color: $tertiary-color;
     background-color: $primary-color;
+}
+
+.nav-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
 }
 
 footer {
