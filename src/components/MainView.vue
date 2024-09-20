@@ -105,7 +105,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['isAuthenticated', 'getFirstLogin']),
+        ...mapGetters(['isAuthenticated', 'getFirstLogin','getRole']),
         isFirstLogin() {
             return this.getFirstLogin;
         },
@@ -116,6 +116,7 @@ export default {
             if (this.isAuthenticated) {
                 await this.$store.dispatch('isLogged');
                 await this.$store.dispatch('fetchFirstLoginStatus');
+                await this.$store.dispatch('getUserRole');
             }
 
             const response = await apiService.get('/api/check-session');

@@ -3,7 +3,7 @@ import apiService from './apiService';
 import Swal from 'sweetalert2';
 import CryptoJS from 'crypto-js';
 
-const encryptionKey = 'FD89S7JHKFSD845JHKL0';  
+const encryptionKey = 'F8DSNF3HLR39UFSJF98D';  
 
 const encrypt = (data) => CryptoJS.AES.encrypt(data, encryptionKey).toString();
 const decrypt = (ciphertext) => CryptoJS.AES.decrypt(ciphertext, encryptionKey).toString(CryptoJS.enc.Utf8);
@@ -13,6 +13,7 @@ export default createStore({
     isAuthenticated: !!localStorage.getItem('T94&hgK%'),
     user: null,
     userId: null,
+    userRole: null,
     firstLogin: true,
     isLoggedIn: false,
   },
@@ -34,6 +35,11 @@ export default createStore({
     setFirstLogin(state, status) {
       state.firstLogin = status;
     },
+    setUserRole(state, role){
+      state.userRole = role;
+      const encryptedUserRole = encrypt(role);
+      localStorage.setItem('R&4jH4@', encryptedUserRole);
+    }
   },
   actions: {
     async register({ commit }, { first_name, last_name, email, password }) {
@@ -63,12 +69,13 @@ export default createStore({
     async login({ commit, dispatch }, { email, password }) {
       try {
         const response = await apiService.post('/login', { email, password });
-        const { token, userId } = response.data;
+        const { token, userId, role } = response.data;
 
         const encryptedToken = encrypt(token);
         localStorage.setItem('T94&hgK%', encryptedToken);
         commit('SET_AUTHENTICATED', true);
         commit('setUserId', userId);
+        commit('setUserRole', role);
         await dispatch('fetchFirstLoginStatus');
 
         await apiService.get('/test-session');
@@ -99,9 +106,11 @@ export default createStore({
         } else {
           localStorage.removeItem('T94&hgK%');
           localStorage.removeItem('U&58hf*p');
+          localStorage.removeItem('R&4jH4@');
           commit('SET_AUTHENTICATED', false);
           commit('setFirstLogin', null);
           commit('SET_LOGGED_IN', false);
+          commit('setUserRole', null);
 
           Swal.fire({
             title: 'Sesja wygasła',
@@ -122,9 +131,11 @@ export default createStore({
         await apiService.post('/logout');
         localStorage.removeItem('T94&hgK%');
         localStorage.removeItem('U&58hf*p');
+        localStorage.removeItem('R&4jH4@');
         commit('SET_AUTHENTICATED', false);
         commit('setFirstLogin', null);
         commit('SET_LOGGED_IN', false);
+        commit('setUserRole', null);
       } catch (error) {
         console.error('Logout failed', error);
       }
@@ -175,12 +186,26 @@ export default createStore({
         console.error('Password reset failed:', error.response ? error.response.data : error.message);
         throw new Error('Password reset failed');
       }
-    }
+    },
+    async getUserRole({ commit }) {
+      try {
+        const encryptedUserRole = localStorage.getItem('R&4jH4@');
+        if (encryptedUserRole) {
+          const decryptedRole = decrypt(encryptedUserRole);
+          commit('setUserRole', decryptedRole);
+        } else {
+          console.error('Role not found in localStorage');
+        }
+      } catch (error) {
+        console.error('Error decrypting role:', error);
+      }
+    },
   },
 
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,
+    getRole: state => state.userRole,
     getFirstLogin: state => state.firstLogin,
   },
 });
