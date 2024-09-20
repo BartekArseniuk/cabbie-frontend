@@ -1,43 +1,66 @@
 <template>
 <div class="loader-wrapper">
     <div class="loader"></div>
-    <p class="loading-text">Ładowanie...</p>
+    <p class="loading-text">Ładowanie</p>
+    <img src="@/assets/images/Car.svg" class="car" />
+    <div class="street"></div>
 </div>
 </template>
-  
+
+    
 <style lang="scss">
 .loader-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    background-color: $tertiary-color;
-}
-
-.loader {
-    border: 16px solid $secondary-color;
-    border-top: 16px solid $primary-color;
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    animation: spin 1s linear infinite;
+    background-color: $primary-color;
+    border-radius: 20px;
+    width: 450px;
+    height: 300px;
+    position: relative;
 }
 
 .loading-text {
-    margin-top: 20px;
-    font-family: 'Roboto-Extra-Light', 'sans-serif';
-    font-size: 18px;
-    font-weight: 300;
-    color: $white;
+    margin-top: 50px;
+    font-family: 'Roboto-Light', 'sans-serif';
+    font-size: 24px;
+    font-weight: 600;
+    color: $tertiary-color;
 }
 
-@keyframes spin {
+.street {
+    margin-top: 120px;
+    width: 80%;
+    height: 3px;
+    background-color: $tertiary-color;
+    border-radius: 10px;
+}
+
+.car {
+    position: absolute;
+    margin-top: 175px;
+    left: 0px;
+    width: 120px;
+    animation: drive 3s linear infinite;
+}
+
+@keyframes drive {
     0% {
-        transform: rotate(0deg);
+        left: 10%;
     }
 
     100% {
-        transform: rotate(360deg);
+        left: 65%;
+    }
+}
+
+@media (max-width: 768px) {
+    .loader-wrapper {
+        width: 80%;
+    }
+
+    .car {
+        animation: drive 2s linear infinite;
     }
 }
 </style>

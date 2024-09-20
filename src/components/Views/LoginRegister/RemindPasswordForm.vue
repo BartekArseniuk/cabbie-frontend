@@ -1,18 +1,19 @@
 <template>
-    <div>
-        <p class="title">Przypomnij hasło</p>
-        <form @submit.prevent="remindPassword">
-            <div class="input-group">
-                <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required />
-            </div>
-            <div class="button-group">
-                <button class="button" type="submit">WYŚLIJ</button>
-                <button class="button" @click="switchToLogin">ANULUJ</button>
-            </div>
-        </form>
-    </div>
+<div>
+    <p class="title">Przypomnij hasło</p>
+    <form @submit.prevent="remindPassword">
+        <div class="input-group">
+            <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required />
+        </div>
+        <div class="button-group">
+            <button class="button" type="submit">WYŚLIJ</button>
+            <button class="button" @click="switchToLogin">ANULUJ</button>
+        </div>
+    </form>
+</div>
 </template>
 
+    
 <script>
 import Swal from 'sweetalert2';
 
@@ -26,7 +27,7 @@ export default {
         async remindPassword() {
             try {
                 await this.$store.dispatch('forgotPassword', this.email);
-                
+
                 Swal.fire({
                     title: 'Sukces!',
                     text: 'Na podany adres e-mail został wysłany link do resetowania hasła.',
@@ -51,34 +52,35 @@ export default {
 };
 </script>
 
+    
 <style lang="scss" scoped>
 .title {
     text-align: center;
-    font-size: 30px;
+    font-size: 24px;
     color: $primary-color;
     font-family: 'Roboto-Light', 'sans-serif';
 }
 
 .input-group {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     display: flex;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .button-group {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    width: 60%;
     margin: 0 auto;
 }
 
 .button {
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 18px;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 15px;
+    font-size: 16px;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 10px;
     color: $tertiary-color;
     background-color: $primary-color;
     border: 2px solid transparent;
@@ -93,19 +95,25 @@ export default {
 
 .input {
     color: $white;
-    font-size: 22px;
+    font-size: 18px;
     width: 100%;
-    padding: 10px;
+    padding: 8px;
     background-color: $secondary-color;
     outline: none;
     border: 2px solid transparent;
     transition: all 0.3s ease;
-    border-radius: 15px;
+    border-radius: 10px;
     flex: 1;
 }
 
 .input:hover,
 .input:focus {
     border: 2px solid $primary-color;
+}
+
+@media (max-width: 768px) {
+    .button-group {
+        width: 75%;
+    }
 }
 </style>

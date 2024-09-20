@@ -1,157 +1,193 @@
 <template>
-    <div>
-        <p class="title">LOGOWANIE</p>
-        <form @submit.prevent="login">
-            <div class="input-group">
-                <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required />
-            </div>
-            <div class="input-group">
-                <input class="input" type="password" id="password" placeholder="hasło" v-model="password" required />
-            </div>
-            <div class="remind-password">
-                <button class="remind-password-button" type="button" @click="remindPassword">
-                    Nie pamiętam hasła
-                </button>
-            </div>
-            <div class="buttons-group">
-                <button class="button" type="submit">ZALOGUJ</button>
-                <button class="button" type="button" @click="switchToRegister">
-                    ZAREJESTRUJ
-                </button>
-            </div>
-        </form>
-    </div>
-    </template>
-    
-    <script>
-    import Swal from 'sweetalert2';
-    
-    export default {
-        data() {
-            return {
-                email: '',
-                password: '',
-            };
-        },
-        methods: {
-            async login() {
-                try {
-                    await this.$store.dispatch('login', { email: this.email, password: this.password });
-    
-                    const firstLogin = this.$store.getters.getFirstLogin;
-    
-                    if (firstLogin) {
-                        Swal.fire({
-                            title: 'Witamy!',
-                            text: 'Zalogowano pomyślnie. Zostaniesz przekierowany do formularza początkowego.',
-                            icon: 'info',
-                            confirmButtonText: 'OK',
-                        }).then(() => {
-                            this.$emit('login');
-                            this.$router.push({ name: 'Survey' });
+<div>
+    <p class="title">LOGOWANIE</p>
+    <form @submit.prevent="login">
+        <div class="input-group">
+            <input class="input" type="text" id="email" placeholder="e-mail" v-model="email" required />
+        </div>
+        <div class="input-group">
+            <input class="input" type="password" id="password" placeholder="hasło" v-model="password" required />
+        </div>
+        <div class="remind-password">
+            <button class="remind-password-button" type="button" @click="remindPassword">
+                Nie pamiętam hasła
+            </button>
+        </div>
+        <div class="buttons-group">
+            <button class="button" type="submit">ZALOGUJ</button>
+            <button class="button" type="button" @click="switchToRegister">
+                ZAREJESTRUJ
+            </button>
+        </div>
+    </form>
+</div>
+</template>
+
+<script>
+import Swal from 'sweetalert2';
+
+export default {
+    data() {
+        return {
+            email: '',
+            password: '',
+        };
+    },
+    methods: {
+        async login() {
+            try {
+                await this.$store.dispatch('login', {
+                    email: this.email,
+                    password: this.password
+                });
+
+                const firstLogin = this.$store.getters.getFirstLogin;
+
+                if (firstLogin) {
+                    Swal.fire({
+                        title: 'Witamy!',
+                        text: 'Zalogowano pomyślnie. Zostaniesz przekierowany do formularza początkowego.',
+                        icon: 'info',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        this.$emit('login');
+                        this.$router.push({
+                            name: 'Survey'
                         });
-                    } else {
-                        Swal.fire({
-                            title: 'Sukces!',
-                            text: 'Logowanie przebiegło pomyślnie.',
-                            icon: 'success',
-                            confirmButtonText: 'OK',
-                        }).then(() => {
-                            this.$emit('login');
-                        });
-                    }
-                    } catch (error) {
-                        Swal.fire({
-                            title: 'Błąd!',
-                            text: 'Wystąpił problem z logowaniem. Sprawdź dane i spróbuj ponownie.',
-                            icon: 'error',
-                            confirmButtonText: 'OK',
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Sukces!',
+                        text: 'Logowanie przebiegło pomyślnie.',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                    }).then(() => {
+                        this.$emit('login');
                     });
                 }
-            },
-            remindPassword() {
-                this.$emit('switch-form', 'RemindPassword');
-            },
-            switchToRegister() {
-                this.$emit('switch-form', 'RegisterForm');
-            },
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: 'Wystąpił problem z logowaniem. Sprawdź dane i spróbuj ponownie.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
         },
-    };
-    </script>
-    
-    <style lang="scss" scoped>
-    .title {
-        text-align: center;
-        font-size: 30px;
-        color: $primary-color;
-        font-family: 'Roboto-Light', 'sans-serif';
-    }
-    
-    .input-group {
-        margin-bottom: 10px;
-    }
-    
-    .remind-password {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        margin-top: 5px;
-        margin-bottom: 10px;
-    }
-    
-    .remind-password-button {
-        cursor: pointer;
-        color: $remind-password;
-        font-family: 'Roboto-Light', 'sans-serif';
-        font-size: 12px;
-        background-color: transparent;
-        border: none;
-        transition: color 0.3s ease;
-    }
-    
-    .remind-password-button:hover {
-        color: $primary-color;
-    }
-    
-    .buttons-group {
-        display: flex;
-        flex-direction: column;
-        width: 50%;
-        margin: 0 auto;
-    }
-    
-    .button {
-        cursor: pointer;
-        font-family: 'Roboto-Light', 'sans-serif';
-        font-size: 18px;
-        margin-bottom: 10px;
-        padding: 10px;
-        border-radius: 15px;
-        color: $tertiary-color;
-        background-color: $primary-color;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-    }
-    
-    .button:hover {
-        color: $white;
-        background-color: $primary-color;
-        border: 2px solid $tertiary-color;
-    }
-    
-    .input {
-        color: $white;
-        font-size: 22px;
-        padding: 10px;
-        background-color: $secondary-color;
-        outline: none;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-        border-radius: 15px;
-    }
-    
-    .input:hover,
-    .input:focus {
-        border: 2px solid $primary-color;
-    }
-    </style>
+        remindPassword() {
+            this.$emit('switch-form', 'RemindPassword');
+        },
+        switchToRegister() {
+            this.$emit('switch-form', 'RegisterForm');
+        },
+    },
+};
+</script>
+
+<style lang="scss" scoped>
+.title {
+    text-align: center;
+    font-size: 24px;
+    color: $primary-color;
+    font-family: 'Roboto-Light', 'sans-serif';
+}
+
+.input-group {
+    margin-bottom: 8px;
+}
+
+.input {
+    color: $white;
+    font-size: 18px;
+    padding: 8px;
+    background-color: $secondary-color;
+    outline: none;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+}
+
+.buttons-group {
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.button {
+    cursor: pointer;
+    font-family: 'Roboto-Light', 'sans-serif';
+    font-size: 16px;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    color: $tertiary-color;
+    background-color: $primary-color;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.remind-password {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.remind-password-button {
+    cursor: pointer;
+    color: $remind-password;
+    font-family: 'Roboto-Light', 'sans-serif';
+    font-size: 10px;
+    background-color: transparent;
+    border: none;
+    transition: color 0.3s ease;
+}
+
+.remind-password-button:hover {
+    color: $primary-color;
+}
+
+.buttons-group {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.button {
+    cursor: pointer;
+    font-family: 'Roboto-Light', 'sans-serif';
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 15px;
+    color: $tertiary-color;
+    background-color: $primary-color;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    color: $white;
+    background-color: $primary-color;
+    border: 2px solid $tertiary-color;
+}
+
+.input {
+    color: $white;
+    font-size: 22px;
+    padding: 10px;
+    background-color: $secondary-color;
+    outline: none;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    border-radius: 15px;
+}
+
+.input:hover,
+.input:focus {
+    border: 2px solid $primary-color;
+}
+</style>

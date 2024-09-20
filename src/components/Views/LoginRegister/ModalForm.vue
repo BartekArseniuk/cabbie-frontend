@@ -48,7 +48,13 @@ export default {
             }
         },
         modalSize() {
-            return this.isRegister ? 'large-modal' : 'normal-modal';
+            if (this.isRegister) {
+                return 'large-modal';
+            } else if (!this.isLogin && !this.isRegister) {
+                return 'small-modal';
+            } else {
+                return 'normal-modal';
+            }
         },
     },
     methods: {
@@ -142,23 +148,33 @@ export default {
     transition: width 0.3s ease, height 0.3s ease;
 }
 
+.small-modal {
+    width: 300px;
+    height: 200px;
+}
+
 .normal-modal {
-    width: 500px;
-    height: 350px;
+    width: 400px;
+    height: 300px;
 }
 
 .large-modal {
-    width: 600px;
-    height: 550px;
+    width: 500px;
+    height: 450px;
 }
 
 @media (max-width: 768px) {
     .modal-content {
-        margin: 30px;
+        margin: 20px;
     }
 
     .large-modal {
-        height: 600px;
+        height: 500px;
+    }
+
+    .small-modal {
+        width: 90%;
+        height: auto;
     }
 }
 </style>

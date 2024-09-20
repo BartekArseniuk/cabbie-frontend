@@ -1,7 +1,9 @@
 <template>
 <div>
     <transition name="fade" @before-enter="beforeEnter" @enter="enter" @leave="leave">
-        <LoaderComponent v-if="isLoading" class="loading" />
+        <div v-if="isLoading" class="loading-modal">
+            <LoaderComponent class="loading" />
+        </div>
     </transition>
 
     <div v-if="!isLoading">
@@ -23,11 +25,11 @@
             <p class="password-requirements">
                 Hasło musi zawierać minimum:
                 <ul>
-                    <li :class="{'valid': hasLowercase, 'invalid': !hasLowercase}">Jedną małą literę</li>
-                    <li :class="{'valid': hasUppercase, 'invalid': !hasUppercase}">Jedną wielką literę</li>
-                    <li :class="{'valid': hasDigit, 'invalid': !hasDigit}">Jedną cyfrę</li>
-                    <li :class="{'valid': hasSpecialChar, 'invalid': !hasSpecialChar}">Jeden znak specjalny (np. !, @, #, $)</li>
-                    <li :class="{'valid': isLongEnough, 'invalid': !isLongEnough}">Co najmniej 12 znaków</li>
+                    <li :class="{ valid: hasLowercase, invalid: !hasLowercase }">Jedną małą literę</li>
+                    <li :class="{ valid: hasUppercase, invalid: !hasUppercase }">Jedną wielką literę</li>
+                    <li :class="{ valid: hasDigit, invalid: !hasDigit }">Jedną cyfrę</li>
+                    <li :class="{ valid: hasSpecialChar, invalid: !hasSpecialChar }">Jeden znak specjalny (np. !, @, #, $)</li>
+                    <li :class="{ valid: isLongEnough, invalid: !isLongEnough }">Co najmniej 12 znaków</li>
                 </ul>
             </p>
             <div class="buttons-group">
@@ -39,7 +41,7 @@
 </div>
 </template>
 
-  
+    
 <script>
 import Swal from 'sweetalert2';
 import LoaderComponent from '@/components/Common/LoaderComponent.vue';
@@ -152,23 +154,24 @@ export default {
 };
 </script>
 
+    
 <style lang="scss" scoped>
 .title {
     text-align: center;
-    font-size: 30px;
+    font-size: 24px;
     color: $primary-color;
     font-family: 'Roboto-Light', 'sans-serif';
 }
 
 form {
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .input-group {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .password-group {
@@ -183,48 +186,42 @@ form {
     border: none;
     background: none;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     color: $white;
 }
 
 .buttons-group {
     display: flex;
     flex-direction: column;
-    width: 70%;
+    width: 60%;
     margin: 0 auto;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .button {
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 18px;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 15px;
+    font-size: 16px;
+    margin-bottom: 8px;
+    padding: 8px;
+    border-radius: 10px;
     color: $tertiary-color;
     background-color: $primary-color;
     border: 2px solid transparent;
     transition: all 0.3s ease;
 }
 
-.button:hover {
-    color: $white;
-    background-color: $primary-color;
-    border: 2px solid $tertiary-color;
-}
-
 .input {
     color: $white;
-    font-size: 22px;
+    font-size: 18px;
     width: 100%;
-    padding: 10px;
-    padding-right: 50px;
+    padding: 8px;
+    padding-right: 45px;
     background-color: $secondary-color;
     outline: none;
     border: 2px solid transparent;
     transition: all 0.3s ease;
-    border-radius: 15px;
+    border-radius: 10px;
     flex: 1;
 }
 
@@ -236,8 +233,8 @@ form {
 .password-requirements {
     font-family: 'Roboto-Extra-Light', 'sans-serif';
     color: $white;
-    font-size: 12px;
-    padding: 10px;
+    font-size: 10px;
+    padding: 8px;
 
     ul {
         list-style: none;
@@ -245,7 +242,7 @@ form {
     }
 
     li {
-        margin-bottom: 5px;
+        margin-bottom: 4px;
 
         &.valid {
             color: $primary-color;
@@ -257,15 +254,38 @@ form {
     }
 }
 
+.loading-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
+
 @media (max-width: 768px) {
     form {
-        padding-left: 0;
-        padding-right: 0;
+        padding-left: 10px;
+        padding-right: 10px;
     }
 
     .input-group {
         flex-direction: column;
-        max-width: 75%;
+        max-width: 80%;
     }
 
     .password-toggle {
