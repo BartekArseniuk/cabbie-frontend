@@ -11,11 +11,15 @@
       </div>
   
       <div class="messages-list">
-        <div v-for="message in messages" :key="message.id" class="message-item">
-          <p class="sender-email">{{ message.sender_email }}</p>
-          <p class="sender-title">{{ message.title }}</p>
-          <p class="sender-message">{{ message.message }}</p>
-          <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
+        <div v-for="(message, index) in messages" :key="message.id" class="message-item" @click="toggleMessage(index)">
+          <div class="message-details">
+              <p class="sender-email">{{ message.sender_email }}</p>
+              <p class="sender-title">{{ message.title }}</p>
+              <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
+          </div>
+          <div class="message-content" > 
+              <p v-if="message.showMessage" class="sender-message">{{ message.message }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -37,15 +41,20 @@
       async fetchMessages() {
         try {
           const response = await apiService.get('http://localhost:8000/messages');
-          this.messages = response.data;
+          this.messages = response.data.map(message => ({
+            ...message,
+            showMessage: false
+          }));
         } catch (error) {
           console.error('Error fetching messages:', error);
         }
       },
+      toggleMessage(index) {
+        this.messages[index].showMessage = !this.messages[index].showMessage;
+      },
       formatDate(dateString) {
         const formattedDate = dateString.replace(' ', 'T');
         const date = new Date(formattedDate);
-  
         return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
       }
     }
@@ -117,46 +126,69 @@
   .message-item {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    gap: 2%;
+    flex-direction: column;
+    gap: 10px;
     padding: 10px;
     background-color: transparent;
     border-radius: 8px;
     border: 3px solid $messages-color;
     margin-bottom: 15px;
     box-sizing: border-box;
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .message-details {
+    display: flex;
+    flex-direction: row;
   }
   
   .sender-email {
     font-weight: bold;
     color: $white;
     font-family: 'Roboto-Light', sans-serif;
+    flex-grow: 1;
   }
   .sender-title {
-      font-family: 'Roboto-Light', sans-serif;
-      color: $white;
-    }
+    font-family: 'Roboto-Light', sans-serif;
+    color: $white;
+    flex-grow: 1;
+  }
+
+  .message-content {
+    width: 100%;
+  }
   
   .sender-message {
-      font-family: 'Roboto-Light', sans-serif;
-      color: $white;
-      flex-grow: 1;
+    height: auto;
+    font-family: 'Roboto-Light', sans-serif;
+    color: $white;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    overflow: hidden;
+    white-space: normal;
+    max-width: 100%;
+    hyphens: auto;
+    word-break: break-word;
   }
   
   .sender-date {
+    flex-grow: 1;
     text-align: right;
     color: $white;
     font-family: 'Roboto-Light', sans-serif;
   }
-
-  @media (max-width: 768px) {
+  
+  @media (max-width: 830px) {
     .message-item {
-        display: flex;
+      display: flex;
+      flex-direction: column;
+    }
+    .message-details {
         flex-direction: column;
-        gap: 0px;
     }
     .sender-date {
-        text-align: left;
+      text-align: left;
     }
   }
   </style>
