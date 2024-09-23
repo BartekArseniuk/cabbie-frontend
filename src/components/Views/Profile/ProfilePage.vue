@@ -380,8 +380,9 @@ export default {
 }
 
 .driver-details-container {
-    margin-left: 100px;
+    margin-left: 10px;
     margin-right: 20px;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
