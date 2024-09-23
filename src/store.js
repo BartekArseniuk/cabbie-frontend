@@ -35,7 +35,7 @@ export default createStore({
     setFirstLogin(state, status) {
       state.firstLogin = status;
     },
-    setUserRole(state, role){
+    setUserRole(state, role) {
       state.userRole = role;
       const encryptedUserRole = encrypt(role);
       localStorage.setItem('R&4jH4@', encryptedUserRole);
@@ -65,7 +65,6 @@ export default createStore({
         throw new Error('Błąd rejestracji.');
       }
     },
-
     async login({ commit, dispatch }, { email, password }) {
       try {
         const response = await apiService.post('/login', { email, password });
@@ -77,6 +76,7 @@ export default createStore({
         commit('setUserId', userId);
         commit('setUserRole', role);
         await dispatch('fetchFirstLoginStatus');
+        await dispatch('getUserRole');
 
         await apiService.get('/test-session');
       } catch (error) {
@@ -201,7 +201,6 @@ export default createStore({
       }
     },
   },
-
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,

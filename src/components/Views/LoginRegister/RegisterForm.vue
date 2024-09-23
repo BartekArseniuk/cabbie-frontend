@@ -211,6 +211,12 @@ form {
     transition: all 0.3s ease;
 }
 
+.button:hover {
+    color: $white;
+    background-color: $primary-color;
+    border: 2px solid $tertiary-color;
+}
+
 .input {
     color: $white;
     font-size: 18px;

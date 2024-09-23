@@ -22,3 +22,13 @@
 .swal2-confirm:hover {
     background-color: $primary-color !important;
 }
+
+.swal2-cancel {
+    background-color: $background-color !important;
+    color: $white !important;
+    border-radius: 15px !important;
+}
+
+.swal2-cancel:hover {
+    background-color: darken($background-color, 10%) !important;
+}
