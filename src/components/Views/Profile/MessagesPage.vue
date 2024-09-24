@@ -220,6 +220,16 @@ export default {
     .sender-date {
       text-align: left;
     }
+    .messages-select {
+      display: flex;
+      flex-direction: row;
+      gap: 15px;
+    }
+    .for-someone {
+      width: 50%;
+      border-radius: 20px;
+      border: 2px solid $secondary-color;
+    }
   }
   </style>
   

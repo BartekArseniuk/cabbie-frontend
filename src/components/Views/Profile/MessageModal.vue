@@ -1,5 +1,5 @@
 <template>
-    <div class="modal-overlay" v-if="isVisible">
+    <div class="modal-overlay" v-if="isVisible" @click.self="closeModal">
       <div class="modal-content">
         <h2 class="title">NOWA WIADOMOŚĆ</h2>
         <input class="input" type="text" v-model="receiver" id="receiver" placeholder="Do: " />
@@ -32,26 +32,37 @@
       };
     },
     methods: {
-        async sendMessage() {
-            try {
-            await apiService.post('/messages/send', {
-                receiver_id: this.receiver,
-                title: this.title,
-                message: this.message,
-            });
-            Swal.fire('Wiadomość wysłana!', 'Twoja wiadomość została pomyślnie wysłana.', 'success');
-            this.closeModal();
-            } catch (error) {
-            console.error('Error sending message:', error);
-            Swal.fire('Błąd!', 'Nie udało się wysłać wiadomości.', 'error');
-            }
-        },
-        closeModal() {
-            this.$emit('close');
-            this.receiver = '';
-            this.title = '';
-            this.message = '';
-        },
+      async sendMessage() {
+          try {
+          await apiService.post('/messages/send', {
+              receiver_id: this.receiver,
+              title: this.title,
+              message: this.message,
+          });
+          Swal.fire('Wiadomość wysłana!', 'Twoja wiadomość została pomyślnie wysłana.', 'success');
+          this.closeModal();
+          } catch (error) {
+          console.error('Error sending message:', error);
+          Swal.fire('Błąd!', 'Nie udało się wysłać wiadomości.', 'error');
+          }
+      },
+      closeModal() {
+          this.$emit('close');
+          this.receiver = '';
+          this.title = '';
+          this.message = '';
+      },
+      handleKeyDown(event) {
+        if (event.key === 'Escape') {
+          this.closeModal();
+        }
+      },
+    },
+    mounted() {
+      window.addEventListener('keydown', this.handleKeyDown);
+    },
+    beforeUnmount() { // Use `unmounted` in Vue 3
+      window.removeEventListener('keydown', this.handleKeyDown);
     },
   };
   </script>
