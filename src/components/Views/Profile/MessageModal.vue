@@ -61,7 +61,7 @@
     mounted() {
       window.addEventListener('keydown', this.handleKeyDown);
     },
-    beforeUnmount() { // Use `unmounted` in Vue 3
+    beforeUnmount() {
       window.removeEventListener('keydown', this.handleKeyDown);
     },
   };

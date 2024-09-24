@@ -40,7 +40,7 @@ export default {
   data() {
     return {
       messages: [],
-      isModalVisible: false, // State to control modal visibility
+      isModalVisible: false,
     };
   },
   methods: {
@@ -50,6 +50,7 @@ export default {
         const response = await apiService.get(`http://localhost:8000${url}`);
         this.messages = response.data.map(message => ({
           ...message,
+          sender_email: type === 'global' ? 'Cabbie' : message.sender_email,
           showMessage: false
         }));
       } catch (error) {
