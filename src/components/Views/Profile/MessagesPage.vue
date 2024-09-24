@@ -1,65 +1,63 @@
 <template>
-    <div class="messages-container">
-      <div class="messages-select">
-        <button class="for-someone">Dla ciebie</button>
-        <button class="for-someone">Dla wszystkich</button>
-      </div>
-      
-      <div class="new-message">
-        <img class="pencil-img" src="@/assets/images/Pencil.svg" alt="pencil">
-        <p class="new-message-button">Napisz wiadomość</p>
-      </div>
-  
-      <div class="messages-list">
-        <div v-for="(message, index) in messages" :key="message.id" class="message-item" @click="toggleMessage(index)">
-          <div class="message-details">
-              <p class="sender-email">{{ message.sender_email }}</p>
-              <p class="sender-title">{{ message.title }}</p>
-              <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
-          </div>
-          <div class="message-content" > 
-              <p v-if="message.showMessage" class="sender-message">{{ message.message }}</p>
-          </div>
+  <div class="messages-container">
+    <div class="messages-select">
+      <button class="for-someone" @click="fetchMessages('private')">Dla ciebie</button>
+      <button class="for-someone" @click="fetchMessages('global')">Dla wszystkich</button>
+    </div>
+    
+    <div class="new-message">
+      <img class="pencil-img" src="@/assets/images/Pencil.svg" alt="pencil">
+      <p class="new-message-button">Napisz wiadomość</p>
+    </div>
+
+    <div class="messages-list">
+      <div v-for="(message, index) in messages" :key="message.id" class="message-item" @click="toggleMessage(index)">
+        <div class="message-details">
+            <p class="sender-email">{{ message.sender_email }}</p>
+            <p class="sender-title">{{ message.title }}</p>
+            <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
+        </div>
+        <div class="message-content">
+            <p v-if="message.showMessage" class="sender-message">{{ message.message }}</p>
         </div>
       </div>
     </div>
-  </template>
-  
-  <script>
-  import apiService from '@/apiService';
+  </div>
+</template>
 
-  export default {
-    data() {
-      return {
-        messages: []
-      };
-    },
-    mounted() {
-      this.fetchMessages();
-    },
-    methods: {
-      async fetchMessages() {
-        try {
-          const response = await apiService.get('http://localhost:8000/messages');
-          this.messages = response.data.map(message => ({
-            ...message,
-            showMessage: false
-          }));
-        } catch (error) {
-          console.error('Error fetching messages:', error);
-        }
-      },
-      toggleMessage(index) {
-        this.messages[index].showMessage = !this.messages[index].showMessage;
-      },
-      formatDate(dateString) {
-        const formattedDate = dateString.replace(' ', 'T');
-        const date = new Date(formattedDate);
-        return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
+<script>
+import apiService from '@/apiService';
+
+export default {
+  data() {
+    return {
+      messages: []
+    };
+  },
+  methods: {
+    async fetchMessages(type) {
+      const url = type === 'private' ? '/messages' : '/global-messages';
+      try {
+        const response = await apiService.get(`http://localhost:8000${url}`);
+        this.messages = response.data.map(message => ({
+          ...message,
+          showMessage: false
+        }));
+      } catch (error) {
+        console.error('Error fetching messages:', error);
       }
+    },
+    toggleMessage(index) {
+      this.messages[index].showMessage = !this.messages[index].showMessage;
+    },
+    formatDate(dateString) {
+      const formattedDate = dateString.replace(' ', 'T');
+      const date = new Date(formattedDate);
+      return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
     }
-  };
-  </script>
+  }
+};
+</script>
   
   <style lang="scss">
   .messages-container {
