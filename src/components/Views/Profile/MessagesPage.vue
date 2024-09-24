@@ -5,10 +5,14 @@
       <button class="for-someone" @click="fetchMessages('global')">Dla wszystkich</button>
     </div>
     
-    <div class="new-message">
+    <div class="new-message" @click="openModal">
       <img class="pencil-img" src="@/assets/images/Pencil.svg" alt="pencil">
       <p class="new-message-button">Napisz wiadomość</p>
     </div>
+
+    <transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
+      <message-modal :isVisible="isModalVisible" @close="closeModal" />
+    </transition>
 
     <div class="messages-list">
       <div v-for="(message, index) in messages" :key="message.id" class="message-item" @click="toggleMessage(index)">
@@ -18,7 +22,7 @@
             <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
         </div>
         <div class="message-content">
-            <p v-if="message.showMessage" class="sender-message">{{ message.message }}</p>
+            <p v-if="message.showMessage" class="sender-message">Treść: <br>{{ message.message }}</p>
         </div>
       </div>
     </div>
@@ -27,11 +31,16 @@
 
 <script>
 import apiService from '@/apiService';
+import MessageModal from './MessageModal.vue';
 
 export default {
+  components: {
+    MessageModal,
+  },
   data() {
     return {
-      messages: []
+      messages: [],
+      isModalVisible: false, // State to control modal visibility
     };
   },
   methods: {
@@ -54,7 +63,30 @@ export default {
       const formattedDate = dateString.replace(' ', 'T');
       const date = new Date(formattedDate);
       return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleString();
-    }
+    },
+    openModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
+    },
+    beforeEnterOverlay(el) {
+        el.style.opacity = 0;
+    },
+    enterOverlay(el, done) {
+        el.offsetHeight;
+        el.style.transition = 'opacity 0.3s ease';
+        el.style.opacity = 1;
+        done();
+    },
+    leaveOverlay(el, done) {
+        el.style.transition = 'opacity 0.3s ease';
+        el.style.opacity = 0;
+        setTimeout(() => {
+            this.closingModal = false;
+            done();
+        }, 300);
+    },
   }
 };
 </script>
@@ -177,7 +209,7 @@ export default {
     font-family: 'Roboto-Light', sans-serif;
   }
   
-  @media (max-width: 830px) {
+  @media (max-width: 1000px) {
     .message-item {
       display: flex;
       flex-direction: column;
