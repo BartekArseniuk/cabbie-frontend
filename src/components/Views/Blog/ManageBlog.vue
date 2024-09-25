@@ -50,7 +50,6 @@
 </div>
 </template>
 
-    
 <script>
 import apiService from '@/apiService';
 import Swal from 'sweetalert2';
@@ -65,7 +64,7 @@ export default {
             isAddingBlog: false,
             blogs: [],
             currentPage: 0,
-            pageSize: 5,
+            pageSize: 3,
         };
     },
     computed: {
@@ -94,8 +93,9 @@ export default {
                 updated_at: now,
             });
             this.isAddingBlog = false;
-            this.fetchBlogs();
+            this.$emit('update-blogs');
         },
+
         cancelAdding() {
             this.isAddingBlog = false;
         },
@@ -124,6 +124,7 @@ export default {
                     this.blogs = this.blogs.filter(blog => blog.id !== id);
                     Swal.fire('Usunięto!', 'Blog został usunięty.', 'success');
                     this.fetchBlogs();
+                    this.$emit('update-blogs');
                 } catch (error) {
                     console.error('Error deleting blog:', error);
                     Swal.fire('Błąd!', 'Nie udało się usunąć bloga.', 'error');
@@ -157,7 +158,6 @@ export default {
 };
 </script>
 
-    
 <style lang="scss" scoped>
 .manage-blog {
     display: flex;
@@ -166,13 +166,13 @@ export default {
     color: $white;
     font-family: 'Roboto-Light', sans-serif;
     background-color: $secondary-color;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
 }
 
 h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-bottom: 15px;
+    font-size: 22px;
     color: $white;
 }
 
@@ -181,14 +181,14 @@ h2 {
 }
 
 button {
-    margin: 5px;
+    margin: 4px;
     background-color: $primary-color;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     color: $white;
-    padding: 10px 15px;
+    padding: 8px 12px;
     transition: background-color 0.3s;
 }
 
@@ -199,7 +199,7 @@ button:hover {
 .blog-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 15px;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -211,8 +211,9 @@ button:hover {
 
 .blog-table th,
 .blog-table td {
-    padding: 12px 15px;
+    padding: 10px;
     text-align: left;
+    font-size: 14px;
 }
 
 .blog-table tr:hover {
@@ -221,21 +222,25 @@ button:hover {
 
 .button-group {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .pagination {
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    justify-content: center;
+    margin: 8px 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 .pagination button {
-    margin: 0 10px;
+    margin: 0 6px;
     background: $primary-color;
     color: $white;
-    padding: 5px 10px;
-    border-radius: 10px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 .pagination button:disabled {
@@ -247,24 +252,42 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+    .manage-blog {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .blog-table {
+        width: 100%;
+        display: block;
+    }
 
     .blog-table th,
     .blog-table td {
         font-size: 12px;
-        padding: 8px;
+        padding: 6px;
+    }
+
+    .pagination {
+        flex-wrap: nowrap;
     }
 
     .pagination button {
-        padding: 5px 8px;
+        padding: 4px 6px;
+        font-size: 12px;
     }
 
     .button-group {
-        gap: 5px;
+        gap: 4px;
     }
 
     button {
-        font-size: 14px;
-        padding: 8px 12px;
+        font-size: 12px;
+        padding: 6px 10px;
     }
 }
 </style>

@@ -21,7 +21,6 @@
 </div>
 </template>
 
-    
 <script>
 import apiService from '@/apiService';
 import Swal from 'sweetalert2';
@@ -31,7 +30,7 @@ export default {
         return {
             images: [],
             title: '',
-            date: this.getTodayDate(), // Ustaw dzisiejszą datę
+            date: this.getTodayDate(),
             author: '',
             content: '',
             selectedFile: null,
@@ -41,7 +40,7 @@ export default {
         getTodayDate() {
             const today = new Date();
             const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Miesiące są zerowo-indeksowane
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
             return `${yyyy}-${mm}-${dd}`;
         },
@@ -118,7 +117,7 @@ export default {
             this.images = [];
             this.selectedFile = null;
             this.title = '';
-            this.date = this.getTodayDate(); // Resetuj do dzisiejszej daty
+            this.date = this.getTodayDate();
             this.author = '';
             this.content = '';
         },
@@ -126,13 +125,13 @@ export default {
 };
 </script>
 
-    
 <style lang="scss" scoped>
 .create-blog {
-    max-width: 600px;
-    margin: auto;
+    max-width: 100%;
+    width: 90%;
+    margin: 0 auto;
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     background-color: $secondary-color;
     border-radius: 8px;
     font-family: 'Roboto-Light', 'sans-serif';
@@ -140,15 +139,15 @@ export default {
 }
 
 .image-upload {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .file-upload {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 8px 16px;
     background-color: $primary-color;
     color: $white;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -162,22 +161,23 @@ export default {
 }
 
 .file-info {
-    margin-top: 10px;
-    margin-left: 10px;
+    margin-top: 8px;
+    margin-left: 8px;
     color: $white;
+    font-size: 12px;
 }
 
 .inputs {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .input-field {
-    padding: 10px;
-    font-size: 16px;
+    padding: 8px;
+    font-size: 14px;
     border: 2px solid $primary-color;
-    border-radius: 15px;
+    border-radius: 12px;
     background-color: $secondary-color;
     color: $white;
     transition: border 0.3s ease;
@@ -185,24 +185,24 @@ export default {
 }
 
 .input-description {
-    padding: 15px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 14px;
     border: 2px solid $primary-color;
-    border-radius: 15px;
+    border-radius: 12px;
     background-color: $secondary-color;
     color: $white;
     transition: border 0.3s ease;
-    height: 150px;
+    height: 120px;
     resize: none;
     outline: none;
 
     &::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
     }
 
     &::-webkit-scrollbar-thumb {
         background-color: $primary-color;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
@@ -211,19 +211,20 @@ export default {
 
     &::-webkit-scrollbar-track {
         background: transparent;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 }
 
 .input-field::placeholder,
 .input-description::placeholder {
     color: #ccc;
+    font-size: 12px;
 }
 
 .button-container {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
 }
 
@@ -231,14 +232,13 @@ export default {
     background-color: $primary-color;
     color: $white;
     border: 2px solid $primary-color;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 20px;
-    padding: 10px 20px;
-    width: 150px;
+    font-size: 16px;
+    padding: 8px 16px;
+    width: 120px;
     transition: all 0.3s ease;
-    color: $tertiary-color;
 }
 
 .send:hover {
@@ -250,6 +250,21 @@ export default {
 @media (max-width: 768px) {
     .file-info {
         font-size: 10px;
+    }
+
+    .input-field,
+    .input-description {
+        font-size: 12px;
+    }
+
+    .send {
+        font-size: 14px;
+        padding: 6px 12px;
+        width: 100px;
+    }
+
+    .button-container {
+        gap: 5px;
     }
 }
 </style>
