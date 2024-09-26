@@ -92,7 +92,7 @@ export default {
 };
 </script>
   
-  <style lang="scss">
+  <style lang="scss" scoped>
   .messages-container {
     width: 100%;
   }
@@ -226,6 +226,8 @@ export default {
       flex-direction: row;
       gap: 15px;
     }
+  }
+  @media (max-width: 768px) {
     .for-someone {
       width: 50%;
       border-radius: 20px;
