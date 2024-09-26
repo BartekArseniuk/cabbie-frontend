@@ -51,9 +51,11 @@
 </template>
 
 <script>
-import apiService from '@/apiService';
-import Swal from 'sweetalert2';
+import {
+    mapGetters
+} from 'vuex';
 import CreateBlog from './CreateBlog.vue';
+import Swal from 'sweetalert2';
 
 export default {
     components: {
@@ -64,42 +66,40 @@ export default {
             isAddingBlog: false,
             isEditingBlog: false,
             editingBlog: null,
-            blogs: [],
             currentPage: 0,
             pageSize: 3,
         };
     },
     computed: {
+        ...mapGetters(['getBlogs']),
         paginatedBlogs() {
             const start = this.currentPage * this.pageSize;
-            return this.blogs.slice(start, start + this.pageSize);
+            return this.getBlogs.slice(start, start + this.pageSize);
         },
         totalPages() {
-            return Math.ceil(this.blogs.length / this.pageSize);
+            return Math.ceil(this.getBlogs.length / this.pageSize);
         },
     },
     methods: {
         async fetchBlogs() {
-            try {
-                const response = await apiService.get('blogs');
-                this.blogs = response.data;
-            } catch (error) {
-                console.error('Error fetching blogs:', error);
-            }
+            await this.$store.dispatch('fetchBlogs');
         },
         startAddingBlog() {
             this.isAddingBlog = true;
             this.editingBlog = null;
         },
-        handleAddPost(newPost) {
+        async handleAddPost(newPost) {
             const now = new Date().toISOString();
-            this.blogs.push({
-                ...newPost,
-                created_at: now,
-                updated_at: now,
-            });
-            this.isAddingBlog = false;
-            this.$emit('update-blogs');
+            try {
+                await this.$store.dispatch('addBlog', {
+                    ...newPost,
+                    created_at: now,
+                    updated_at: now,
+                });
+                this.isAddingBlog = false;
+            } catch (error) {
+                Swal.fire('Błąd!', error.message, 'error');
+            }
         },
         cancelEditingOrAdding() {
             this.isAddingBlog = false;
@@ -109,21 +109,18 @@ export default {
         editBlog(blog) {
             this.isEditingBlog = true;
             this.editingBlog = {
-                ...blog
+                ...blog,
             };
             this.isAddingBlog = false;
         },
         async handleUpdatePost(updatedPost) {
-            await apiService.put(`blogs/${updatedPost.id}`, updatedPost);
-            const index = this.blogs.findIndex(blog => blog.id === updatedPost.id);
-            if (index !== -1) {
-                this.blogs[index] = {
-                    ...updatedPost,
-                    updated_at: new Date().toISOString()
-                };
+            try {
+                await this.$store.dispatch('updateBlog', updatedPost);
+                this.isEditingBlog = false;
+                this.editingBlog = null;
+            } catch (error) {
+                Swal.fire('Błąd!', error.message, 'error');
             }
-            this.isEditingBlog = false;
-            this.editingBlog = null;
         },
         async deleteBlog(id) {
             const confirmation = await Swal.fire({
@@ -132,24 +129,14 @@ export default {
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Tak, usuń!',
-                cancelButtonText: 'Anuluj'
+                cancelButtonText: 'Anuluj',
             });
 
             if (confirmation.isConfirmed) {
                 try {
-                    const blogExists = this.blogs.some(blog => blog.id === id);
-                    if (!blogExists) {
-                        Swal.fire('Błąd!', 'Blog nie istnieje.', 'error');
-                        return;
-                    }
-
-                    await apiService.delete(`blogs/${id}`);
-                    this.blogs = this.blogs.filter(blog => blog.id !== id);
+                    await this.$store.dispatch('deleteBlog', id);
                     Swal.fire('Usunięto!', 'Blog został usunięty.', 'success');
-                    this.fetchBlogs();
-                    this.$emit('update-blogs');
                 } catch (error) {
-                    console.error('Error deleting blog:', error);
                     Swal.fire('Błąd!', 'Nie udało się usunąć bloga.', 'error');
                 }
             }

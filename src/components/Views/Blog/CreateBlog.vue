@@ -22,7 +22,9 @@
 </template>
 
 <script>
-import apiService from '@/apiService';
+import {
+    mapActions
+} from 'vuex';
 import Swal from 'sweetalert2';
 
 export default {
@@ -40,6 +42,7 @@ export default {
             content: this.blog ? this.blog.content : '',
             selectedFile: null,
             images: [],
+            validationErrors: {},
         };
     },
     computed: {
@@ -48,6 +51,8 @@ export default {
         }
     },
     methods: {
+        ...mapActions(['addBlog', 'updateBlog']),
+
         getTodayDate() {
             const today = new Date();
             const dd = String(today.getDate()).padStart(2, '0');
@@ -100,17 +105,12 @@ export default {
 
             try {
                 if (this.isEditing) {
-                    await apiService.put(`blogs/${this.blog.id}`, newPost);
-                    this.$emit('update-post', {
+                    await this.$store.dispatch('updateBlog', {
                         ...newPost,
                         id: this.blog.id
                     });
                 } else {
-                    const response = await apiService.post('blogs', newPost);
-                    this.$emit('add-post', {
-                        ...newPost,
-                        id: response.data.id
-                    });
+                    await this.$store.dispatch('addBlog', newPost);
                 }
 
                 this.resetForm();
@@ -119,6 +119,8 @@ export default {
                     text: this.isEditing ? 'Wpis został zaktualizowany pomyślnie!' : 'Wpis został dodany pomyślnie!',
                     icon: 'success',
                     confirmButtonText: 'OK',
+                }).then(() => {
+                    this.cancelAdding();
                 });
             } catch (error) {
                 let errorMessage = 'Wystąpił problem z ' + (this.isEditing ? 'aktualizowaniem' : 'dodawaniem') + ' wpisu. Spróbuj ponownie.';
@@ -143,6 +145,7 @@ export default {
             this.content = '';
             this.selectedFile = null;
             this.images = [];
+            this.validationErrors = {};
         },
         cancelAdding() {
             this.resetForm();
