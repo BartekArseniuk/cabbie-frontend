@@ -2,37 +2,22 @@
 <div class="news-page">
     <p class="title">AKTUALNOŚCI</p>
 
-    <button v-if="!isMobile" class="control-button left" @click="prev" :disabled="currentSlide === 0">
-        <i class="fas fa-chevron-left"></i>
-    </button>
-
-    <div class="carousel-wrapper">
-        <div class="carousel">
-            <div class="carousel-container" :style="carouselStyle">
-                <div class="carousel-item" v-for="(blog, index) in infiniteBlogs" :key="index">
-                    <BlogPreview :date="blog.date" :title="blog.title" :imageBase64="blog.image_base64" />
-                </div>
-            </div>
+    <transition name="slide-fade" @before-enter="beforeEnter" @enter="enter" @leave="leave">
+        <div class="blog-list" :key="currentPage">
+            <BlogPreview v-for="(blog, index) in paginatedBlogs" :key="index" :date="blog.date" :title="blog.title" :imageBase64="blog.image_base64" />
         </div>
+    </transition>
 
-        <div class="dot-navigation" v-if="!isMobile">
-            <span class="dot" v-for="(dot, index) in totalSlides" :key="index" :class="{ active: index === currentSlide }" @click="goToSlide(index)"></span>
-        </div>
-
-        <div class="dot-navigation" v-if="isMobile">
-            <span class="dot" v-for="(dot, index) in totalSlides" :key="index" :class="{ active: index === currentSlide }" @click="goToSlide(index)"></span>
-        </div>
-    </div>
-
-    <button v-if="!isMobile" class="control-button right" @click="next" :disabled="currentSlide >= totalSlides - 1">
-        <i class="fas fa-chevron-right"></i>
-    </button>
-
-    <div v-if="isMobile" class="mobile-navigation">
-        <button class="mobile-button left" @click="prev" :disabled="currentSlide === 0">
+    <div class="pagination" v-if="totalPages > 1">
+        <button @click="prevPage" :disabled="currentPage === 1" :style="{ color: currentPage === 1 ? '$placeholder-color' : '$primary-color' }">
             <i class="fas fa-chevron-left"></i>
         </button>
-        <button class="mobile-button right" @click="next" :disabled="currentSlide >= totalSlides - 1">
+
+        <div class="pagination-dots">
+            <span v-for="page in totalPages" :key="page" :class="['dot', { active: currentPage === page }]" @click="goToPage(page)"></span>
+        </div>
+
+        <button @click="nextPage" :disabled="currentPage === totalPages" :style="{ color: currentPage === totalPages ? '$placeholder-color' : '$primary-color' }">
             <i class="fas fa-chevron-right"></i>
         </button>
     </div>
@@ -56,102 +41,109 @@
 <script>
 import {
     mapGetters
-} from 'vuex';
-import ManageBlog from './ManageBlog.vue';
-import BlogPreview from './BlogPreview.vue';
-import apiService from '@/apiService';
+} from "vuex";
+import ManageBlog from "./ManageBlog.vue";
+import BlogPreview from "./BlogPreview.vue";
+import apiService from "@/apiService";
 
 export default {
     components: {
         ManageBlog,
-        BlogPreview
+        BlogPreview,
     },
     data() {
         return {
             showManageBlog: false,
             blogs: [],
-            currentSlide: 0,
-            itemsPerSlide: 3,
-            isMobile: window.innerWidth < 768,
-            infiniteBlogs: []
+            currentPage: 1,
+            blogsPerPage: 3,
+            direction: 'next',
         };
     },
     computed: {
-        ...mapGetters(['getRole']),
-        totalSlides() {
-            return Math.ceil(this.infiniteBlogs.length / this.itemsPerSlide);
+        ...mapGetters(["getRole"]),
+        paginatedBlogs() {
+            const start = (this.currentPage - 1) * this.blogsPerPage;
+            const end = start + this.blogsPerPage;
+            return this.blogs.slice(start, end);
         },
-        carouselStyle() {
-            const offset = -this.currentSlide * (100 / this.itemsPerSlide);
-            return {
-                transform: `translateX(${offset}%)`,
-                transition: 'transform 0.5s ease'
-            };
-        }
+        totalPages() {
+            return Math.ceil(this.blogs.length / this.blogsPerPage);
+        },
     },
     methods: {
         async fetchBlogs() {
             try {
-                const response = await apiService.get('blogs');
+                const response = await apiService.get("blogs");
                 this.blogs = response.data;
-
-                this.infiniteBlogs = this.isMobile ? [...this.blogs] : [...this.blogs, ...this.blogs];
+                this.updateBlogsPerPage();
             } catch (error) {
-                console.error('Błąd podczas pobierania blogów:', error);
+                console.error("Błąd podczas pobierania blogów:", error);
             }
         },
-        prev() {
-            if (this.currentSlide > 0) {
-                this.currentSlide--;
-            } else {
-                // Skok do końca w przypadku duplikacji
-                this.currentSlide = this.totalSlides - 1;
+        updateBlogsPerPage() {
+            const newBlogsPerPage = window.innerWidth <= 768 ? 1 : 3;
+
+            if (this.blogsPerPage !== newBlogsPerPage) {
+                this.blogsPerPage = newBlogsPerPage;
+                this.currentPage = 1;
             }
         },
-        next() {
-            if (this.currentSlide < this.totalSlides - 1) {
-                this.currentSlide++;
-            } else {
-                this.currentSlide = 0;
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.direction = 'prev';
+                this.currentPage--;
             }
         },
-        goToSlide(index) {
-            this.currentSlide = index;
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.direction = 'next';
+                this.currentPage++;
+            }
+        },
+        goToPage(page) {
+            this.currentPage = page;
         },
         openManageBlog() {
             this.showManageBlog = true;
-            window.addEventListener('keydown', this.handleKeydown);
+            window.addEventListener("keydown", this.handleKeydown);
         },
         closeManageBlog() {
             this.showManageBlog = false;
-            window.removeEventListener('keydown', this.handleKeydown);
+            window.removeEventListener("keydown", this.handleKeydown);
             this.fetchBlogs();
         },
         handleKeydown(event) {
-            if (event.key === 'Escape') {
+            if (event.key === "Escape") {
                 this.closeManageBlog();
             }
         },
-        updateItemsPerSlide() {
-            const previousIsMobile = this.isMobile;
-            this.isMobile = window.innerWidth < 768;
-            this.itemsPerSlide = this.isMobile ? 1 : 3;
-
-            if (this.isMobile !== previousIsMobile) {
-                this.currentSlide = 0;
-                this.infiniteBlogs = this.isMobile ? [...this.blogs] : [...this.blogs, ...this.blogs];
-            }
-        }
+        beforeEnter(el) {
+            el.style.transform = this.direction === 'next' ? 'translateX(100%)' : 'translateX(-100%)';
+            el.style.opacity = 0;
+        },
+        enter(el, done) {
+            el.offsetHeight;
+            el.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+            el.style.transform = 'translateX(0)';
+            el.style.opacity = 1;
+            done();
+        },
+        leave(el, done) {
+            el.style.transition = "transform 0.5s ease, opacity 0.5s ease";
+            el.style.transform = this.direction === 'next' ? 'translateX(-100%)' : 'translateX(100%)';
+            el.style.opacity = 0;
+            setTimeout(done, 500);
+        },
     },
     mounted() {
         this.fetchBlogs();
-        this.$store.dispatch('getUserRole');
-        this.updateItemsPerSlide();
-        window.addEventListener('resize', this.updateItemsPerSlide);
+        this.$store.dispatch("getUserRole");
+        window.addEventListener("resize", this.updateBlogsPerPage);
     },
     beforeUnmount() {
-        window.removeEventListener('resize', this.updateItemsPerSlide);
-    }
+        window.removeEventListener("resize", this.updateBlogsPerPage);
+    },
 };
 </script>
 
@@ -176,82 +168,55 @@ export default {
     color: $primary-color;
 }
 
-.carousel-wrapper {
-    width: 800px;
+.blog-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-}
-
-.carousel {
-    width: 100%;
-    overflow: hidden;
-    position: relative;
-}
-
-.carousel-container {
-    display: flex;
-    transition: transform 0.5s ease;
-}
-
-.carousel-item {
-    min-width: calc(100% / 3);
-    box-sizing: border-box;
-    padding: 10px;
-    display: flex;
+    width: 800px;
+    height: auto;
     justify-content: center;
-}
-
-.control-button {
+    gap: 30px;
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-    color: $primary-color;
-    transition: color 0.3s;
-    z-index: 2;
+    margin-top: 130px;
+}
 
-    &.left {
-        left: 30px;
-    }
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 320px;
 
-    &.right {
-        right: 30px;
-    }
+    button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 20px;
+        color: $primary-color;
 
-    &:hover {
-        color: darken($primary-color, 10%);
-    }
-
-    &:disabled {
-        color: gray;
-        cursor: not-allowed;
+        &:disabled {
+            color: $placeholder-color;
+            cursor: not-allowed;
+        }
     }
 }
 
-.dot-navigation {
+.pagination-dots {
     display: flex;
-    justify-content: center;
-    margin-top: 10px;
-    flex-wrap: wrap;
+    align-items: center;
+    margin: 0 20px;
 
     .dot {
         height: 10px;
         width: 10px;
         margin: 0 5px;
+        background-color: $placeholder-color;
         border-radius: 50%;
-        background-color: lightgray;
         cursor: pointer;
+        transition: background-color 0.3s ease;
 
         &.active {
             background-color: $primary-color;
-        }
-
-        &:hover {
-            background-color: darken($primary-color, 10%);
         }
     }
 }
@@ -302,9 +267,6 @@ export default {
     .news-page {
         height: 100vh;
     }
-    .carousel-item {
-        min-width: 100%;
-    }
 
     .modal {
         width: 90%;
@@ -316,30 +278,12 @@ export default {
         margin-top: 100px;
     }
 
-    .dot-navigation {
-        margin-top: 25px;
+    .blog-list {
+        margin-top: 200px;
     }
 
-    .mobile-navigation {
-        display: flex;
-        justify-content: center;
-        margin-top: 30px;
-    }
-
-    .mobile-button {
-        background: $primary-color;
-        border: none;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 12px;
-        font-size: 18px;
-        cursor: pointer;
-        margin: 0 10px;
-
-        &:disabled {
-            background: gray;
-            cursor: not-allowed;
-        }
+    .pagination {
+        margin-top: 350px;
     }
 }
 </style>

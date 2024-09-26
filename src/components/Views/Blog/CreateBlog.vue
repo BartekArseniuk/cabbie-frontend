@@ -1,6 +1,6 @@
 <template>
 <div class="create-blog">
-    <h2>Dodaj wpis</h2>
+    <h2>{{ isEditing ? 'Edytuj wpis' : 'Dodaj wpis' }}</h2>
     <div class="image-upload">
         <label class="file-upload">
             Wybierz obraz
@@ -10,12 +10,12 @@
     </div>
     <div class="inputs">
         <input type="text" v-model="title" placeholder="Tytuł" class="input-field" />
-        <input type="date" v-model="date" class="input-field" />
+        <input type="date" v-model="date" class="input-field" readonly />
         <input type="text" v-model="author" placeholder="Autor" class="input-field" />
         <textarea v-model="content" placeholder="Treść" class="input-description"></textarea>
     </div>
     <div class="button-container">
-        <button @click="addPost" class="send">Dodaj</button>
+        <button @click="submitPost" class="send">{{ isEditing ? 'Zapisz' : 'Dodaj' }}</button>
         <button @click="cancelAdding" class="send">Anuluj</button>
     </div>
 </div>
@@ -26,22 +26,33 @@ import apiService from '@/apiService';
 import Swal from 'sweetalert2';
 
 export default {
+    props: {
+        blog: {
+            type: Object,
+            default: null
+        },
+    },
     data() {
         return {
-            images: [],
-            title: '',
-            date: this.getTodayDate(),
-            author: '',
-            content: '',
+            title: this.blog ? this.blog.title : '',
+            date: this.blog ? this.blog.date : this.getTodayDate(),
+            author: this.blog ? this.blog.author : '',
+            content: this.blog ? this.blog.content : '',
             selectedFile: null,
+            images: [],
         };
+    },
+    computed: {
+        isEditing() {
+            return !!this.blog;
+        }
     },
     methods: {
         getTodayDate() {
             const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
             return `${yyyy}-${mm}-${dd}`;
         },
         onFileChange(event) {
@@ -78,8 +89,7 @@ export default {
                 reader.readAsDataURL(file);
             });
         },
-
-        async addPost() {
+        async submitPost() {
             const newPost = {
                 title: this.title,
                 date: this.date,
@@ -89,41 +99,58 @@ export default {
             };
 
             try {
-                await apiService.post('blogs', newPost);
+                if (this.isEditing) {
+                    await apiService.put(`blogs/${this.blog.id}`, newPost);
+                    this.$emit('update-post', {
+                        ...newPost,
+                        id: this.blog.id
+                    });
+                } else {
+                    const response = await apiService.post('blogs', newPost);
+                    this.$emit('add-post', {
+                        ...newPost,
+                        id: response.data.id
+                    });
+                }
+
                 this.resetForm();
                 Swal.fire({
                     title: 'Sukces!',
-                    text: 'Wpis został dodany pomyślnie!',
+                    text: this.isEditing ? 'Wpis został zaktualizowany pomyślnie!' : 'Wpis został dodany pomyślnie!',
                     icon: 'success',
                     confirmButtonText: 'OK',
                 });
-                this.$emit('add-post', newPost);
             } catch (error) {
+                let errorMessage = 'Wystąpił problem z ' + (this.isEditing ? 'aktualizowaniem' : 'dodawaniem') + ' wpisu. Spróbuj ponownie.';
+
+                if (error.response && error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+
                 Swal.fire({
                     title: 'Błąd!',
-                    text: 'Wystąpił problem z dodawaniem wpisu. Spróbuj ponownie.',
+                    text: errorMessage,
                     icon: 'error',
                     confirmButtonText: 'OK',
                 });
             }
         },
 
-        cancelAdding() {
-            this.resetForm();
-            this.$emit('cancel');
-        },
-
         resetForm() {
-            this.images = [];
-            this.selectedFile = null;
             this.title = '';
             this.date = this.getTodayDate();
             this.author = '';
             this.content = '';
+            this.selectedFile = null;
+            this.images = [];
+        },
+        cancelAdding() {
+            this.resetForm();
+            this.$emit('cancel');
         },
     },
 };
-</script>
+</script>  
 
 <style lang="scss" scoped>
 .create-blog {

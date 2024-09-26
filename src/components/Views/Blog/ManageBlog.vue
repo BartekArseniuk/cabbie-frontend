@@ -1,12 +1,12 @@
 <template>
 <div>
-    <CreateBlog v-if="isAddingBlog" @add-post="handleAddPost" @cancel="cancelAdding" />
+    <CreateBlog v-if="isAddingBlog || isEditingBlog" :blog="editingBlog" @add-post="handleAddPost" @update-post="handleUpdatePost" @cancel="cancelEditingOrAdding" />
 
     <div v-else class="manage-blog">
         <h2>Zarządzaj blogiem</h2>
 
         <div class="button-container">
-            <button @click="isAddingBlog = true">
+            <button @click="startAddingBlog">
                 <i class="fas fa-plus"></i> Dodaj
             </button>
         </div>
@@ -26,7 +26,7 @@
                     <td>{{ formatDate(blog.created_at) }}</td>
                     <td>{{ formatDate(blog.updated_at) }}</td>
                     <td class="button-group">
-                        <button @click="editBlog(blog.id)">
+                        <button @click="editBlog(blog)">
                             <i class="fas fa-edit"></i>
                         </button>
                         <button @click="deleteBlog(blog.id)">
@@ -62,6 +62,8 @@ export default {
     data() {
         return {
             isAddingBlog: false,
+            isEditingBlog: false,
+            editingBlog: null,
             blogs: [],
             currentPage: 0,
             pageSize: 3,
@@ -85,26 +87,47 @@ export default {
                 console.error('Error fetching blogs:', error);
             }
         },
+        startAddingBlog() {
+            this.isAddingBlog = true;
+            this.editingBlog = null;
+        },
         handleAddPost(newPost) {
             const now = new Date().toISOString();
             this.blogs.push({
-                title: newPost.title,
+                ...newPost,
                 created_at: now,
                 updated_at: now,
             });
             this.isAddingBlog = false;
             this.$emit('update-blogs');
         },
-
-        cancelAdding() {
+        cancelEditingOrAdding() {
+            this.isAddingBlog = false;
+            this.isEditingBlog = false;
+            this.editingBlog = null;
+        },
+        editBlog(blog) {
+            this.isEditingBlog = true;
+            this.editingBlog = {
+                ...blog
+            };
             this.isAddingBlog = false;
         },
-        editBlog() {
-
+        async handleUpdatePost(updatedPost) {
+            await apiService.put(`blogs/${updatedPost.id}`, updatedPost);
+            const index = this.blogs.findIndex(blog => blog.id === updatedPost.id);
+            if (index !== -1) {
+                this.blogs[index] = {
+                    ...updatedPost,
+                    updated_at: new Date().toISOString()
+                };
+            }
+            this.isEditingBlog = false;
+            this.editingBlog = null;
         },
         async deleteBlog(id) {
             const confirmation = await Swal.fire({
-                title: 'Czy na pewno chcesz usunąć tę aktualność?',
+                title: 'Czy na pewno chcesz usunąć ten wpis?',
                 text: "Nie będziesz mógł tego cofnąć!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -131,7 +154,6 @@ export default {
                 }
             }
         },
-
         nextPage() {
             if (this.currentPage < this.totalPages - 1) {
                 this.currentPage++;
@@ -263,6 +285,7 @@ button:hover {
 
     .blog-table {
         width: 100%;
+        overflow-x: auto;
         display: block;
     }
 
