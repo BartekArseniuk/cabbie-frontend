@@ -10,23 +10,23 @@
       <p class="new-message-button">Napisz wiadomość</p>
     </div>
 
-    <transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
-      <message-modal :isVisible="isModalVisible" @close="closeModal" />
-    </transition>
-
+    
     <div class="messages-list">
       <div v-for="(message, index) in messages" :key="message.id" class="message-item" @click="toggleMessage(index)">
         <div class="message-details">
-            <p class="sender-email">{{ message.sender_email }}</p>
-            <p class="sender-title">{{ message.title }}</p>
-            <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
+          <p class="sender-email">{{ message.sender_email }}</p>
+          <p class="sender-title">{{ message.title }}</p>
+          <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
         </div>
         <div class="message-content">
-            <p v-if="message.showMessage" class="sender-message">Treść: <br>{{ message.message }}</p>
+          <p v-if="message.showMessage" class="sender-message">Treść: <br>{{ message.message }}</p>
         </div>
       </div>
     </div>
   </div>
+  <transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
+    <message-modal :isVisible="isModalVisible" @close="closeModal" />
+  </transition>
 </template>
 
 <script>
