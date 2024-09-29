@@ -1,6 +1,11 @@
 <template>
 <div class="create-blog">
     <h2>{{ isEditing ? 'Edytuj wpis' : 'Dodaj wpis' }}</h2>
+
+    <button class="close-button" @click="cancelAdding">
+        <i class="fas fa-times"></i>
+    </button>
+
     <div class="image-upload">
         <label class="file-upload">
             Wybierz obraz
@@ -8,12 +13,14 @@
         </label>
         <span v-if="selectedFile" class="file-info">{{ selectedFile.name }}</span>
     </div>
+
     <div class="inputs">
         <input type="text" v-model="title" placeholder="Tytuł" class="input-field" />
         <input type="date" v-model="date" class="input-field" readonly />
         <input type="text" v-model="author" placeholder="Autor" class="input-field" />
         <textarea v-model="content" placeholder="Treść" class="input-description"></textarea>
     </div>
+
     <div class="button-container">
         <button @click="submitPost" class="send">{{ isEditing ? 'Zapisz' : 'Dodaj' }}</button>
         <button @click="cancelAdding" class="send">Anuluj</button>
@@ -153,7 +160,7 @@ export default {
         },
     },
 };
-</script>  
+</script>
 
 <style lang="scss" scoped>
 .create-blog {
@@ -166,6 +173,21 @@ export default {
     border-radius: 8px;
     font-family: 'Roboto-Light', 'sans-serif';
     color: $white;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: $primary-color;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    background-color: initial;
 }
 
 .image-upload {

@@ -5,6 +5,10 @@
     <div v-else class="manage-blog">
         <h2>Zarządzaj blogiem</h2>
 
+        <button class="close-button" @click="closeManageBlog">
+            <i class="fas fa-times"></i>
+        </button>
+
         <div class="button-container">
             <button @click="startAddingBlog">
                 <i class="fas fa-plus"></i> Dodaj
@@ -125,7 +129,7 @@ export default {
         async deleteBlog(id) {
             const confirmation = await Swal.fire({
                 title: 'Czy na pewno chcesz usunąć ten wpis?',
-                text: "Nie będziesz mógł tego cofnąć!",
+                text: 'Nie będziesz mógł tego cofnąć!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Tak, usuń!',
@@ -159,6 +163,9 @@ export default {
             const hours = String(date.getHours()).padStart(2, '0');
             const minutes = String(date.getMinutes()).padStart(2, '0');
             return `${day}-${month}-${year} ${hours}:${minutes}`;
+        },
+        closeManageBlog() {
+            this.$emit('close');
         },
     },
     mounted() {
@@ -299,5 +306,20 @@ button:hover {
         font-size: 12px;
         padding: 6px 10px;
     }
+}
+
+.close-button {
+    position: absolute;
+    background: none;
+    border: none;
+    color: $primary-color;
+    font-size: 24px;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+}
+
+.close-button:hover {
+    background-color: initial;
 }
 </style>
