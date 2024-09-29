@@ -15,7 +15,15 @@
                 <button v-if="!isMobile" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
                 <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
                     <template v-if="!isFirstLogin">
-                        <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="handleProfileMenuClick(menuItem)">
+                        <button @click="handleProfileMenuClick('DANE I DOKUMENTY')" class="profile-menu-button">
+                            DANE I DOKUMENTY
+                        </button>
+                        <button
+                            v-for="menuItem in profileMenuItems"
+                            :key="menuItem"
+                            @click="isEmailVerified ? handleProfileMenuClick(menuItem) : null"
+                            :class="{ disabled: !isEmailVerified }"
+                        >
                             {{ menuItem }}
                         </button>
                     </template>
@@ -99,13 +107,13 @@ export default {
                 }
             ],
             profileMenuItems: [
-                'DANE I DOKUMENTY', 'WIADOMOŚCI', 'PORTFEL', 'FAKTURY', 'USTAWIENIA ROZLICZEŃ', 'RYCZAŁT'
+                'WIADOMOŚCI', 'PORTFEL', 'FAKTURY', 'USTAWIENIA ROZLICZEŃ', 'RYCZAŁT'
             ],
             isMobile: window.innerWidth <= 768
         };
     },
     computed: {
-        ...mapGetters(['isAuthenticated', 'getFirstLogin','getRole']),
+        ...mapGetters(['isAuthenticated', 'getFirstLogin','getRole','isEmailVerified']),
         isFirstLogin() {
             return this.getFirstLogin;
         },
@@ -524,5 +532,11 @@ footer {
     text-align: center;
     font-family: 'Roboto-Light', 'sans-serif';
     color: $footer-background;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 </style>

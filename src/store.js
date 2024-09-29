@@ -227,5 +227,8 @@ export default createStore({
     getRole: state => state.userRole,
     getFirstLogin: state => state.firstLogin,
     getBlogs: state => state.blogs,
+    isEmailVerified(state) {
+      return state.user && state.user.email_verified_at !== null;
+    },
   },
 });
