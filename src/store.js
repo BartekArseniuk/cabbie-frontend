@@ -3,7 +3,7 @@ import apiService from './apiService';
 import Swal from 'sweetalert2';
 import CryptoJS from 'crypto-js';
 
-const encryptionKey = 'F8DSNF3HLR39UFSJF98D';  
+const encryptionKey = 'F8DSNF3HLR39UFSJF98D';
 
 const encrypt = (data) => CryptoJS.AES.encrypt(data, encryptionKey).toString();
 const decrypt = (ciphertext) => CryptoJS.AES.decrypt(ciphertext, encryptionKey).toString(CryptoJS.enc.Utf8);
@@ -16,6 +16,7 @@ export default createStore({
     userRole: null,
     firstLogin: true,
     isLoggedIn: false,
+    blogs: [],
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
@@ -39,7 +40,10 @@ export default createStore({
       state.userRole = role;
       const encryptedUserRole = encrypt(role);
       localStorage.setItem('R&4jH4@', encryptedUserRole);
-    }
+    },
+    setBlogs(state, blogs) {
+      state.blogs = blogs;
+    },
   },
   actions: {
     async register({ commit }, { first_name, last_name, email, password }) {
@@ -200,11 +204,28 @@ export default createStore({
         console.error('Error decrypting role:', error);
       }
     },
+    async fetchBlogs({ commit }) {
+      const response = await apiService.get('blogs');
+      commit('setBlogs', response.data);
+    },
+    async addBlog({ dispatch }, blog) {
+      await apiService.post('blogs', blog);
+      await dispatch('fetchBlogs');
+    },
+    async updateBlog({ dispatch }, updatedPost) {
+      await apiService.put(`blogs/${updatedPost.id}`, updatedPost);
+      await dispatch('fetchBlogs');
+    },
+    async deleteBlog({ dispatch }, id) {
+      await apiService.delete(`blogs/${id}`);
+      await dispatch('fetchBlogs');
+    },
   },
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,
     getRole: state => state.userRole,
     getFirstLogin: state => state.firstLogin,
+    getBlogs: state => state.blogs,
   },
 });

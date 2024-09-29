@@ -2,6 +2,7 @@
 <transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
     <div v-if="isVisible" class="modal-overlay" @click.self="closeModal">
         <div class="modal-content" :class="modalSize">
+            <button class="close-button" @click="closeModal">&times;</button>
             <transition @before-enter="beforeEnterForm" @enter="enterForm" @leave="leaveForm">
                 <component :is="currentForm" @login="handleLogin" @register="handleRegister" @switch-form="toggleForm" />
             </transition>
@@ -145,6 +146,7 @@ export default {
     align-items: center;
     justify-content: center;
     flex-direction: column;
+    position: relative;
     transition: width 0.3s ease, height 0.3s ease;
 }
 
@@ -161,6 +163,21 @@ export default {
 .large-modal {
     width: 500px;
     height: 450px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: $primary-color;
+}
+
+.close-button:hover {
+    color: darken($primary-color, 10%);
 }
 
 @media (max-width: 768px) {

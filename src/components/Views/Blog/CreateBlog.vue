@@ -1,6 +1,11 @@
 <template>
 <div class="create-blog">
-    <h2>Dodaj wpis</h2>
+    <h2>{{ isEditing ? 'Edytuj wpis' : 'Dodaj wpis' }}</h2>
+
+    <button class="close-button" @click="cancelAdding">
+        <i class="fas fa-times"></i>
+    </button>
+
     <div class="image-upload">
         <label class="file-upload">
             Wybierz obraz
@@ -8,41 +13,58 @@
         </label>
         <span v-if="selectedFile" class="file-info">{{ selectedFile.name }}</span>
     </div>
+
     <div class="inputs">
         <input type="text" v-model="title" placeholder="Tytuł" class="input-field" />
-        <input type="date" v-model="date" class="input-field" />
+        <input type="date" v-model="date" class="input-field" readonly />
         <input type="text" v-model="author" placeholder="Autor" class="input-field" />
         <textarea v-model="content" placeholder="Treść" class="input-description"></textarea>
     </div>
+
     <div class="button-container">
-        <button @click="addPost" class="send">Dodaj</button>
+        <button @click="submitPost" class="send">{{ isEditing ? 'Zapisz' : 'Dodaj' }}</button>
         <button @click="cancelAdding" class="send">Anuluj</button>
     </div>
 </div>
 </template>
 
-    
 <script>
-import apiService from '@/apiService';
+import {
+    mapActions
+} from 'vuex';
 import Swal from 'sweetalert2';
 
 export default {
+    props: {
+        blog: {
+            type: Object,
+            default: null
+        },
+    },
     data() {
         return {
-            images: [],
-            title: '',
-            date: this.getTodayDate(), // Ustaw dzisiejszą datę
-            author: '',
-            content: '',
+            title: this.blog ? this.blog.title : '',
+            date: this.blog ? this.blog.date : this.getTodayDate(),
+            author: this.blog ? this.blog.author : '',
+            content: this.blog ? this.blog.content : '',
             selectedFile: null,
+            images: [],
+            validationErrors: {},
         };
     },
+    computed: {
+        isEditing() {
+            return !!this.blog;
+        }
+    },
     methods: {
+        ...mapActions(['addBlog', 'updateBlog']),
+
         getTodayDate() {
             const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0'); // Miesiące są zerowo-indeksowane
             const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const yyyy = today.getFullYear();
             return `${yyyy}-${mm}-${dd}`;
         },
         onFileChange(event) {
@@ -79,8 +101,7 @@ export default {
                 reader.readAsDataURL(file);
             });
         },
-
-        async addPost() {
+        async submitPost() {
             const newPost = {
                 title: this.title,
                 date: this.date,
@@ -90,65 +111,95 @@ export default {
             };
 
             try {
-                await apiService.post('blogs', newPost);
+                if (this.isEditing) {
+                    await this.$store.dispatch('updateBlog', {
+                        ...newPost,
+                        id: this.blog.id
+                    });
+                } else {
+                    await this.$store.dispatch('addBlog', newPost);
+                }
+
                 this.resetForm();
                 Swal.fire({
                     title: 'Sukces!',
-                    text: 'Wpis został dodany pomyślnie!',
+                    text: this.isEditing ? 'Wpis został zaktualizowany pomyślnie!' : 'Wpis został dodany pomyślnie!',
                     icon: 'success',
                     confirmButtonText: 'OK',
+                }).then(() => {
+                    this.cancelAdding();
                 });
-                this.$emit('add-post', newPost);
             } catch (error) {
+                let errorMessage = 'Wystąpił problem z ' + (this.isEditing ? 'aktualizowaniem' : 'dodawaniem') + ' wpisu. Spróbuj ponownie.';
+
+                if (error.response && error.response.data && error.response.data.message) {
+                    errorMessage = error.response.data.message;
+                }
+
                 Swal.fire({
                     title: 'Błąd!',
-                    text: 'Wystąpił problem z dodawaniem wpisu. Spróbuj ponownie.',
+                    text: errorMessage,
                     icon: 'error',
                     confirmButtonText: 'OK',
                 });
             }
         },
 
+        resetForm() {
+            this.title = '';
+            this.date = this.getTodayDate();
+            this.author = '';
+            this.content = '';
+            this.selectedFile = null;
+            this.images = [];
+            this.validationErrors = {};
+        },
         cancelAdding() {
             this.resetForm();
             this.$emit('cancel');
-        },
-
-        resetForm() {
-            this.images = [];
-            this.selectedFile = null;
-            this.title = '';
-            this.date = this.getTodayDate(); // Resetuj do dzisiejszej daty
-            this.author = '';
-            this.content = '';
         },
     },
 };
 </script>
 
-    
 <style lang="scss" scoped>
 .create-blog {
-    max-width: 600px;
-    margin: auto;
+    max-width: 100%;
+    width: 90%;
+    margin: 0 auto;
     text-align: center;
-    padding: 20px;
+    padding: 15px;
     background-color: $secondary-color;
     border-radius: 8px;
     font-family: 'Roboto-Light', 'sans-serif';
     color: $white;
 }
 
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: $primary-color;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    background-color: initial;
+}
+
 .image-upload {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .file-upload {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 8px 16px;
     background-color: $primary-color;
     color: $white;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -162,22 +213,23 @@ export default {
 }
 
 .file-info {
-    margin-top: 10px;
-    margin-left: 10px;
+    margin-top: 8px;
+    margin-left: 8px;
     color: $white;
+    font-size: 12px;
 }
 
 .inputs {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .input-field {
-    padding: 10px;
-    font-size: 16px;
+    padding: 8px;
+    font-size: 14px;
     border: 2px solid $primary-color;
-    border-radius: 15px;
+    border-radius: 12px;
     background-color: $secondary-color;
     color: $white;
     transition: border 0.3s ease;
@@ -185,24 +237,24 @@ export default {
 }
 
 .input-description {
-    padding: 15px;
-    font-size: 16px;
+    padding: 10px;
+    font-size: 14px;
     border: 2px solid $primary-color;
-    border-radius: 15px;
+    border-radius: 12px;
     background-color: $secondary-color;
     color: $white;
     transition: border 0.3s ease;
-    height: 150px;
+    height: 120px;
     resize: none;
     outline: none;
 
     &::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
     }
 
     &::-webkit-scrollbar-thumb {
         background-color: $primary-color;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
@@ -211,19 +263,20 @@ export default {
 
     &::-webkit-scrollbar-track {
         background: transparent;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 }
 
 .input-field::placeholder,
 .input-description::placeholder {
     color: #ccc;
+    font-size: 12px;
 }
 
 .button-container {
-    margin-top: 20px;
+    margin-top: 15px;
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
 }
 
@@ -231,14 +284,13 @@ export default {
     background-color: $primary-color;
     color: $white;
     border: 2px solid $primary-color;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 20px;
-    padding: 10px 20px;
-    width: 150px;
+    font-size: 16px;
+    padding: 8px 16px;
+    width: 120px;
     transition: all 0.3s ease;
-    color: $tertiary-color;
 }
 
 .send:hover {
@@ -250,6 +302,21 @@ export default {
 @media (max-width: 768px) {
     .file-info {
         font-size: 10px;
+    }
+
+    .input-field,
+    .input-description {
+        font-size: 12px;
+    }
+
+    .send {
+        font-size: 14px;
+        padding: 6px 12px;
+        width: 100px;
+    }
+
+    .button-container {
+        gap: 5px;
     }
 }
 </style>
