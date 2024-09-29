@@ -133,6 +133,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.driver-details {
+    margin-left: 40px;
+}
+
 .title,
 .second-title,
 .subtitle {
