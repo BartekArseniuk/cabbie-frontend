@@ -6,7 +6,7 @@
     <div class="info">
         <p class="news-label">Nowości - {{ formattedDate }}</p>
         <h3 class="title">{{ title }}</h3>
-        <button class="learn-more">
+        <button class="learn-more" @click="$emit('openModal')">
             <span class="circle" aria-hidden="true">
                 <span class="icon arrow"></span>
             </span>
@@ -51,7 +51,6 @@ export default {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    margin: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -92,6 +91,7 @@ export default {
     margin-top: 8px;
     margin-bottom: 3px;
     color: $white;
+    width: 90%;
     font-family: 'Roboto-Extra-Light', sans-serif;
 }
 

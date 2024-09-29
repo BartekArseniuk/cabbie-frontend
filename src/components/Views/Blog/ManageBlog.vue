@@ -1,12 +1,16 @@
 <template>
 <div>
-    <CreateBlog v-if="isAddingBlog" @add-post="handleAddPost" @cancel="cancelAdding" />
+    <CreateBlog v-if="isAddingBlog || isEditingBlog" :blog="editingBlog" @add-post="handleAddPost" @update-post="handleUpdatePost" @cancel="cancelEditingOrAdding" />
 
     <div v-else class="manage-blog">
         <h2>Zarządzaj blogiem</h2>
 
+        <button class="close-button" @click="closeManageBlog">
+            <i class="fas fa-times"></i>
+        </button>
+
         <div class="button-container">
-            <button @click="isAddingBlog = true">
+            <button @click="startAddingBlog">
                 <i class="fas fa-plus"></i> Dodaj
             </button>
         </div>
@@ -26,7 +30,7 @@
                     <td>{{ formatDate(blog.created_at) }}</td>
                     <td>{{ formatDate(blog.updated_at) }}</td>
                     <td class="button-group">
-                        <button @click="editBlog(blog.id)">
+                        <button @click="editBlog(blog)">
                             <i class="fas fa-edit"></i>
                         </button>
                         <button @click="deleteBlog(blog.id)">
@@ -50,11 +54,12 @@
 </div>
 </template>
 
-    
 <script>
-import apiService from '@/apiService';
-import Swal from 'sweetalert2';
+import {
+    mapGetters
+} from 'vuex';
 import CreateBlog from './CreateBlog.vue';
+import Swal from 'sweetalert2';
 
 export default {
     components: {
@@ -63,74 +68,83 @@ export default {
     data() {
         return {
             isAddingBlog: false,
-            blogs: [],
+            isEditingBlog: false,
+            editingBlog: null,
             currentPage: 0,
-            pageSize: 5,
+            pageSize: 3,
         };
     },
     computed: {
+        ...mapGetters(['getBlogs']),
         paginatedBlogs() {
             const start = this.currentPage * this.pageSize;
-            return this.blogs.slice(start, start + this.pageSize);
+            return this.getBlogs.slice(start, start + this.pageSize);
         },
         totalPages() {
-            return Math.ceil(this.blogs.length / this.pageSize);
+            return Math.ceil(this.getBlogs.length / this.pageSize);
         },
     },
     methods: {
         async fetchBlogs() {
+            await this.$store.dispatch('fetchBlogs');
+        },
+        startAddingBlog() {
+            this.isAddingBlog = true;
+            this.editingBlog = null;
+        },
+        async handleAddPost(newPost) {
+            const now = new Date().toISOString();
             try {
-                const response = await apiService.get('blogs');
-                this.blogs = response.data;
+                await this.$store.dispatch('addBlog', {
+                    ...newPost,
+                    created_at: now,
+                    updated_at: now,
+                });
+                this.isAddingBlog = false;
             } catch (error) {
-                console.error('Error fetching blogs:', error);
+                Swal.fire('Błąd!', error.message, 'error');
             }
         },
-        handleAddPost(newPost) {
-            const now = new Date().toISOString();
-            this.blogs.push({
-                title: newPost.title,
-                created_at: now,
-                updated_at: now,
-            });
+        cancelEditingOrAdding() {
             this.isAddingBlog = false;
-            this.fetchBlogs();
+            this.isEditingBlog = false;
+            this.editingBlog = null;
         },
-        cancelAdding() {
+        editBlog(blog) {
+            this.isEditingBlog = true;
+            this.editingBlog = {
+                ...blog,
+            };
             this.isAddingBlog = false;
         },
-        editBlog() {
-
+        async handleUpdatePost(updatedPost) {
+            try {
+                await this.$store.dispatch('updateBlog', updatedPost);
+                this.isEditingBlog = false;
+                this.editingBlog = null;
+            } catch (error) {
+                Swal.fire('Błąd!', error.message, 'error');
+            }
         },
         async deleteBlog(id) {
             const confirmation = await Swal.fire({
-                title: 'Czy na pewno chcesz usunąć tę aktualność?',
-                text: "Nie będziesz mógł tego cofnąć!",
+                title: 'Czy na pewno chcesz usunąć ten wpis?',
+                text: 'Nie będziesz mógł tego cofnąć!',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Tak, usuń!',
-                cancelButtonText: 'Anuluj'
+                cancelButtonText: 'Anuluj',
             });
 
             if (confirmation.isConfirmed) {
                 try {
-                    const blogExists = this.blogs.some(blog => blog.id === id);
-                    if (!blogExists) {
-                        Swal.fire('Błąd!', 'Blog nie istnieje.', 'error');
-                        return;
-                    }
-
-                    await apiService.delete(`blogs/${id}`);
-                    this.blogs = this.blogs.filter(blog => blog.id !== id);
+                    await this.$store.dispatch('deleteBlog', id);
                     Swal.fire('Usunięto!', 'Blog został usunięty.', 'success');
-                    this.fetchBlogs();
                 } catch (error) {
-                    console.error('Error deleting blog:', error);
                     Swal.fire('Błąd!', 'Nie udało się usunąć bloga.', 'error');
                 }
             }
         },
-
         nextPage() {
             if (this.currentPage < this.totalPages - 1) {
                 this.currentPage++;
@@ -150,6 +164,9 @@ export default {
             const minutes = String(date.getMinutes()).padStart(2, '0');
             return `${day}-${month}-${year} ${hours}:${minutes}`;
         },
+        closeManageBlog() {
+            this.$emit('close');
+        },
     },
     mounted() {
         this.fetchBlogs();
@@ -157,7 +174,6 @@ export default {
 };
 </script>
 
-    
 <style lang="scss" scoped>
 .manage-blog {
     display: flex;
@@ -166,13 +182,13 @@ export default {
     color: $white;
     font-family: 'Roboto-Light', sans-serif;
     background-color: $secondary-color;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
 }
 
 h2 {
-    margin-bottom: 20px;
-    font-size: 24px;
+    margin-bottom: 15px;
+    font-size: 22px;
     color: $white;
 }
 
@@ -181,14 +197,14 @@ h2 {
 }
 
 button {
-    margin: 5px;
+    margin: 4px;
     background-color: $primary-color;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     color: $white;
-    padding: 10px 15px;
+    padding: 8px 12px;
     transition: background-color 0.3s;
 }
 
@@ -199,7 +215,7 @@ button:hover {
 .blog-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 15px;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -211,8 +227,9 @@ button:hover {
 
 .blog-table th,
 .blog-table td {
-    padding: 12px 15px;
+    padding: 10px;
     text-align: left;
+    font-size: 14px;
 }
 
 .blog-table tr:hover {
@@ -221,21 +238,25 @@ button:hover {
 
 .button-group {
     display: flex;
-    gap: 10px;
+    gap: 8px;
 }
 
 .pagination {
     display: flex;
     align-items: center;
-    margin: 10px 0;
+    justify-content: center;
+    margin: 8px 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
 }
 
 .pagination button {
-    margin: 0 10px;
+    margin: 0 6px;
     background: $primary-color;
     color: $white;
-    padding: 5px 10px;
-    border-radius: 10px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 14px;
 }
 
 .pagination button:disabled {
@@ -247,24 +268,58 @@ button:hover {
 }
 
 @media (max-width: 768px) {
+    .manage-blog {
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .blog-table {
+        width: 100%;
+        overflow-x: auto;
+        display: block;
+    }
 
     .blog-table th,
     .blog-table td {
         font-size: 12px;
-        padding: 8px;
+        padding: 6px;
+    }
+
+    .pagination {
+        flex-wrap: nowrap;
     }
 
     .pagination button {
-        padding: 5px 8px;
+        padding: 4px 6px;
+        font-size: 12px;
     }
 
     .button-group {
-        gap: 5px;
+        gap: 4px;
     }
 
     button {
-        font-size: 14px;
-        padding: 8px 12px;
+        font-size: 12px;
+        padding: 6px 10px;
     }
+}
+
+.close-button {
+    position: absolute;
+    background: none;
+    border: none;
+    color: $primary-color;
+    font-size: 24px;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+}
+
+.close-button:hover {
+    background-color: initial;
 }
 </style>
