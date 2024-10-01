@@ -318,6 +318,12 @@ export default {
     z-index: 999;
 }
 
+.modal {
+    width: 90%;
+    max-width: 600px;
+    padding: 15px;
+}
+
 @media (max-width: 768px) {
     .news-page {
         height: 100vh;

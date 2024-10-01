@@ -2,10 +2,6 @@
 <div class="create-blog">
     <h2>{{ isEditing ? 'Edytuj wpis' : 'Dodaj wpis' }}</h2>
 
-    <button class="close-button" @click="cancelAdding">
-        <i class="fas fa-times"></i>
-    </button>
-
     <div class="image-upload">
         <label class="file-upload">
             Wybierz obraz
@@ -164,30 +160,15 @@ export default {
 
 <style lang="scss" scoped>
 .create-blog {
-    max-width: 100%;
-    width: 90%;
+    position: relative;
+    width: 100%;
     margin: 0 auto;
     text-align: center;
     padding: 15px;
     background-color: $secondary-color;
-    border-radius: 8px;
+    border-radius: 20px;
     font-family: 'Roboto-Light', 'sans-serif';
     color: $white;
-}
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    color: $primary-color;
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.close-button:hover {
-    background-color: initial;
 }
 
 .image-upload {
@@ -230,7 +211,7 @@ export default {
     font-size: 14px;
     border: 2px solid $primary-color;
     border-radius: 12px;
-    background-color: $secondary-color;
+    background-color: $quaternary-color;
     color: $white;
     transition: border 0.3s ease;
     outline: none;
@@ -241,30 +222,28 @@ export default {
     font-size: 14px;
     border: 2px solid $primary-color;
     border-radius: 12px;
-    background-color: $secondary-color;
+    background-color: $quaternary-color;
     color: $white;
+    box-sizing: border-box;
     transition: border 0.3s ease;
     height: 120px;
     resize: none;
     outline: none;
+    overflow-y: auto;
+}
 
-    &::-webkit-scrollbar {
-        width: 6px;
-    }
+.input-description::-webkit-scrollbar {
+    width: 8px;
+}
 
-    &::-webkit-scrollbar-thumb {
-        background-color: $primary-color;
-        border-radius: 8px;
-    }
+.input-description::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 10px;
+}
 
-    &::-webkit-scrollbar-thumb:hover {
-        background-color: darken($primary-color, 10%);
-    }
-
-    &::-webkit-scrollbar-track {
-        background: transparent;
-        border-radius: 8px;
-    }
+.input-description::-webkit-scrollbar-track {
+    background: $scroll-track;
+    border-radius: 10px;
 }
 
 .input-field::placeholder,
@@ -300,6 +279,10 @@ export default {
 }
 
 @media (max-width: 768px) {
+    .create-blog {
+        width: 90%;
+    }
+
     .file-info {
         font-size: 10px;
     }

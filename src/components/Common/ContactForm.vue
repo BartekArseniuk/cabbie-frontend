@@ -31,13 +31,12 @@ const message = ref('');
 
 <style lang="scss" scoped>
 .contact {
-    height: auto;
-    padding: 0 200px;
+    padding: 0 100px;
 }
 
 .title {
     text-align: left;
-    font-size: 36px;
+    font-size: 30px;
     font-family: 'Roboto-Light', sans-serif;
     color: $white;
     margin-bottom: 20px;
@@ -46,36 +45,35 @@ const message = ref('');
 .contact-form {
     display: flex;
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
 }
 
 .input-row {
     display: flex;
-    justify-content: space-between;
-    gap: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
 }
 
 .input-field {
-    padding: 10px;
-    font-size: 24px;
+    padding: 8px; 
+    font-size: 20px; 
     font-family: 'Roboto-Light', sans-serif;
     border: 2px solid transparent;
-    border-radius: 15px;
+    border-radius: 12px; 
     box-sizing: border-box;
     background-color: $secondary-color;
     color: $white;
     transition: border 0.3s ease;
     flex: 1;
-    width: 100%;
     outline: none;
 }
 
 .input-description {
-    padding: 15px;
-    font-size: 24px;
+    padding: 10px;
+    font-size: 20px;
     font-family: 'Roboto-Light', sans-serif;
     border: 2px solid transparent;
-    border-radius: 15px;
+    border-radius: 12px;
     box-sizing: border-box;
     background-color: $secondary-color;
     color: $white;
@@ -83,6 +81,21 @@ const message = ref('');
     height: 150px;
     resize: none;
     outline: none;
+    overflow-y: auto;
+}
+
+.input-description::-webkit-scrollbar {
+    width: 8px;
+}
+
+.input-description::-webkit-scrollbar-thumb {
+    background-color: $primary-color;
+    border-radius: 10px;
+}
+
+.input-description::-webkit-scrollbar-track {
+    background: $scroll-track;
+    border-radius: 10px;
 }
 
 .input-field:hover,
@@ -99,10 +112,10 @@ const message = ref('');
     border-radius: 8px;
     cursor: pointer;
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 20px;
-    padding: 10px 20px;
-    width: 150px;
-    margin-bottom: 50px;
+    font-size: 18px;
+    padding: 8px 15px;
+    width: 120px;
+    margin-bottom: 30px;
     transition: all 0.3s ease;
     color: $tertiary-color;
 }
@@ -116,7 +129,7 @@ const message = ref('');
 @media (max-width: 768px) {
     .contact {
         height: auto;
-        padding: 0 50px;
+        padding: 0 20px;
     }
 
     .input-row {

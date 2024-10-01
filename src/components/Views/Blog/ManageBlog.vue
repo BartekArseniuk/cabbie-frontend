@@ -1,56 +1,59 @@
 <template>
 <div>
-    <CreateBlog v-if="isAddingBlog || isEditingBlog" :blog="editingBlog" @add-post="handleAddPost" @update-post="handleUpdatePost" @cancel="cancelEditingOrAdding" />
-
-    <div v-else class="manage-blog">
-        <h2>Zarządzaj blogiem</h2>
-
-        <button class="close-button" @click="closeManageBlog">
-            <i class="fas fa-times"></i>
-        </button>
-
-        <div class="button-container">
-            <button @click="startAddingBlog">
-                <i class="fas fa-plus"></i> Dodaj
-            </button>
+    <transition @before-enter="beforeEnter" @enter="enter" @leave="leave" mode="out-in">
+        <div v-if="isAddingBlog || isEditingBlog" key="create-blog">
+            <CreateBlog :blog="editingBlog" @add-post="handleAddPost" @update-post="handleUpdatePost" @cancel="cancelEditingOrAdding" />
         </div>
+        <div v-else key="manage-blog" class="manage-blog">
+            <h2>Zarządzaj blogiem</h2>
 
-        <table class="blog-table">
-            <thead>
-                <tr>
-                    <th>Tytuł</th>
-                    <th>Data dodania</th>
-                    <th>Data modyfikacji</th>
-                    <th>Akcje</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="blog in paginatedBlogs" :key="blog.id">
-                    <td>{{ blog.title }}</td>
-                    <td>{{ formatDate(blog.created_at) }}</td>
-                    <td>{{ formatDate(blog.updated_at) }}</td>
-                    <td class="button-group">
-                        <button @click="editBlog(blog)">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button @click="deleteBlog(blog.id)">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <button class="close-button" @click="closeManageBlog">
+                <i class="fas fa-times"></i>
+            </button>
 
-        <div class="pagination">
-            <button @click="prevPage" :disabled="currentPage === 0">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
-            <button @click="nextPage" :disabled="currentPage === totalPages - 1">
-                <i class="fas fa-chevron-right"></i>
-            </button>
+            <div class="button-container">
+                <button @click="startAddingBlog">
+                    <i class="fas fa-plus"></i> Dodaj
+                </button>
+            </div>
+
+            <table class="blog-table">
+                <thead>
+                    <tr>
+                        <th>Tytuł</th>
+                        <th>Data dodania</th>
+                        <th>Data modyfikacji</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="blog in paginatedBlogs" :key="blog.id">
+                        <td>{{ blog.title }}</td>
+                        <td>{{ formatDate(blog.created_at) }}</td>
+                        <td>{{ formatDate(blog.updated_at) }}</td>
+                        <td class="button-group">
+                            <button @click="editBlog(blog)">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button @click="deleteBlog(blog.id)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button @click="prevPage" :disabled="currentPage === 0">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <span>Strona {{ currentPage + 1 }} z {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages - 1">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
-    </div>
+    </transition>
 </div>
 </template>
 
@@ -167,6 +170,23 @@ export default {
         closeManageBlog() {
             this.$emit('close');
         },
+        beforeEnter(el) {
+            el.style.opacity = 0;
+            el.style.transform = 'scale(0.95)';
+        },
+        enter(el, done) {
+            el.offsetHeight; // trigger reflow
+            el.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+            el.style.opacity = 1;
+            el.style.transform = 'scale(1)';
+            done();
+        },
+        leave(el, done) {
+            el.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
+            el.style.opacity = 0;
+            el.style.transform = 'scale(0.95)';
+            setTimeout(done, 300);
+        }
     },
     mounted() {
         this.fetchBlogs();
@@ -183,7 +203,9 @@ export default {
     font-family: 'Roboto-Light', sans-serif;
     background-color: $secondary-color;
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 20px;
+    position: relative;
+    /* Added to position close button */
 }
 
 h2 {
@@ -315,8 +337,8 @@ button:hover {
     color: $primary-color;
     font-size: 24px;
     cursor: pointer;
-    right: 0;
-    top: 0;
+    right: 10px;
+    top: 10px;
 }
 
 .close-button:hover {

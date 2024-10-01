@@ -15,6 +15,10 @@
   </script>
   
   <style lang="scss" scoped>
+  .contact {
+    height: 100vh;
+  }
+
   .title {
     text-align: center;
     font-size: 36px;
@@ -32,6 +36,10 @@
   }
 
   @media (max-width: 768px) {
+    .contact {
+      height: auto;
+    }
+    
     .second-title {
       font-size: 20px;
     }

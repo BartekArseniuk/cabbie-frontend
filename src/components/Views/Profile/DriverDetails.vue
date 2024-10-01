@@ -134,7 +134,9 @@ export default {
 
 <style lang="scss" scoped>
 .driver-details {
-    margin-left: 40px;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
 }
 
 .title,
@@ -168,7 +170,7 @@ export default {
 
 .input-field {
     padding: 10px;
-    width: 400px;
+    width: 350px;
     font-size: 16px;
     font-family: 'Roboto-Light', sans-serif;
     border: 2px solid transparent;
@@ -284,7 +286,7 @@ export default {
 }
 
 .cancel:hover {
-    color: #fff;
+    color: $white;
     background-color: $remind-password;
     border: 2px solid $quaternary-color;
 }

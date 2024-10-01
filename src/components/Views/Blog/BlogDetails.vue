@@ -1,22 +1,23 @@
 <template>
-<div class="modal-backdrop" v-if="isVisible" @click.self="close">
-    <div class="blog-details">
-        <div class="header">
-            <img :src="fullImage" alt="Blog Image" class="header-image" />
-            <button class="close-button" @click="close">
-                <i class="fas fa-times"></i>
-            </button>
-            <p class="title">{{ blog.title }}</p>
-            <div class="author-info">
-                <p class="author">Autor: {{ blog.author }}</p>
-                <p class="date">Data: {{ formattedDate }}</p>
+    <div class="modal-backdrop" v-if="isVisible" @click.self="close">
+        <div class="blog-details">
+            <div class="header">
+                <img :src="fullImage" alt="Blog Image" class="header-image" />
+                <div class="blur-overlay"></div> <!-- Nowy efekt rozmycia -->
+                <button class="close-button" @click="close">
+                    <i class="fas fa-times"></i>
+                </button>
+                <p class="title">{{ blog.title }}</p>
+                <div class="author-info">
+                    <p class="author">Autor: {{ blog.author }}</p>
+                    <p class="date">Data: {{ formattedDate }}</p>
+                </div>
+            </div>
+            <div class="content">
+                <p>{{ blog.content }}</p>
             </div>
         </div>
-        <div class="content">
-            <p>{{ blog.content }}</p>
-        </div>
     </div>
-</div>
 </template>
 
 <script>
@@ -45,8 +46,8 @@ export default {
 <style lang="scss" scoped>
 .blog-details {
     width: 100%;
-    max-width: 600px;
-    border-radius: 20px;
+    max-width: 550px;
+    border-radius: 15px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     font-family: 'Roboto-Light', sans-serif;
     overflow: hidden;
@@ -55,7 +56,7 @@ export default {
 
 .header {
     position: relative;
-    padding-top: 30%;
+    padding-top: 28%;
     z-index: 1;
 }
 
@@ -66,93 +67,79 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.1);
-    filter: blur(6px);
+}
+
+.blur-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(4px);
+    z-index: 0;
 }
 
 .title {
     position: absolute;
     top: 10px;
-    left: 30px;
-    right: 30px;
+    left: 20px;
+    right: 20px;
     width: 70%;
     color: $primary-color;
-    font-size: 22px;
+    font-size: 20px;
     overflow-wrap: break-word;
+    z-index: 1;
 }
 
 .author-info {
     position: absolute;
-    bottom: 30px;
-    left: 30px;
+    bottom: 20px;
+    left: 20px;
     color: $placeholder-color;
-    font-size: 16px;
+    font-size: 14px;
+    z-index: 1;
 }
 
 .author,
 .date {
     margin: 0;
-    font-size: 0.9em;
+    font-size: 0.85em;
 }
 
 .content {
-    max-height: 350px;
+    max-height: 320px;
     margin: 0;
-    padding: 30px;
+    padding: 25px;
     background: rgba(71, 71, 71, 0.75);
     backdrop-filter: blur(2px);
     overflow-y: auto;
     color: $white;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.8) rgba(71, 71, 71, 0.5);
     white-space: pre-wrap;
-    font-size: 14px;
-}
+    font-size: 13px;
 
-.content::-webkit-scrollbar {
-    width: 10px;
-}
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
 
-.content::-webkit-scrollbar-track {
-    background: rgba(71, 71, 71, 0.5);
-    border-radius: 10px;
-}
+    &::-webkit-scrollbar-track {
+        background: $scroll-track;
+    }
 
-.content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.8);
-    border-radius: 10px;
-}
-
-.content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 1);
+    &::-webkit-scrollbar-thumb {
+        background-color: $primary-color;
+    }
 }
 
 .close-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 8px;
+    right: 8px;
     background: none;
     border: none;
     color: $primary-color;
-    font-size: 24px;
+    font-size: 22px;
     cursor: pointer;
-}
-
-@media (max-width: 768px) {
-    .header {
-        padding-top: 40%;
-    }
-
-    .title {
-        font-size: 20px;
-        left: 10px;
-        right: 10px;
-    }
-
-    .author-info {
-        font-size: 14px;
-        bottom: 20px;
-    }
+    z-index: 1;
 }
 
 @media (max-width: 480px) {
@@ -161,12 +148,12 @@ export default {
     }
 
     .header {
-        padding-top: 50%;
+        padding-top: 45%;
     }
 
     .title {
-        font-size: 18px;
-        left: 30px;
+        font-size: 16px;
+        left: 20px;
         right: 10px;
     }
 

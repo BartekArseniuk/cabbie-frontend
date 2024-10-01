@@ -21,7 +21,7 @@
                 <p class="sender-title">{{ message.title }}</p>
                 <p class="sender-date">Wysłane: {{ formatDate(message.sent_at) }}</p>
             </div>
-            <div class="message-content" :class="{ expanded: message.showMessage }">
+            <div class="message-content" :class="{ expanded: message.showMessage }" ref="messageContents">
                 <p class="sender-message">Treść: <br />{{ message.message }}</p>
             </div>
         </div>
@@ -66,7 +66,20 @@ export default {
             }
         },
         toggleMessage(index) {
-            this.messages[index].showMessage = !this.messages[index].showMessage;
+            const messageContent = this.$refs.messageContents[index];
+            if (!messageContent) {
+                console.error(`Message content for index ${index} is undefined.`);
+                return;
+            }
+
+            const isExpanded = this.messages[index].showMessage;
+            this.messages[index].showMessage = !isExpanded;
+
+            if (!isExpanded) {
+                messageContent.style.maxHeight = messageContent.scrollHeight + 'px';
+            } else {
+                messageContent.style.maxHeight = 0;
+            }
         },
         formatDate(dateString) {
             const formattedDate = dateString.replace(' ', 'T');
@@ -225,11 +238,11 @@ export default {
 .message-content {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.8s ease;
+    transition: max-height 0.5s ease;
 }
 
 .message-content.expanded {
-    max-height: 2000px;
+    max-height: none;
 }
 
 .sender-message {

@@ -1,5 +1,6 @@
 <template>
-  <div :class="['lets-begin', { 'home-page': props.isHomePage, 'offer-page': !props.isHomePage }]">
+  <div v-if="!isAuthenticated"
+    :class="['lets-begin', { 'home-page': props.isHomePage, 'offer-page': !props.isHomePage }]">
     <p class="title">ZACZNIJMY WSPÓŁPRACĘ</p>
     <p class="instructions">
       Aby rozpocząć współpracę i uzyskać dostęp do wszystkich funkcji,
@@ -12,13 +13,18 @@
 
 <script setup>
 import { defineProps } from 'vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
 const props = defineProps({
   isHomePage: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
+
+const store = useStore();
+const isAuthenticated = computed(() => store.state.isAuthenticated);
 </script>
 
 <style lang="scss" scoped>
