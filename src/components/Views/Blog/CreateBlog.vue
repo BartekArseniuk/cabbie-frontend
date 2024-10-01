@@ -4,7 +4,7 @@
 
     <div class="image-upload">
         <label class="file-upload">
-            Wybierz obraz
+            {{ isEditing ? 'Wybierz obraz lub zostaw bez zmian' : 'Wybierz obraz' }}
             <input type="file" @change="onFileChange" accept="image/*" class="input-file" />
         </label>
         <span v-if="selectedFile" class="file-info">{{ selectedFile.name }}</span>
@@ -12,7 +12,6 @@
 
     <div class="inputs">
         <input type="text" v-model="title" placeholder="Tytuł" class="input-field" />
-        <input type="date" v-model="date" class="input-field" readonly />
         <input type="text" v-model="author" placeholder="Autor" class="input-field" />
         <textarea v-model="content" placeholder="Treść" class="input-description"></textarea>
     </div>
@@ -23,7 +22,7 @@
     </div>
 </div>
 </template>
-
+    
 <script>
 import {
     mapActions
@@ -40,7 +39,6 @@ export default {
     data() {
         return {
             title: this.blog ? this.blog.title : '',
-            date: this.blog ? this.blog.date : this.getTodayDate(),
             author: this.blog ? this.blog.author : '',
             content: this.blog ? this.blog.content : '',
             selectedFile: null,
@@ -56,13 +54,6 @@ export default {
     methods: {
         ...mapActions(['addBlog', 'updateBlog']),
 
-        getTodayDate() {
-            const today = new Date();
-            const dd = String(today.getDate()).padStart(2, '0');
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const yyyy = today.getFullYear();
-            return `${yyyy}-${mm}-${dd}`;
-        },
         onFileChange(event) {
             const files = event.target.files;
             this.images = [];
@@ -97,10 +88,10 @@ export default {
                 reader.readAsDataURL(file);
             });
         },
+
         async submitPost() {
             const newPost = {
                 title: this.title,
-                date: this.date,
                 author: this.author,
                 content: this.content,
                 image_base64: this.images.length > 0 ? this.images[0] : null,
@@ -143,13 +134,13 @@ export default {
 
         resetForm() {
             this.title = '';
-            this.date = this.getTodayDate();
             this.author = '';
             this.content = '';
             this.selectedFile = null;
             this.images = [];
             this.validationErrors = {};
         },
+
         cancelAdding() {
             this.resetForm();
             this.$emit('cancel');
@@ -158,6 +149,7 @@ export default {
 };
 </script>
 
+    
 <style lang="scss" scoped>
 .create-blog {
     position: relative;

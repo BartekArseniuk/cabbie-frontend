@@ -4,7 +4,7 @@
 
     <transition name="slide-fade" @before-enter="beforeEnter" @enter="enter" @leave="leave">
         <div v-if="paginatedBlogs.length > 0" class="blog-list" :key="currentPage">
-            <BlogPreview v-for="(blog, index) in paginatedBlogs" :key="index" :date="blog.date" :title="blog.title" :imageBase64="blog.image_base64" @openModal="openBlogModal(blog)" />
+            <BlogPreview v-for="(blog, index) in paginatedBlogs" :key="index" :date="blog.updated_at" :title="blog.title" :imageBase64="blog.image_base64" @openModal="openBlogModal(blog)" />
         </div>
         <p v-else class="no-blogs">Brak aktualności</p>
     </transition>

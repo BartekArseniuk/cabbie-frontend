@@ -175,7 +175,7 @@ export default {
             el.style.transform = 'scale(0.95)';
         },
         enter(el, done) {
-            el.offsetHeight; // trigger reflow
+            el.offsetHeight;
             el.style.transition = 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out';
             el.style.opacity = 1;
             el.style.transform = 'scale(1)';
@@ -205,7 +205,6 @@ export default {
     padding: 15px;
     border-radius: 20px;
     position: relative;
-    /* Added to position close button */
 }
 
 h2 {
@@ -244,7 +243,7 @@ button:hover {
 
 .blog-table thead {
     background: $primary-color;
-    color: $white;
+    color: $tertiary-color;
 }
 
 .blog-table th,

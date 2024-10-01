@@ -1,23 +1,23 @@
 <template>
-    <div class="modal-backdrop" v-if="isVisible" @click.self="close">
-        <div class="blog-details">
-            <div class="header">
-                <img :src="fullImage" alt="Blog Image" class="header-image" />
-                <div class="blur-overlay"></div> <!-- Nowy efekt rozmycia -->
-                <button class="close-button" @click="close">
-                    <i class="fas fa-times"></i>
-                </button>
-                <p class="title">{{ blog.title }}</p>
-                <div class="author-info">
-                    <p class="author">Autor: {{ blog.author }}</p>
-                    <p class="date">Data: {{ formattedDate }}</p>
-                </div>
-            </div>
-            <div class="content">
-                <p>{{ blog.content }}</p>
+<div class="modal-backdrop" v-if="isVisible" @click.self="close">
+    <div class="blog-details">
+        <div class="header">
+            <img :src="fullImage" alt="Blog Image" class="header-image" />
+            <div class="blur-overlay"></div> <!-- Nowy efekt rozmycia -->
+            <button class="close-button" @click="close">
+                <i class="fas fa-times"></i>
+            </button>
+            <p class="title">{{ blog.title }}</p>
+            <div class="author-info">
+                <p class="author">Autor: {{ blog.author }}</p>
+                <p class="date">Data: {{ formattedDate }}</p>
             </div>
         </div>
+        <div class="content">
+            <p>{{ blog.content }}</p>
+        </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -31,7 +31,7 @@ export default {
             return `data:image/jpeg;base64,${this.blog.image_base64}`;
         },
         formattedDate() {
-            const date = new Date(this.blog.date);
+            const date = new Date(this.blog.updated_at);
             return date.toLocaleDateString();
         },
     },
