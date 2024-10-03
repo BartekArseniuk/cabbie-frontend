@@ -14,7 +14,9 @@
             </div>
         </div>
         <div class="content">
-            <p>{{ blog.content }}</p>
+            <div class="blog-content">
+                <p>{{ blog.content }}</p>
+            </div>
         </div>
     </div>
 </div>
@@ -95,7 +97,7 @@ export default {
     position: absolute;
     bottom: 20px;
     left: 20px;
-    color: $placeholder-color;
+    color: $white;
     font-size: 14px;
     z-index: 1;
 }
@@ -106,25 +108,31 @@ export default {
     font-size: 0.85em;
 }
 
+
 .content {
     max-height: 320px;
     margin: 0;
     padding: 25px;
     background: rgba(71, 71, 71, 0.75);
     backdrop-filter: blur(2px);
-    overflow-y: auto;
     color: $white;
     white-space: pre-wrap;
     font-size: 13px;
+    
+}
 
+.blog-content {
+    max-height: 250px;
+    overflow-y: auto; 
+    
     &::-webkit-scrollbar {
         width: 8px;
     }
-
+    
     &::-webkit-scrollbar-track {
         background: $scroll-track;
     }
-
+    
     &::-webkit-scrollbar-thumb {
         background-color: $primary-color;
     }
