@@ -17,6 +17,7 @@ export default createStore({
     firstLogin: true,
     isLoggedIn: false,
     blogs: [],
+    isUserEmailVerified: false,
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
@@ -44,6 +45,9 @@ export default createStore({
     setBlogs(state, blogs) {
       state.blogs = blogs;
     },
+    setIsEmailVerified(state, isEmailVerified) {
+      state.isUserEmailVerified = isEmailVerified;
+    }
   },
   actions: {
     async register({ commit }, { first_name, last_name, email, password }) {
@@ -158,6 +162,13 @@ export default createStore({
         const userId = decrypt(encryptedUserId);
         const response = await apiService.get(`users/${userId}`);
         commit('setUser', response.data);
+        if (response.data.email_verified_at == true){
+          commit('setIsEmailVerified', true);
+          console.log("nie zweryfikowano maila")
+        } else {
+          commit('setIsEmailVerified', false);
+        }
+
       } catch (error) {
         console.error('Error fetching user:', error);
       }
@@ -227,8 +238,6 @@ export default createStore({
     getRole: state => state.userRole,
     getFirstLogin: state => state.firstLogin,
     getBlogs: state => state.blogs,
-    isEmailVerified(state) {
-      return state.user && state.user.email_verified_at !== null;
-    },
+    isEmailVerified: state => state.isUserEmailVerified,
   },
 });
