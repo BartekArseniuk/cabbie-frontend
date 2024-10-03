@@ -16,7 +16,7 @@
   
   <style lang="scss" scoped>
   .contact {
-    height: 100vh;
+    height: auto;
   }
 
   .title {
