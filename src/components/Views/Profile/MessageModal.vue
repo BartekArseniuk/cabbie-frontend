@@ -21,8 +21,7 @@
 </template>
 
 <script>
-import apiService from "@/apiService";
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 import {
     mapGetters
 } from 'vuex';
@@ -43,7 +42,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['getRole'])
+        ...mapGetters(['getRole']),
     },
     methods: {
         async sendMessage() {
@@ -52,23 +51,16 @@ export default {
                     this.receiver = "admin@example.com";
                 }
 
-                const endpoint = this.isGlobal ?
-                    "/global-messages/send" :
-                    "/messages/send";
-
-                await apiService.post(endpoint, {
-                    receiver_email: this.isGlobal ? null : this.receiver,
+                await this.$store.dispatch('sendMessage', {
+                    isGlobal: this.isGlobal,
+                    receiver: this.receiver,
                     title: this.title,
                     message: this.message,
                 });
 
-                Swal.fire(
-                    "Wiadomość wysłana!",
-                    this.isGlobal ?
+                Swal.fire("Wiadomość wysłana!", this.isGlobal ?
                     "Twoja globalna wiadomość została pomyślnie wysłana." :
-                    "Twoja wiadomość została pomyślnie wysłana.",
-                    "success"
-                );
+                    "Twoja wiadomość została pomyślnie wysłana.", "success");
 
                 this.closeModal();
             } catch (error) {

@@ -6,7 +6,7 @@
     </div>
     <p class="opinion" v-if="reviews.length === 0">Brak opinii do wyświetlenia</p>
 
-    <div class="footer">
+    <div class="footer" v-if="reviews.length > 0">
         <p class="footer-text">
             Opinie dostarczone przez <img class="google-logo" src="@/assets/images/Google-Logo.wine.svg" alt="Google logo" />
         </p>
@@ -15,55 +15,48 @@
 </template>
 
 <script>
+import {
+    mapGetters
+} from 'vuex';
 import ReviewComponent from './ReviewComponent';
 
 export default {
     components: {
-        ReviewComponent
+        ReviewComponent,
     },
-    data() {
-        return {
-            reviews: []
-        };
+    computed: {
+        ...mapGetters(['getReviews']),
+        reviews() {
+            return this.getReviews;
+        },
     },
     mounted() {
-        this.fetchReviews();
+        this.$store.dispatch('fetchReviews');
     },
-    methods: {
-        async fetchReviews() {
-            try {
-                const response = await fetch(`http://localhost:8000/reviews/ChIJI7_8IzvHkwgRjBdfCt_u4cg`);
-                const data = await response.json();
-                this.reviews = data;
-            } catch (error) {
-                console.error('Error fetching reviews:', error);
-            }
-        }
-    }
-}
+};
 </script>
 
+    
 <style lang="scss" scoped>
 .opinions {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 5vh;
+    margin-bottom: 4vh;
 }
 
 .title {
     color: $primary-color;
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 42px;
+    font-size: 36px;
     text-align: center;
-    margin-top: 100px;
+    margin-top: 80px;
 }
 
 .reviews-container {
     display: flex;
-    flex-direction: row;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 15px;
     justify-content: center;
     align-items: center;
 }
@@ -74,25 +67,24 @@ export default {
 }
 
 .footer {
-    margin-top: 20px;
+    margin-top: 15px;
     text-align: center;
-    padding: 0 50px;
 }
 
 .footer-text {
     font-family: 'Roboto-Light', 'sans-serif';
-    font-size: 18px;
+    font-size: 16px;
     color: $white;
 }
 
 .google-logo {
-    height: 100px;
+    height: 80px;
     vertical-align: middle;
 }
 
 @media (max-width: 768px) {
     .title {
-        font-size: 36px;
+        font-size: 28px;
     }
 }
 </style>

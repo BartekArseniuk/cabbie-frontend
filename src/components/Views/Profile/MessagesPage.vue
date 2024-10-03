@@ -34,7 +34,9 @@
 </template>
 
 <script>
-import apiService from '@/apiService';
+import {
+    mapGetters
+} from 'vuex';
 import MessageModal from './MessageModal.vue';
 
 export default {
@@ -43,27 +45,22 @@ export default {
     },
     data() {
         return {
-            messages: [],
             isModalVisible: false,
             activeTab: 'private',
         };
     },
+    computed: {
+        ...mapGetters(['getMessages']),
+        messages() {
+            return this.getMessages;
+        },
+    },
     mounted() {
-        this.fetchMessages('private');
+        this.fetchMessages(this.activeTab);
     },
     methods: {
         async fetchMessages(type) {
-            const url = type === 'private' ? '/messages' : '/global-messages';
-            try {
-                const response = await apiService.get(`${url}`);
-                this.messages = response.data.map((message) => ({
-                    ...message,
-                    sender_email: type === 'global' ? 'Cabbie' : message.sender_email,
-                    showMessage: false,
-                }));
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-            }
+            await this.$store.dispatch('fetchMessages', type);
         },
         toggleMessage(index) {
             const messageContent = this.$refs.messageContents[index];

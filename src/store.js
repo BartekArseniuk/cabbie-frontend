@@ -17,38 +17,56 @@ export default createStore({
     firstLogin: true,
     isLoggedIn: false,
     blogs: [],
+    reviews: [],
+    messages: [],
     isUserEmailVerified: false,
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
       state.isAuthenticated = status;
     },
+
     SET_LOGGED_IN(state, status) {
       state.isLoggedIn = status;
     },
+
     setUser(state, userData) {
       state.user = userData;
     },
+
     setUserId(state, id) {
       state.userId = id;
       const encryptedUserId = encrypt(id.toString());
       localStorage.setItem('U&58hf*p', encryptedUserId);
     },
+
     setFirstLogin(state, status) {
       state.firstLogin = status;
     },
+
     setUserRole(state, role) {
       state.userRole = role;
       const encryptedUserRole = encrypt(role);
       localStorage.setItem('R&4jH4@', encryptedUserRole);
     },
+
     setBlogs(state, blogs) {
       state.blogs = blogs;
     },
+
     setIsEmailVerified(state, isEmailVerified) {
       state.isUserEmailVerified = isEmailVerified;
-    }
+    },
+
+    setReviews(state, reviews) {
+      state.reviews = reviews;
+    },
+
+    setMessages(state, messages) {
+      state.messages = messages;
+    },
   },
+
   actions: {
     async register({ commit }, { first_name, last_name, email, password }) {
       try {
@@ -73,6 +91,7 @@ export default createStore({
         throw new Error('Błąd rejestracji.');
       }
     },
+
     async login({ commit, dispatch }, { email, password }) {
       try {
         const response = await apiService.post('/login', { email, password });
@@ -91,6 +110,7 @@ export default createStore({
         throw new Error('Login failed');
       }
     },
+
     async checkLoginStatus({ commit }) {
       try {
         const response = await apiService.get('/user-status');
@@ -106,6 +126,7 @@ export default createStore({
         commit('setUser', null);
       }
     },
+
     async isLogged({ commit, dispatch }) {
       try {
         const response = await apiService.get('/api/check-session');
@@ -134,6 +155,7 @@ export default createStore({
         dispatch('logout');
       }
     },
+
     async logout({ commit }) {
       try {
         await apiService.post('/logout');
@@ -148,6 +170,7 @@ export default createStore({
         console.error('Logout failed', error);
       }
     },
+
     async fetchFirstLoginStatus({ commit }) {
       try {
         const response = await apiService.get('/first-login-status');
@@ -156,13 +179,14 @@ export default createStore({
         console.error('Error fetching firstLogin status:', error);
       }
     },
+
     async fetchUser({ commit }) {
       try {
         const encryptedUserId = localStorage.getItem('U&58hf*p');
         const userId = decrypt(encryptedUserId);
         const response = await apiService.get(`users/${userId}`);
         commit('setUser', response.data);
-        if (response.data.email_verified_at == true){
+        if (response.data.email_verified_at != null) {
           commit('setIsEmailVerified', true);
           console.log("nie zweryfikowano maila")
         } else {
@@ -173,6 +197,7 @@ export default createStore({
         console.error('Error fetching user:', error);
       }
     },
+
     async updateUser({ dispatch }, user) {
       try {
         const encryptedUserId = localStorage.getItem('U&58hf*p');
@@ -183,6 +208,7 @@ export default createStore({
         console.error('Error updating user:', error);
       }
     },
+
     async resendVerificationEmail() {
       try {
         const encryptedUserId = localStorage.getItem('U&58hf*p');
@@ -193,6 +219,7 @@ export default createStore({
         console.error('Error resending verification email:', error);
       }
     },
+
     async forgotPassword(_, email) {
       try {
         const response = await apiService.post('/forgot-password', { email });
@@ -202,6 +229,7 @@ export default createStore({
         throw new Error('Password reset failed');
       }
     },
+
     async getUserRole({ commit }) {
       try {
         const encryptedUserRole = localStorage.getItem('R&4jH4@');
@@ -215,23 +243,61 @@ export default createStore({
         console.error('Error decrypting role:', error);
       }
     },
+
     async fetchBlogs({ commit }) {
       const response = await apiService.get('blogs');
       commit('setBlogs', response.data);
     },
+
     async addBlog({ dispatch }, blog) {
       await apiService.post('blogs', blog);
       await dispatch('fetchBlogs');
     },
+
     async updateBlog({ dispatch }, updatedPost) {
       await apiService.put(`blogs/${updatedPost.id}`, updatedPost);
       await dispatch('fetchBlogs');
     },
+
     async deleteBlog({ dispatch }, id) {
       await apiService.delete(`blogs/${id}`);
       await dispatch('fetchBlogs');
     },
+
+    async fetchReviews({ commit }) {
+      try {
+        const response = await apiService.get(`/reviews/ChIJI7_8IzvHkwgRjBdfCt_u4cg`);
+        commit('setReviews', response.data);
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+      }
+    },
+
+    async sendMessage(_, { isGlobal, receiver, title, message }) {
+      const endpoint = isGlobal ? "/global-messages/send" : "/messages/send";
+      return await apiService.post(endpoint, {
+        receiver_email: isGlobal ? null : receiver,
+        title,
+        message,
+      });
+    },
+
+    async fetchMessages({ commit }, type) {
+      const url = type === 'private' ? '/messages' : '/global-messages';
+      try {
+        const response = await apiService.get(url);
+        const messages = response.data.map((message) => ({
+          ...message,
+          sender_email: type === 'global' ? 'Cabbie' : message.sender_email,
+          showMessage: false,
+        }));
+        commit('setMessages', messages);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      }
+    },
   },
+
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,
@@ -239,5 +305,7 @@ export default createStore({
     getFirstLogin: state => state.firstLogin,
     getBlogs: state => state.blogs,
     isEmailVerified: state => state.isUserEmailVerified,
+    getReviews: (state) => state.reviews,
+    getMessages: (state) => state.messages,
   },
 });
