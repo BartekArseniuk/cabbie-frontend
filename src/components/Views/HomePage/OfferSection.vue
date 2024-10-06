@@ -58,8 +58,9 @@
   
   .col {
     flex: 1;
-    max-width: 250px;
+    max-width: 300px;
     text-align: center;
+    margin-bottom: 20px;
   }
   
   img {
@@ -110,7 +111,7 @@
     }
   
     .col {
-      max-width: 100%;
+      max-width: 80%;
     }
   }
-  </style>  
+  </style>

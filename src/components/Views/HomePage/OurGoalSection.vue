@@ -11,7 +11,7 @@
 import { ref } from 'vue';
 
 const description = ref(
-    "Naszym priorytetem są klarowne i transparentne rozliczenia oraz system wynagradzania bez ukrytych prowizji, co stanowi solidną podstawę wzajemnego zaufania. Jesteśmy tu, by wspierać Cię na każdym etapie współpracy, traktując nasze relacje partnersko i z pełnym zrozumieniem."
+    "Naszym Priorytetem są klarowne i transparentne rozliczenia oraz system wynagrodzeń bez ukrytych prowizji, co stanowi solidną podstawę wzajemnego zaufania. Jesteśmy tu, by wspierać Cię na każdym etapie współpracy, traktując nasze relacje partnersko i z pełnym zrozumieniem."
 );
 </script>
 

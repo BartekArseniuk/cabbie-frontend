@@ -85,6 +85,7 @@ export default {
 @media (max-width: 768px) {
     .title {
         font-size: 28px;
+        width: 80%;
     }
 }
 </style>

@@ -10,7 +10,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 
-const description = "Firma Cabbie z Białegostoku to Twój doświadczony partner w branży przewozowej. Jako byli kierowcy, doskonale rozumiemy potrzeby osób pracujących w tej profesji. Zbudowaliśmy nasze doświadczenie na własnej praktyce za kierownicą, co pozwala nam na oferowanie usług najwyższej jakości.";
+const description = "Firma Cabbie z Białegostoku to Twój doświadczony partner w branży przewozowej. Jako byli kierowcy, doskonale rozumiemy potrzeby osób pracujących w tej profesji. Zbudowaliśmy nasze doświadczenie na własnej praktyce za kierownicą, co pozwala nam na oferowanie usług  najwyższej jakości.";
 const loaded = ref(false);
 
 onMounted(() => {

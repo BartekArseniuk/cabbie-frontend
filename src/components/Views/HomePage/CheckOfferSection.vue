@@ -7,6 +7,8 @@
                 <p class="description">{{ offer.description }}</p>
                 <div class="strip" v-if="index < offers.length - 1"></div>
             </div>
+            <!-- Dodanie przycisku -->
+            <router-link to="/offer" class="offer-button">Zobacz ofertę</router-link>
         </div>
     </div>
 </template>
@@ -21,11 +23,15 @@ const offers = computed(() => [
     },
     {
         title: "TYGODNIOWE ROZLICZENIA",
-        description: "Nasz system zapewnia przejrzystość i terminowe wypłaty."
+        description: "Dopasuj przejrzyste rozliczenia do swoich potrzeb."
     },
     {
         title: "WSPÓLNE PARTNERSTWO",
         description: "Jesteśmy zawsze otwarci na współpracę i wsparcie dla kierowców."
+    },
+    {
+        title: "ZŁOTY PROGRAM",
+        description: "Zyskaj permanentne obniżenie kosztów rozliczeń."
     }
 ]);
 </script>
@@ -62,5 +68,23 @@ const offers = computed(() => [
     width: 60%;
     background-color: $tertiary-color;
     margin: 0 auto;
+}
+
+.offer-button {
+    display: inline-block;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-family: 'Roboto-Light', sans-serif;
+    background-color: $secondary-color;
+    color: white;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.offer-button:hover {
+    background-color: darken($secondary-color, 10%);
 }
 </style>
