@@ -188,7 +188,6 @@ export default createStore({
         commit('setUser', response.data);
         if (response.data.email_verified_at != null) {
           commit('setIsEmailVerified', true);
-          console.log("nie zweryfikowano maila")
         } else {
           commit('setIsEmailVerified', false);
         }
