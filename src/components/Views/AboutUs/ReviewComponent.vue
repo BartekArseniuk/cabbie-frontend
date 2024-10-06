@@ -24,7 +24,7 @@ export default {
 <style lang="scss" scoped>
 .opinions {
     height: 250px;
-    width: 200px;
+    width: 250px;
     background-color: $secondary-color;
     border-radius: 20px;
     display: flex;

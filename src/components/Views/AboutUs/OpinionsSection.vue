@@ -56,7 +56,7 @@ export default {
 .reviews-container {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 20px;
     justify-content: center;
     align-items: center;
 }
