@@ -131,10 +131,12 @@ export default {
     
     &::-webkit-scrollbar-track {
         background: $scroll-track;
+        border-radius: 10px;
     }
     
     &::-webkit-scrollbar-thumb {
         background-color: $primary-color;
+        border-radius: 10px;
     }
 }
 
