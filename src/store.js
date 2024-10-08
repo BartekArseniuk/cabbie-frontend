@@ -65,6 +65,13 @@ export default createStore({
     setMessages(state, messages) {
       state.messages = messages;
     },
+
+    MARK_MESSAGE_AS_READ(state, messageId) {
+      const message = state.messages.find(msg => msg.id === messageId);
+      if (message) {
+        message.read = true;
+      }
+    },
   },
 
   actions: {
@@ -289,10 +296,24 @@ export default createStore({
           ...message,
           sender_email: type === 'global' ? 'Cabbie' : message.sender_email,
           showMessage: false,
+          read: message.is_read || false,
         }));
         commit('setMessages', messages);
       } catch (error) {
         console.error('Error fetching messages:', error);
+      }
+    },
+
+    async markMessageAsRead({ commit }, { messageId, type }) {
+      const url = type === 'private'
+        ? `/private-messages/${messageId}/read`
+        : `/global-messages/${messageId}/read`;
+
+      try {
+        await apiService.post(url);
+        commit('MARK_MESSAGE_AS_READ', messageId);
+      } catch (error) {
+        console.error('Error marking message as read:', error);
       }
     },
   },

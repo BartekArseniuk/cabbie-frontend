@@ -15,7 +15,7 @@
     </div>
 
     <div class="messages-list">
-        <div v-for="(message, index) in messages" :key="message.id" class="message-item" @click="toggleMessage(index)">
+        <div v-for="(message, index) in messages" :key="message.id" class="message-item" :class="{ unread: !message.read }" @click="toggleMessage(index)">
             <div class="message-details">
                 <p class="sender-email">{{ message.sender_email }}</p>
                 <p class="sender-title">{{ message.title }}</p>
@@ -33,7 +33,6 @@
 </transition>
 </template>
 
-    
 <script>
 import {
     mapGetters
@@ -68,14 +67,16 @@ export default {
             await this.$store.dispatch('fetchMessages', type);
 
             this.$nextTick(() => {
-                this.$refs.messageContents.forEach((messageContent) => {
-                    if (messageContent) {
-                        messageContent.style.maxHeight = '0';
-                    }
-                });
+                if (this.$refs.messageContents && this.$refs.messageContents.length > 0) {
+                    this.$refs.messageContents.forEach((messageContent) => {
+                        if (messageContent) {
+                            messageContent.style.maxHeight = '0';
+                        }
+                    });
+                }
             });
         },
-        toggleMessage(index) {
+        async toggleMessage(index) {
             const messageContent = this.$refs.messageContents[index];
             if (!messageContent) {
                 console.error(`Message content for index ${index} is undefined.`);
@@ -89,6 +90,21 @@ export default {
                 messageContent.style.maxHeight = messageContent.scrollHeight + 'px';
             } else {
                 messageContent.style.maxHeight = 0;
+            }
+
+            if (!this.messages[index].read) {
+                this.messages[index].read = true;
+                await this.updateMessageReadStatus(this.messages[index].id, this.activeTab);
+            }
+        },
+        async updateMessageReadStatus(messageId, type) {
+            try {
+                await this.$store.dispatch('markMessageAsRead', {
+                    messageId,
+                    type
+                });
+            } catch (error) {
+                console.error('Failed to update message read status:', error);
             }
         },
         formatDate(dateString) {
@@ -127,7 +143,6 @@ export default {
 };
 </script>
 
-    
 <style lang="scss" scoped>
 .messages-container {
     width: 100%;
@@ -274,6 +289,10 @@ export default {
     text-align: right;
     color: $white;
     font-family: 'Roboto-Light', sans-serif;
+}
+
+.message-item.unread {
+    border-left: 5px solid $primary-color;
 }
 
 @media (max-width: 1000px) {
