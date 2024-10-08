@@ -18,12 +18,7 @@
                         <button @click="handleProfileMenuClick('DANE I DOKUMENTY')" class="profile-menu-button">
                             DANE I DOKUMENTY
                         </button>
-                        <button
-                            v-for="menuItem in profileMenuItems"
-                            :key="menuItem"
-                            @click="isEmailVerified ? handleProfileMenuClick(menuItem) : null"
-                            :class="{ disabled: !isEmailVerified }"
-                        >
+                        <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="isEmailVerified ? handleProfileMenuClick(menuItem) : null" :class="{ disabled: !isEmailVerified }">
                             {{ menuItem }}
                         </button>
                     </template>
@@ -36,13 +31,13 @@
         </nav>
     </div>
 
-	<div class="content">
+    <div class="content">
         <div class="router-view-container">
             <router-view />
         </div>
 
         <transition @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
-        <div class="nav-overlay" v-if="isNavOpen"></div>
+            <div class="nav-overlay" v-if="isNavOpen"></div>
         </transition>
     </div>
 
@@ -70,11 +65,13 @@
 import ModalForm from './Views/LoginRegister/ModalForm.vue';
 import Swal from 'sweetalert2';
 import apiService from '@/apiService';
-
 import {
     mapGetters,
     mapActions
 } from 'vuex';
+import {
+    useToast
+} from 'vue-toastification';
 
 export default {
     components: {
@@ -113,7 +110,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['isAuthenticated', 'getFirstLogin','getRole','isEmailVerified']),
+        ...mapGetters(['isAuthenticated', 'getFirstLogin', 'getRole', 'isEmailVerified', 'hasUnreadMessages']),
         isFirstLogin() {
             return this.getFirstLogin;
         },
@@ -125,13 +122,13 @@ export default {
                 await this.$store.dispatch('isLogged');
                 await this.$store.dispatch('fetchFirstLoginStatus');
                 await this.$store.dispatch('getUserRole');
-                await this.$store.dispatch('fetchUser')
+                await this.$store.dispatch('fetchUser');
+                await this.$store.dispatch('checkIsThereAnyMessages');
             }
 
             const response = await apiService.get('/api/check-session');
 
             if (!response.data.logged_in) {
-
                 this.$router.push({
                     name: 'Home'
                 });
@@ -205,7 +202,6 @@ export default {
                 this.isProfileMenuOpen = false;
             }
         },
-
         goToSurvey() {
             this.navigateTo('Survey');
         },
@@ -218,7 +214,6 @@ export default {
         async handleLogout() {
             try {
                 await this.logout();
-
                 Swal.fire({
                     title: 'Sukces!',
                     text: 'Wylogowano pomyślnie.',
@@ -253,7 +248,7 @@ export default {
             }
         },
         updateMobileStatus() {
-                this.isMobile = window.innerWidth <= 768;
+            this.isMobile = window.innerWidth <= 768;
         },
         beforeEnterOverlay(el) {
             el.style.opacity = 0;
@@ -277,6 +272,16 @@ export default {
         document.addEventListener('click', this.handleClickOutside);
         document.addEventListener('keydown', this.handleKeyDown);
         window.addEventListener('resize', this.updateMobileStatus);
+
+        const toast = useToast();
+        this.$store.dispatch('checkIsThereAnyMessages')
+            .then(() => {
+                if (this.hasUnreadMessages) {
+                    toast.warning('Masz nieprzeczytane wiadomości!', {
+                        timeout: 5000
+                    });
+                }
+            });
     },
     beforeUnmount() {
         document.removeEventListener('click', this.handleClickOutside);

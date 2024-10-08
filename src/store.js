@@ -20,6 +20,7 @@ export default createStore({
     reviews: [],
     messages: [],
     isUserEmailVerified: false,
+    hasUnreadMessages: false,
   },
   mutations: {
     SET_AUTHENTICATED(state, status) {
@@ -71,6 +72,9 @@ export default createStore({
       if (message) {
         message.read = true;
       }
+    },
+    SET_HAS_UNREAD_MESSAGES(state, status) {
+      state.hasUnreadMessages = status;
     },
   },
 
@@ -316,6 +320,23 @@ export default createStore({
         console.error('Error marking message as read:', error);
       }
     },
+    
+    async checkIsThereAnyMessages({ commit }) {
+      try {
+        const globalMessagesResponse = await apiService.get('/global-messages/has-unread');
+        const hasUnreadGlobalMessages = globalMessagesResponse.data.hasUnreadMessages;
+
+        const privateMessagesResponse = await apiService.get('/private-messages/has-unread');
+        const hasUnreadPrivateMessages = privateMessagesResponse.data.hasUnreadMessages;
+
+        const hasUnread = hasUnreadGlobalMessages || hasUnreadPrivateMessages;
+
+        commit('SET_HAS_UNREAD_MESSAGES', hasUnread);
+      } catch (error) {
+        console.error('Error checking unread messages:', error);
+        commit('SET_HAS_UNREAD_MESSAGES', false);
+      }
+    },
   },
 
   getters: {
@@ -327,5 +348,8 @@ export default createStore({
     isEmailVerified: state => state.isUserEmailVerified,
     getReviews: (state) => state.reviews,
     getMessages: (state) => state.messages,
+    hasUnreadMessages: (state) => {
+      return state.hasUnreadMessages;
+    },
   },
 });
