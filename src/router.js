@@ -6,6 +6,7 @@ import BlogPage from './components/Views/Blog/BlogPage.vue';
 import ContactPage from './components/Views/ContactPage/ContactPage.vue';
 import ProfilePage from './components/Views/Profile/ProfilePage.vue';
 import SurveyPage from './components/Views/Profile/SurveyPage.vue';
+import AdminPanel from './components/Views/AdminPanel/AdminPanel.vue';
 
 const routes = [
   {
@@ -62,6 +63,14 @@ const routes = [
     component: SurveyPage,
     meta: {
       title: 'Cabbie - Formularz początkowy'
+    }
+  },
+  {
+    path: '/admin-panel/:section?',
+    name: 'AdminPanel',
+    component: AdminPanel,
+    meta: {
+      title: 'Cabbie - Panel administratora'
     }
   },
 ];

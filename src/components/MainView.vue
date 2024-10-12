@@ -10,15 +10,18 @@
                 {{ item.label }}
             </button>
             <div v-if="isAuthenticated">
-                <button v-if="isMobile && !isFirstLogin" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
-                <button v-if="isMobile && isFirstLogin" class="profile-button" @click="goToSurvey">FORMULARZ POCZĄTKOWY</button>
-                <button v-if="!isMobile" class="profile-button" @click="handleProfileButtonClick">PROFIL</button>
+                <button v-if="isMobile && !isFirstLogin" class="profile-button" @click="handleProfileButtonClick">
+                    {{ getRole === 'admin' ? 'PANEL ADMINISTRATORA' : 'PROFIL' }}
+                </button>
+                <button v-if="isMobile && isFirstLogin" class="profile-button" @click="goToSurvey">
+                    FORMULARZ POCZĄTKOWY
+                </button>
+                <button v-if="!isMobile" class="profile-button" @click="handleProfileButtonClick">
+                    {{ getRole === 'admin' ? 'PANEL ADMINISTRATORA' : 'PROFIL' }}
+                </button>
                 <div :class="['profile-menu', { 'open': isProfileMenuOpen }]">
                     <template v-if="!isFirstLogin">
-                        <button @click="handleProfileMenuClick('DANE I DOKUMENTY')" class="profile-menu-button">
-                            DANE I DOKUMENTY
-                        </button>
-                        <button v-for="menuItem in profileMenuItems" :key="menuItem" @click="isEmailVerified ? handleProfileMenuClick(menuItem) : null" :class="{ disabled: !isEmailVerified }">
+                        <button v-for="menuItem in (getRole === 'admin' ? profileMenuItemsAdmin : profileMenuItemsUser)" :key="menuItem" @click="handleProfileMenuClick(menuItem)" :class="{ disabled: getRole !== 'admin' && !isEmailVerified && menuItem !== 'DANE I DOKUMENTY' }">
                             {{ menuItem }}
                         </button>
                     </template>
@@ -103,8 +106,18 @@ export default {
                     route: 'Contact'
                 }
             ],
-            profileMenuItems: [
-                'WIADOMOŚCI', 'PORTFEL', 'FAKTURY', 'USTAWIENIA ROZLICZEŃ', 'RYCZAŁT'
+            profileMenuItemsUser: [
+                'DANE I DOKUMENTY',
+                'WIADOMOŚCI',
+                'PORTFEL',
+                'FAKTURY',
+                'USTAWIENIA ROZLICZEŃ',
+                'RYCZAŁT'
+            ],
+            profileMenuItemsAdmin: [
+                'BAZA KLIENTÓW',
+                'ROZLICZENIA',
+                'SKRZYNKA ODBIORCZA'
             ],
             isMobile: window.innerWidth <= 768
         };
@@ -170,33 +183,56 @@ export default {
         },
         handleProfileMenuClick(menuItem) {
             let section = '';
-            switch (menuItem) {
-                case 'DANE I DOKUMENTY':
-                    section = 'details';
-                    break;
-                case 'WIADOMOŚCI':
-                    section = 'messages';
-                    break;
-                case 'PORTFEL':
-                    section = 'wallet';
-                    break;
-                case 'FAKTURY':
-                    section = 'invoices';
-                    break;
-                case 'USTAWIENIA ROZLICZEŃ':
-                    section = 'billing-settings';
-                    break;
-                case 'RYCZAŁT':
-                    section = 'lump-sum';
-                    break;
+            if (this.getRole === 'admin') {
+                switch (menuItem) {
+                    case 'BAZA KLIENTÓW':
+                        section = 'clients';
+                        break;
+                    case 'ROZLICZENIA':
+                        section = 'settlements';
+                        break;
+                    case 'SKRZYNKA ODBIORCZA':
+                        section = 'inbox';
+                        break;
+                }
+            } else {
+                switch (menuItem) {
+                    case 'DANE I DOKUMENTY':
+                        section = 'details';
+                        break;
+                    case 'WIADOMOŚCI':
+                        section = 'messages';
+                        break;
+                    case 'PORTFEL':
+                        section = 'wallet';
+                        break;
+                    case 'FAKTURY':
+                        section = 'invoices';
+                        break;
+                    case 'USTAWIENIA ROZLICZEŃ':
+                        section = 'billing-settings';
+                        break;
+                    case 'RYCZAŁT':
+                        section = 'lump-sum';
+                        break;
+                }
             }
             if (section) {
-                this.$router.push({
-                    name: 'Profile',
-                    params: {
-                        section
-                    }
-                });
+                if (this.getRole === 'admin') {
+                    this.$router.push({
+                        name: 'AdminPanel',
+                        params: {
+                            section
+                        }
+                    });
+                } else {
+                    this.$router.push({
+                        name: 'Profile',
+                        params: {
+                            section
+                        }
+                    });
+                }
                 this.isProfileMenuOpen = false;
             }
         },
