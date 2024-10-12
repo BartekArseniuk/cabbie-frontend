@@ -1,20 +1,21 @@
 <template>
-    <div class="build-brand">
+    <div class="cabbie-panel">
         <div class="text-container">
-            <p class="title">WSPÓLNE BUDOWANIE MARKI</p>
-            <p class="description">{{ description }}</p>
+            <p class="title">PANEL CABBIE</p>
+            <p class="description">
+                Zautomatyzowany system obsługi kierowcy oparty na sprawdzonych procesach:
+                optymalizacji licencjonowania, zatrudniania oraz rozliczania i obsługi kierowców.
+            </p>
+            <p class="description">
+                Cenimy sobie Wasze opinie dlatego za każdy wartościowy feedback
+                gwarantujemy Bonusy. Naszym celem jest rozwój społeczności <span class="highlight">Cabbie</span>.
+            </p>
         </div>
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
-const description = ref("Dołącz do nas i pomóż w budowaniu marki Cabbie, zrzeszając jak najwięcej kierowców. Jesteśmy partnerem rozliczeniowym dla aplikacji przewozowych.");
-</script>
-
 <style lang="scss" scoped>
-.build-brand {
+.cabbie-panel {
     background-color: $secondary-color;
     display: flex;
     justify-content: left;
@@ -32,10 +33,15 @@ const description = ref("Dołącz do nas i pomóż w budowaniu marki Cabbie, zrz
 }
 
 .description {
-    width: 50%;
+    width: 80%;
     font-size: 24px;
     font-family: 'Roboto-Extra-Light', sans-serif;
     color: $title-light-font;
+}
+
+.highlight {
+  color: $primary-color;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
