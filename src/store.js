@@ -314,7 +314,7 @@ export default createStore({
         : `/global-messages/${messageId}/read`;
 
       try {
-        await apiService.post(url);
+        await apiService.put(url);
         commit('MARK_MESSAGE_AS_READ', messageId);
       } catch (error) {
         console.error('Error marking message as read:', error);

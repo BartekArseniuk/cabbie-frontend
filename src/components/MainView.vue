@@ -123,7 +123,6 @@ export default {
                 await this.$store.dispatch('fetchFirstLoginStatus');
                 await this.$store.dispatch('getUserRole');
                 await this.$store.dispatch('fetchUser');
-                await this.$store.dispatch('checkIsThereAnyMessages');
             }
 
             const response = await apiService.get('/api/check-session');
@@ -140,7 +139,6 @@ export default {
             });
         }
     },
-
     methods: {
         ...mapActions(['logout']),
         toggleNav() {
@@ -273,15 +271,17 @@ export default {
         document.addEventListener('keydown', this.handleKeyDown);
         window.addEventListener('resize', this.updateMobileStatus);
 
-        const toast = useToast();
-        this.$store.dispatch('checkIsThereAnyMessages')
-            .then(() => {
-                if (this.hasUnreadMessages) {
-                    toast.warning('Masz nieprzeczytane wiadomości!', {
-                        timeout: 5000
-                    });
-                }
-            });
+        if (this.isAuthenticated) {
+            const toast = useToast();
+            this.$store.dispatch('checkIsThereAnyMessages')
+                .then(() => {
+                    if (this.hasUnreadMessages) {
+                        toast.warning('Masz nieprzeczytane wiadomości!', {
+                            timeout: 5000
+                        });
+                    }
+                });
+        }
     },
     beforeUnmount() {
         document.removeEventListener('click', this.handleClickOutside);
