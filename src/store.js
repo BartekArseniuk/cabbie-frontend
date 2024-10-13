@@ -16,6 +16,7 @@ export default createStore({
     userRole: null,
     firstLogin: true,
     isLoggedIn: false,
+    users: [],
     blogs: [],
     reviews: [],
     messages: [],
@@ -33,6 +34,10 @@ export default createStore({
 
     setUser(state, userData) {
       state.user = userData;
+    },
+
+    SET_USERS(state, users) {
+      state.users = users;
     },
 
     setUserId(state, id) {
@@ -191,6 +196,18 @@ export default createStore({
       }
     },
 
+    async fetchUsers({ commit }) {
+      try {
+        const response = await apiService.get('/users');
+        const filteredUsers = response.data.filter(user => user.id !== 1);
+        commit('SET_USERS', filteredUsers);
+        return filteredUsers;
+      } catch (error) {
+        console.error('Error fetching users:', error);
+        throw new Error('Unable to fetch users');
+      }
+    },
+
     async fetchUser({ commit }) {
       try {
         const encryptedUserId = localStorage.getItem('U&58hf*p');
@@ -320,7 +337,7 @@ export default createStore({
         console.error('Error marking message as read:', error);
       }
     },
-    
+
     async checkIsThereAnyMessages({ commit }) {
       try {
         const globalMessagesResponse = await apiService.get('/global-messages/has-unread');
@@ -342,6 +359,7 @@ export default createStore({
   getters: {
     isAuthenticated: state => state.isAuthenticated,
     getUser: state => state.user,
+    getUsers: (state) => state.users,
     getRole: state => state.userRole,
     getFirstLogin: state => state.firstLogin,
     getBlogs: state => state.blogs,

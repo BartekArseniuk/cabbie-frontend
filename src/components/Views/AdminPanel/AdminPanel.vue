@@ -33,13 +33,13 @@
 <script>
 import ClientsTable from './ClientsTable.vue';
 import AdminSettlements from './AdminSettlements.vue';
-import AdminInbox from './AdminInbox.vue';
+import MessagesPage from '@/components/Common/MessagesPage.vue';
 
 export default {
     components: {
         ClientsTable,
         AdminSettlements,
-        AdminInbox,
+        MessagesPage,
     },
     data() {
         return {
@@ -56,7 +56,7 @@ export default {
                 },
                 {
                     label: 'SKRZYNKA ODBIORCZA',
-                    component: 'AdminInbox'
+                    component: 'MessagesPage'
                 },
             ],
         };
@@ -82,7 +82,7 @@ export default {
             } else if (section === 'settlements') {
                 this.currentComponent = 'AdminSettlements';
             } else if (section === 'inbox') {
-                this.currentComponent = 'AdminInbox';
+                this.currentComponent = 'MessagesPage';
             }
         },
         toggleSidebar() {
@@ -107,7 +107,7 @@ export default {
             const sectionMap = {
                 'ClientsTable': 'clients',
                 'AdminSettlements': 'settlements',
-                'AdminInbox': 'inbox',
+                'MessagesPage': 'inbox',
             };
 
             const section = sectionMap[component];
@@ -151,7 +151,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .profile-container {
     display: flex;
     height: auto;

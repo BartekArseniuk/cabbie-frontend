@@ -34,7 +34,7 @@
 
 <script>
 import DriverDetails from './DriverDetails.vue';
-import MessagesPage from './MessagesPage.vue';
+import MessagesPage from '@/components/Common/MessagesPage.vue';
 import WalletPage from './WalletPage.vue';
 import InvoicesPage from './InvoicesPage.vue';
 import BillingSettingsPage from './BillingSettingsPage.vue';

@@ -1,3 +1,304 @@
 <template>
-<h1>BAZA KLIENTÓW</h1>
+<div class="user-table">
+    <div class="filter-bar">
+        <div class="filter-dropdown">
+            <div class="filter-dropdown-trigger" @click="toggleDropdown">
+                {{ selectedFilterLabel }}
+                <span class="arrow" :class="{ 'open': isDropdownOpen }">▼</span>
+            </div>
+            <transition name="dropdown" @before-enter="beforeEnter" @enter="enter" @leave="leave">
+                <div class="filter-dropdown-list" v-if="isDropdownOpen">
+                    <div v-for="(option, index) in filterOptions" :key="index" class="filter-dropdown-item" @click="selectFilter(option.value, option.label)">
+                        {{ option.label }}
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <input type="text" v-model="filterValue" placeholder="WPISZ WARTOŚĆ..." class="filter-input" />
+    </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>IMIĘ</th>
+                    <th>NAZWISKO</th>
+                    <th>PESEL</th>
+                    <th>E-MAIL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="user in filteredUsers" :key="user.id" class="table-row">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.pesel }}</td>
+                    <td>
+                        <div class="email-container">
+                            <span class="email">{{ user.email }}</span>
+                            <span class="email-status" :class="{
+                    verified: user.email_verified_at,
+                    unverified: !user.email_verified_at,
+                  }"></span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
 </template>
+
+  
+<script>
+import {
+    mapState
+} from "vuex";
+
+export default {
+    data() {
+        return {
+            selectedFilter: "id",
+            selectedFilterLabel: "ID",
+            filterValue: "",
+            isDropdownOpen: false,
+            filterOptions: [{
+                    value: "id",
+                    label: "ID"
+                },
+                {
+                    value: "first_name",
+                    label: "IMIĘ"
+                },
+                {
+                    value: "last_name",
+                    label: "NAZWISKO"
+                },
+                {
+                    value: "pesel",
+                    label: "PESEL"
+                },
+                {
+                    value: "email",
+                    label: "E-MAIL"
+                },
+            ],
+        };
+    },
+    computed: {
+        ...mapState({
+            users: (state) => state.users,
+            isAuthenticated: (state) => state.isAuthenticated,
+        }),
+        filteredUsers() {
+            return this.users.filter((user) => {
+                if (!this.filterValue) return true;
+                return String(user[this.selectedFilter])
+                    .toLowerCase()
+                    .includes(this.filterValue.toLowerCase());
+            });
+        },
+    },
+    created() {
+        this.fetchUsers();
+    },
+    methods: {
+        async fetchUsers() {
+            try {
+                await this.$store.dispatch("fetchUsers");
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        },
+        toggleDropdown() {
+            this.isDropdownOpen = !this.isDropdownOpen;
+        },
+        selectFilter(value, label) {
+            this.selectedFilter = value;
+            this.selectedFilterLabel = label;
+            this.isDropdownOpen = false;
+        },
+        beforeEnter(el) {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(-10px)';
+        },
+        enter(el, done) {
+            el.offsetHeight;
+            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            el.style.opacity = 1;
+            el.style.transform = 'translateY(0)';
+            done();
+        },
+        leave(el, done) {
+            el.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(-10px)';
+            setTimeout(() => {
+                done();
+            }, 300);
+        },
+    },
+};
+</script>
+
+<style lang="scss" scoped>
+.user-table {
+    font-family: "Roboto-Light", sans-serif;
+    margin: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+    background-color: $tr_color;
+    border-radius: 12px;
+    padding: 10px 15px;
+}
+
+.filter-dropdown {
+    position: relative;
+    width: 20%;
+    cursor: pointer;
+}
+
+.filter-dropdown-trigger {
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 12px;
+    background-color: transparent;
+    color: $white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.arrow {
+    transition: transform 0.3s ease;
+}
+
+.arrow.open {
+    transform: rotate(180deg);
+}
+
+.filter-dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: $tr_color;
+    color: $white;
+    border-radius: 0 0 12px 12px;
+    z-index: 1000;
+}
+
+.filter-dropdown-item {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $placeholder-color;
+    }
+}
+
+.filter-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    background-color: transparent;
+    border: none;
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    outline: none;
+    color: $white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+    text-transform: uppercase;
+}
+
+th,
+td {
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    border-right: 1px solid $footer-background;
+}
+
+th {
+    height: 50px;
+    background-color: $tr_color;
+    color: #ffffff;
+
+}
+
+.table-row {
+    height: 60px;
+    background-color: $messages-color;
+    color: #ffffff;
+}
+
+.table-row:hover {
+    background-color: $placeholder-color;
+    cursor: pointer;
+}
+
+td:last-child,
+th:last-child {
+    border-right: none;
+}
+
+.email-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.email {
+    margin-right: 8px;
+}
+
+.email-status {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.verified {
+    background-color: $success-color;
+}
+
+.unverified {
+    background-color: $warning-color;
+}
+
+@media (max-width: 768px) {
+    .filter-dropdown {
+        width: 80%;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 6px;
+    }
+
+    .email {
+        margin-right: 10px;
+    }
+}
+</style>
