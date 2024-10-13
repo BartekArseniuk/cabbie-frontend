@@ -5,17 +5,20 @@
       <section id="settlements">
         <SettlementsSection />
       </section>
+      <section id="second-section">
+        <SecondSection />
+      </section>
+      <section id="cabbie-panel">
+        <CabbiePanelSection />
+      </section>
       <section id="car-fleet">
         <CarFleetSection />
       </section>
-      <section id="building-a-brand-together">
-        <BuildBrandSection />
-      </section>
-      <section id="price-list">
-        <PriceListSection />
+      <section id="gold-program"> 
+        <GoldProgramSection/>
       </section>
       <section id="lets-start-cooperation">
-        <LetsBeginSection :isHomePage="false" />
+        <LetsBeginSection />
       </section>
       <section id="contact">
         <ContactForm :showTitle="true" />
@@ -26,11 +29,12 @@
 
 <script setup>
 import SettlementsSection from './SettlementsSection.vue';
-import CarFleetSection from './CarFleetSection.vue';
-import BuildBrandSection from './BuildBrandSection.vue';
+import SecondSection from './SecondSection.vue';
+import CabbiePanelSection from './CabbiePanelSection.vue';
 import LetsBeginSection from '../../Common/LetsBeginSection.vue';
 import ContactForm from '@/components/Common/ContactForm.vue';
-import PriceListSection from './PriceListSection.vue';
+import CarFleetSection from './CarFleetSection.vue';
+import GoldProgramSection from './GoldProgramSection.vue';
 </script>
 
 <style lang="scss" scoped>
@@ -40,6 +44,7 @@ import PriceListSection from './PriceListSection.vue';
   font-family: 'Roboto-Light', sans-serif;
   color: $primary-color;
   margin-top: 100px;
+  padding: 50px 0px 50px 0px;
 }
 
 main section {

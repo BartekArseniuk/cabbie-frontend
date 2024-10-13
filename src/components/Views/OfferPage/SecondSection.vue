@@ -1,30 +1,41 @@
 <template>
-<div class="fleet">
-    <div class="text-container">
-        <p class="title">Flota</p>
-        <p class="description">
-            Posiadamy swoją flotę samochodów oraz zaufanych parterów wynajmujących.
-        </p>
-        <p class="description">
-            Auta są w pełni przystosowane do pracy.
-        </p>
-        <p class="description">
-            Dzięki współpracy z branżą motoryzacyjną otrzymasz <span class="highlight">zniżki</span>
-            na części oraz naprawy w zaufanych punktach.
-        </p>
+    <div class="second-section">
+        <div class="text-container">
+            <p class="description">
+                <span class="highlight">Zautomatyzowany</span> system obliczający wynagrodzenia oraz podatki za Ciebie.
+            </p>
+            <p class="description">
+                <span class="highlight">Brak prowizji</span> od zarobków Brutto.
+            </p>
+            <p class="description">
+                Kampanie wspomagające <span class="highlight">rozwój</span> oraz <span class="highlight">oszczędność</span> poprzez długotrwałą współpracę.
+            </p>
+        </div>
     </div>
-</div>
 </template>
 
+<script setup>
+import {onMounted } from 'vue';
+
+onMounted(() => {
+    const image = new Image();
+    image.src = new URL('@/assets/images/elegant-uber-driver-giving-taxi-ride.svg', import.meta.url).href;
+    image.onload = () => {
+        document.querySelector('.second-section').classList.add('loaded');
+    };
+});
+</script>
+
 <style lang="scss" scoped>
-.fleet {
-    background-image: url('@/assets/images/Group 40.png');
+.second-section {
+    background-image: url('@/assets/images/elegant-uber-driver-giving-taxi-ride-placeholder.png');
     background-size: cover;
     background-position: center;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-right: 50px;
     box-sizing: border-box;
     transition: background-image 0.5s ease-in-out;
 
@@ -33,23 +44,18 @@
     }
 }
 
-.title {
-    font-size: 32px;
-    font-family: 'Roboto-Light', sans-serif;
-    color: $primary-color;
-}
-
 .text-container {
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-end;
+    align-items: center;
     width: 85vw;
-    height: auto;
+    height: 50vh;
     background-image: linear-gradient(140deg, rgba(135, 135, 135, 0.1) 1%, rgba(135, 135, 135, 0.1) 100%);
     backdrop-filter: blur(10px);
     border-radius: 15px;
-    text-align: right;
+    text-align: center;
     padding: 40px;
 }
 
@@ -73,18 +79,17 @@
     font-size: 28px;
     font-family: 'Roboto-Extra-Light', sans-serif;
     color: $title-light-font;
-    text-align: right;
-    width: 85%;
-    margin: 0;
+    text-align: center;
+    width: 60%;
 }
 
 .highlight {
-    color: $primary-color;
-    font-weight: bold;
+  color: $primary-color;
+  font-weight: bold;
 }
 
 @media (max-width: 768px) {
-    .cabbie-history {
+    .second-section {
         height: auto;
         padding-right: 0;
     }

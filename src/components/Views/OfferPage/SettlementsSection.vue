@@ -10,7 +10,7 @@
 <script setup>
 import { ref } from 'vue';
 
-const description = ref("Przejrzysty i nowoczesny sposób rozliczeń i wypłat dla kierowców. Brak pobieranej prowizji od zarobków.");
+const description = ref("Klarowne, łatwo dostępne oraz bardzo intuicyjne rozliczenia.");
 </script>
 
 <style lang="scss" scoped>
