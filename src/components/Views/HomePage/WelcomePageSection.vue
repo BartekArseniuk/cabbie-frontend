@@ -3,15 +3,8 @@
     <div class="logo">
         <img src="@/assets/images/cabbie-logo.svg" alt="cabbie" />
     </div>
-
     <p class="title">ROZLICZENIA KIEROWCÓW TAXI</p>
     <button class="lets-begin" @click="scrollToGoal">POZNAJMY SIĘ</button>
-
-    <div class="partner-logos">
-        <img src="@/assets/images/natviol-uber.jpeg" alt="Uber" class="partner-icon" />
-        <img src="@/assets/images/natviol-bolt.jpeg" alt="Bolt" class="partner-icon" />
-        <img src="@/assets/images/natviol-free-now.jpeg" alt="Free Now" class="partner-icon" />
-    </div>
 </div>
 </template>
 
@@ -101,19 +94,6 @@ export default {
     background-color: $primary-color;
     border-color: $tertiary-color;
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-}
-
-.partner-logos {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-.partner-icon {
-    height: 40px;
-    width: auto;
-    margin: 0 10px;
-    border-radius: 12px;
 }
 
 @media (max-width: 768px) {

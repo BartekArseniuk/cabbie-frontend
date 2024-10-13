@@ -28,7 +28,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="user in filteredUsers" :key="user.id" class="table-row">
+                <tr v-for="user in paginatedUsers" :key="user.id" class="table-row">
                     <td>{{ user.id }}</td>
                     <td>{{ user.first_name }}</td>
                     <td>{{ user.last_name }}</td>
@@ -37,19 +37,28 @@
                         <div class="email-container">
                             <span class="email">{{ user.email }}</span>
                             <span class="email-status" :class="{
-                    verified: user.email_verified_at,
-                    unverified: !user.email_verified_at,
-                  }"></span>
+                                    verified: user.email_verified_at,
+                                    unverified: !user.email_verified_at,
+                                }"></span>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+    <div class="pagination-controls">
+        <button class="pagination-button" @click="changePage(currentPage - 1)" :disabled="currentPage === 1" :class="{ 'active': currentPage > 1, 'disabled': currentPage === 1 }">
+            <span class="arrow">&#8592;</span>
+        </button>
+        <span class="current-page">Strona {{ currentPage }} z {{ totalPages }}</span>
+        <button class="pagination-button" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" :class="{ 'active': currentPage < totalPages, 'disabled': currentPage === totalPages }">
+            <span class="arrow">&#8594;</span>
+        </button>
+    </div>
+
 </div>
 </template>
 
-  
 <script>
 import {
     mapState
@@ -83,6 +92,8 @@ export default {
                     label: "E-MAIL"
                 },
             ],
+            currentPage: 1,
+            recordsPerPage: 10,
         };
     },
     computed: {
@@ -97,6 +108,13 @@ export default {
                     .toLowerCase()
                     .includes(this.filterValue.toLowerCase());
             });
+        },
+        paginatedUsers() {
+            const start = (this.currentPage - 1) * this.recordsPerPage;
+            return this.filteredUsers.slice(start, start + this.recordsPerPage);
+        },
+        totalPages() {
+            return Math.ceil(this.filteredUsers.length / this.recordsPerPage);
         },
     },
     created() {
@@ -117,6 +135,10 @@ export default {
             this.selectedFilter = value;
             this.selectedFilterLabel = label;
             this.isDropdownOpen = false;
+        },
+        changePage(page) {
+            if (page < 1 || page > this.totalPages) return;
+            this.currentPage = page;
         },
         beforeEnter(el) {
             el.style.opacity = 0;
@@ -239,7 +261,6 @@ th {
     height: 50px;
     background-color: $tr_color;
     color: #ffffff;
-
 }
 
 .table-row {
@@ -281,6 +302,46 @@ th:last-child {
 
 .unverified {
     background-color: $warning-color;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination-button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: $tr_color;
+    color: $white;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+
+    &.disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+        background-color: $tr_color;
+    }
+
+    &.active {
+        background-color: $primary-color;
+    }
+
+    &:hover:not(.disabled) {
+        background-color: darken($tr_color, 10%);
+        transform: scale(1.05);
+    }
+}
+
+.current-page {
+    margin: 0 10px;
+    font-weight: bold;
+    color: $white;
 }
 
 @media (max-width: 768px) {
