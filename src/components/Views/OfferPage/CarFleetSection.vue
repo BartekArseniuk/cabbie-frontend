@@ -1,19 +1,19 @@
 <template>
-    <div class="fleet">
-        <div class="text-container">
-            <p class="title">Flota</p>
-            <p class="description">
-                Posiadamy swoją flotę samochodów oraz zaufanych parterów wynajmujących.
-            </p>
-            <p class="description">
-                Auta są w pełni przystosowane do pracy.
-            </p>
-            <p class="description">
-                Dzięki współpracy z branżą motoryzacyjną otrzymasz <span class="highlight">zniżki</span>
-                na części oraz naprawy w zaufanych punktach.
-            </p>
-        </div>
+<div class="fleet">
+    <div class="text-container">
+        <p class="title">Flota</p>
+        <p class="description">
+            Posiadamy swoją flotę samochodów oraz zaufanych parterów wynajmujących.
+        </p>
+        <p class="description">
+            Auta są w pełni przystosowane do pracy.
+        </p>
+        <p class="description">
+            Dzięki współpracy z branżą motoryzacyjną otrzymasz <span class="highlight">zniżki</span>
+            na części oraz naprawy w zaufanych punktach.
+        </p>
     </div>
+</div>
 </template>
 
 <style lang="scss" scoped>
@@ -25,7 +25,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 50px;
     box-sizing: border-box;
     transition: background-image 0.5s ease-in-out;
 
@@ -80,8 +79,8 @@
 }
 
 .highlight {
-  color: $primary-color;
-  font-weight: bold;
+    color: $primary-color;
+    font-weight: bold;
 }
 
 @media (max-width: 768px) {
