@@ -28,21 +28,32 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="user in paginatedUsers" :key="user.id" class="table-row">
-                    <td>{{ user.id }}</td>
-                    <td>{{ user.first_name }}</td>
-                    <td>{{ user.last_name }}</td>
-                    <td>{{ user.pesel }}</td>
-                    <td>
-                        <div class="email-container">
-                            <span class="email">{{ user.email }}</span>
-                            <span class="email-status" :class="{
-                                    verified: user.email_verified_at,
-                                    unverified: !user.email_verified_at,
-                                }"></span>
-                        </div>
-                    </td>
-                </tr>
+                <template v-for="user in paginatedUsers" :key="user.id">
+                    <tr class="table-row" @click="toggleRow(user.id)">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.pesel }}</td>
+                        <td>
+                            <div class="email-container">
+                                <span class="email">{{ user.email }}</span>
+                                <span class="email-status" :class="{
+                                                verified: user.email_verified_at,
+                                                unverified: !user.email_verified_at,
+                                            }"></span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr v-if="clickedUserId === user.id">
+                        <td colspan="4" class="details-row">
+                            <p class="last-documents">OSTATNI WPŁYW DOKUMENTÓW:</p>
+                            <p class="is-settled">CZY ROZLICZONO:</p>
+                        </td>
+                        <td class="details-button-cell">
+                            <button @click="showDetails(user.id)" class="details-button">PRZEJDŹ NA KONTO</button>
+                        </td>
+                    </tr>
+                </template>
             </tbody>
         </table>
     </div>
@@ -55,7 +66,6 @@
             <span class="arrow">&#8594;</span>
         </button>
     </div>
-
 </div>
 </template>
 
@@ -94,6 +104,7 @@ export default {
             ],
             currentPage: 1,
             recordsPerPage: 10,
+            clickedUserId: null,
         };
     },
     computed: {
@@ -102,12 +113,13 @@ export default {
             isAuthenticated: (state) => state.isAuthenticated,
         }),
         filteredUsers() {
-            return this.users.filter((user) => {
-                if (!this.filterValue) return true;
-                return String(user[this.selectedFilter])
-                    .toLowerCase()
-                    .includes(this.filterValue.toLowerCase());
-            });
+            return this.users
+                .filter((user) => {
+                    if (!this.filterValue) return true;
+                    return String(user[this.selectedFilter])
+                        .toLowerCase()
+                        .includes(this.filterValue.toLowerCase());
+                });
         },
         paginatedUsers() {
             const start = (this.currentPage - 1) * this.recordsPerPage;
@@ -139,6 +151,12 @@ export default {
         changePage(page) {
             if (page < 1 || page > this.totalPages) return;
             this.currentPage = page;
+        },
+        toggleRow(userId) {
+            this.clickedUserId = this.clickedUserId === userId ? null : userId;
+        },
+        showDetails(userId) {
+            console.log(`Wyświetlanie szczegółów dla użytkownika: ${userId}`);
         },
         beforeEnter(el) {
             el.style.opacity = 0;
@@ -286,21 +304,17 @@ th:last-child {
 }
 
 .email {
-    margin-right: 8px;
+    margin-right: 10px;
 }
 
 .email-status {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 15px;
+    height: 15px;
     border-radius: 50%;
-}
-
-.verified {
     background-color: $success-color;
 }
 
-.unverified {
+.email-status.unverified {
     background-color: $warning-color;
 }
 
@@ -314,7 +328,7 @@ th:last-child {
 .pagination-button {
     padding: 10px 15px;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
     background-color: $tr_color;
     color: $white;
     font-size: 14px;
@@ -342,6 +356,35 @@ th:last-child {
     margin: 0 10px;
     font-weight: bold;
     color: $white;
+}
+
+.details-row {
+    background-color: $secondary-color;
+    color: $white;
+    text-align: left;
+    height: 100px;
+    padding-left: 20px;
+    border: none;
+}
+
+.details-button-cell {
+    background-color: $secondary-color;
+    text-align: right;
+    padding-right: 20px;
+}
+
+.details-button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: $primary-color;
+    }
 }
 
 @media (max-width: 768px) {
