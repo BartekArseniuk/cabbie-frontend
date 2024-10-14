@@ -7,6 +7,7 @@ import ContactPage from './components/Views/ContactPage/ContactPage.vue';
 import ProfilePage from './components/Views/Profile/ProfilePage.vue';
 import SurveyPage from './components/Views/Profile/SurveyPage.vue';
 import AdminPanel from './components/Views/AdminPanel/AdminPanel.vue';
+import DriverDetails from './components/Views/Profile/DriverDetails.vue';
 
 const routes = [
   {
@@ -71,6 +72,14 @@ const routes = [
     component: AdminPanel,
     meta: {
       title: 'Cabbie - Panel administratora'
+    }
+  },
+  {
+    path: '/driver/:id',
+    name: 'DriverDetails',
+    component: DriverDetails,
+    meta: {
+      title: 'Cabbie - Szczegóły kierowcy'
     }
   },
 ];

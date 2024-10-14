@@ -175,8 +175,22 @@ export default {
             }
         },
         handleProfileButtonClick() {
-            if (this.isMobile) {
-                this.navigateTo('Profile');
+            if (this.isMobile && this.getRole === 'admin') {
+                this.$router.push({
+                    name: 'AdminPanel',
+                    params: {
+                        section: 'clients'
+                    }
+                });
+                this.isNavOpen = false;
+            } else if (this.isMobile) {
+                this.$router.push({
+                    name: 'Profile',
+                    params: {
+                        section: 'details'
+                    }
+                });
+                this.isNavOpen = false;
             } else {
                 this.toggleProfileMenu();
             }

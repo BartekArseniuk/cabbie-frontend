@@ -4,7 +4,9 @@
         <div class="filter-dropdown">
             <div class="filter-dropdown-trigger" @click="toggleDropdown">
                 {{ selectedFilterLabel }}
-                <span class="arrow" :class="{ 'open': isDropdownOpen }">▼</span>
+                <span class="arrow" :class="{ 'open': isDropdownOpen }">
+                    <i class="fas fa-angle-down"></i>
+                </span>
             </div>
             <transition name="dropdown" @before-enter="beforeEnter" @enter="enter" @leave="leave">
                 <div class="filter-dropdown-list" v-if="isDropdownOpen">
@@ -38,9 +40,9 @@
                             <div class="email-container">
                                 <span class="email">{{ user.email }}</span>
                                 <span class="email-status" :class="{
-                                                verified: user.email_verified_at,
-                                                unverified: !user.email_verified_at,
-                                            }"></span>
+                                                    verified: user.email_verified_at,
+                                                    unverified: !user.email_verified_at,
+                                                }"></span>
                             </div>
                         </td>
                     </tr>
@@ -50,7 +52,9 @@
                             <p class="is-settled">CZY ROZLICZONO:</p>
                         </td>
                         <td class="details-button-cell">
-                            <button @click="showDetails(user.id)" class="details-button">PRZEJDŹ NA KONTO</button>
+                            <button @click="showDetails(user.id)" class="details-button">
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
                         </td>
                     </tr>
                 </template>
@@ -59,11 +63,11 @@
     </div>
     <div class="pagination-controls">
         <button class="pagination-button" @click="changePage(currentPage - 1)" :disabled="currentPage === 1" :class="{ 'active': currentPage > 1, 'disabled': currentPage === 1 }">
-            <span class="arrow">&#8592;</span>
+            <i class="fas fa-chevron-left"></i>
         </button>
         <span class="current-page">Strona {{ currentPage }} z {{ totalPages }}</span>
         <button class="pagination-button" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages" :class="{ 'active': currentPage < totalPages, 'disabled': currentPage === totalPages }">
-            <span class="arrow">&#8594;</span>
+            <i class="fas fa-chevron-right"></i>
         </button>
     </div>
 </div>
@@ -377,8 +381,8 @@ th:last-child {
     background-color: transparent;
     color: white;
     border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
+    padding: 10px 12px;
+    border-radius: 50%;
     cursor: pointer;
     transition: background-color 0.3s ease;
 
