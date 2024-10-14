@@ -1,7 +1,7 @@
 <template>
 <div class="profile-container">
     <aside class="sidebar" :class="{ 'hidden': isMobile }">
-        <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified && item.requiresVerification }">
+        <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified}">
             {{ item.label }}
         </button>
     </aside>
@@ -17,7 +17,7 @@
         </button>
 
         <div class="mobile-menu-content" :class="{ open: isSidebarOpen }">
-            <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified && item.requiresVerification }">
+            <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified}">
                 {{ item.label }}
             </button>
         </div>
@@ -57,7 +57,6 @@ export default {
         return {
             isSidebarOpen: false,
             isMobile: window.innerWidth <= 768,
-            isEmailVerified: false,
             currentComponent: 'DriverDetails',
             menuItems: [{
                     label: 'DANE I DOKUMENTY',
@@ -66,33 +65,28 @@ export default {
                 {
                     label: 'WIADOMOŚCI',
                     component: 'MessagesPage',
-                    requiresVerification: true
                 },
                 {
                     label: 'PORTFEL',
                     component: 'WalletPage',
-                    requiresVerification: true
                 },
                 {
                     label: 'FAKTURY',
                     component: 'InvoicesPage',
-                    requiresVerification: true
                 },
                 {
                     label: 'USTAWIENIA ROZLICZEŃ',
                     component: 'BillingSettingsPage',
-                    requiresVerification: true
                 },
                 {
                     label: 'RYCZAŁT',
                     component: 'LumpSumPage',
-                    requiresVerification: true
                 },
             ],
         };
     },
     computed: {
-        ...mapGetters(['getUser']),
+        ...mapGetters(['getUser','isEmailVerified']),
         user() {
             return this.getUser || {};
         },
@@ -151,38 +145,35 @@ export default {
             }
         },
         handleClick(component) {
-            const item = this.menuItems.find((item) => item.component === component);
-            if (item && (!item.requiresVerification || this.isEmailVerified)) {
-                let section = '';
-                switch (component) {
-                    case 'DriverDetails':
-                        section = 'details';
-                        break;
-                    case 'MessagesPage':
-                        section = 'messages';
-                        break;
-                    case 'WalletPage':
-                        section = 'wallet';
-                        break;
-                    case 'InvoicesPage':
-                        section = 'invoices';
-                        break;
-                    case 'BillingSettingsPage':
-                        section = 'billing-settings';
-                        break;
-                    case 'LumpSumPage':
-                        section = 'lump-sum';
-                        break;
-                }
-                if (section) {
-                    this.$router.push({
-                        name: 'Profile',
-                        params: {
-                            section
-                        }
-                    });
-                    this.isSidebarOpen = false;
-                }
+            let section = '';
+            switch (component) {
+                case 'DriverDetails':
+                    section = 'details';
+                    break;
+                case 'MessagesPage':
+                    section = 'messages';
+                    break;
+                case 'WalletPage':
+                    section = 'wallet';
+                    break;
+                case 'InvoicesPage':
+                    section = 'invoices';
+                    break;
+                case 'BillingSettingsPage':
+                    section = 'billing-settings';
+                    break;
+                case 'LumpSumPage':
+                    section = 'lump-sum';
+                    break;
+            }
+            if (section) {
+                this.$router.push({
+                    name: 'Profile',
+                    params: {
+                        section
+                    }
+                });
+                this.isSidebarOpen = false;
             }
         },
         beforeEnter(el) {
@@ -203,13 +194,13 @@ export default {
             done();
         },
     },
+    async created() {
+        await this.$store.dispatch('fetchUser');
+    },
     mounted() {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
         document.addEventListener('mousedown', this.handleClickOutside);
-        this.fetchUser().then(() => {
-            this.isEmailVerified = !!this.user.email_verified_at;
-        });
         this.loadComponent(this.$route.params.section);
     },
     beforeUnmount() {

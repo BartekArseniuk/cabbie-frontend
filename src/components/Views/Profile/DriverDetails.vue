@@ -9,8 +9,8 @@
     <div class="input-row">
         <div class="input-container">
             <input type="text" placeholder="E-MAIL" v-model="user.email" class="input-field" readonly />
-            <i v-if="dataLoaded && !isEmailVerified" class="warning-icon fas fa-circle-exclamation" title="Nie zweryfikowano maila"></i>
-            <i v-if="dataLoaded && isEmailVerified" class="verified-icon fas fa-check-circle" title="E-mail zweryfikowany"></i>
+            <i v-if="!isEmailVerified" class="warning-icon fas fa-circle-exclamation" title="Nie zweryfikowano maila"></i>
+            <i v-if="isEmailVerified" class="verified-icon fas fa-check-circle" title="E-mail zweryfikowany"></i>
         </div>
         <input type="text" placeholder="NR TELEFONU" v-model="user.phone_number" class="input-field" :readonly="!isEditing" />
     </div>
@@ -24,7 +24,7 @@
         <input type="text" placeholder="NR KONTA BANKU" v-model="user.bank_account_number" class="input-field" :readonly="!isEditing" />
     </div>
 
-    <div v-if="!isEmailVerified && dataLoaded" class="resend-verification-container">
+    <div v-if="!isEmailVerified" class="resend-verification-container">
         <button class="resend-verification" @click="resendVerificationEmail(user.id)">Wyślij ponownie e-mail weryfikacyjny</button>
     </div>
 
@@ -59,16 +59,12 @@ export default {
         return {
             isEditing: false,
             originalUser: {},
-            dataLoaded: false,
         };
     },
     computed: {
-        ...mapGetters(['getUser']),
+        ...mapGetters(['getUser','isEmailVerified']),
         user() {
             return this.getUser || {};
-        },
-        isEmailVerified() {
-            return !!this.user.email_verified_at;
         },
     },
     methods: {
@@ -124,10 +120,6 @@ export default {
                 });
             }
         },
-    },
-    async mounted() {
-        await this.fetchUser();
-        this.dataLoaded = true;
     },
 };
 </script>
