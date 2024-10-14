@@ -1,7 +1,7 @@
 <template>
 <div class="profile-container">
     <aside class="sidebar" :class="{ 'hidden': isMobile }">
-        <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified}">
+        <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified && item.component !== 'DriverDetails' }">
             {{ item.label }}
         </button>
     </aside>
@@ -17,7 +17,7 @@
         </button>
 
         <div class="mobile-menu-content" :class="{ open: isSidebarOpen }">
-            <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified}">
+            <button v-for="(item, index) in menuItems" :key="index" @click="handleClick(item.component)" :class="{ 'disabled': !isEmailVerified && item.component !== 'DriverDetails' }">
                 {{ item.label }}
             </button>
         </div>
@@ -86,7 +86,7 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['getUser','isEmailVerified']),
+        ...mapGetters(['getUser', 'isEmailVerified']),
         user() {
             return this.getUser || {};
         },

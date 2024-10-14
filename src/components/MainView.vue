@@ -135,7 +135,6 @@ export default {
                 await this.$store.dispatch('isLogged');
                 await this.$store.dispatch('fetchFirstLoginStatus');
                 await this.$store.dispatch('getUserRole');
-                await this.$store.dispatch('fetchUser');
             }
 
             const response = await apiService.get('/api/check-session');

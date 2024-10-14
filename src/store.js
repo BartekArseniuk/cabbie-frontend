@@ -120,6 +120,7 @@ export default createStore({
         commit('setUserRole', role);
         await dispatch('fetchFirstLoginStatus');
         await dispatch('getUserRole');
+        await dispatch('fetchUser');
 
         await apiService.get('/test-session');
       } catch (error) {
