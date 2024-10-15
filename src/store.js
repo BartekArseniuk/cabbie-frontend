@@ -226,6 +226,16 @@ export default createStore({
       }
     },
 
+    async fetchUserById({ commit }, userId) {
+      try {
+        const response = await apiService.get(`users/${userId}`);
+        commit('setUser', response.data);
+        commit('setIsEmailVerified', response.data.email_verified_at != null);
+      } catch (error) {
+        console.error('Error fetching user by ID:', error);
+      }
+    },
+
     async updateUser({ dispatch }, user) {
       try {
         const encryptedUserId = localStorage.getItem('U&58hf*p');

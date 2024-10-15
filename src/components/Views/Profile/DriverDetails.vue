@@ -1,5 +1,9 @@
 <template>
 <div class="driver-details">
+    <button v-if="getRole === 'admin'" class="back-button" @click="goBack">
+        <i class="fas fa-arrow-left"></i> Wróć
+    </button>
+
     <p class="title">Dane kierowcy</p>
     <div class="input-row">
         <input type="text" placeholder="IMIĘ" v-model="user.first_name" class="input-field" :readonly="!isEditing" />
@@ -24,18 +28,18 @@
         <input type="text" placeholder="NR KONTA BANKU" v-model="user.bank_account_number" class="input-field" :readonly="!isEditing" />
     </div>
 
-    <div v-if="!isEmailVerified" class="resend-verification-container">
+    <div v-if="!isEmailVerified && getRole != 'admin'" class="resend-verification-container">
         <button class="resend-verification" @click="resendVerificationEmail(user.id)">Wyślij ponownie e-mail weryfikacyjny</button>
     </div>
 
-    <div class="button-container">
+    <div v-if="getRole != 'admin'" class="button-container">
         <button v-if="!isEditing" class="edit" @click="startEditing">EDYTUJ</button>
         <button v-if="isEditing" class="save" @click="saveChanges">ZAPISZ</button>
         <button v-if="isEditing" class="cancel" @click="cancelEditing">ANULUJ</button>
     </div>
 
-    <p class="second-title">Dokumenty</p>
-    <div class="documents">
+    <p v-if="getRole != 'admin'" class="second-title">Dokumenty</p>
+    <div v-if="getRole != 'admin'" class="documents">
         <p class="subtitle">Do wgrania</p>
         <ul class="document-list"></ul>
         <p class="subtitle">Do pobrania</p>
@@ -46,7 +50,7 @@
     </div>
 </div>
 </template>
-
+  
 <script>
 import Swal from 'sweetalert2';
 import {
@@ -62,13 +66,27 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(['getUser','isEmailVerified']),
+        ...mapGetters(['getUser', 'isEmailVerified', 'getRole']),
         user() {
             return this.getUser || {};
         },
     },
+    created() {
+        const userId = this.$route.params.id;
+
+        if (this.getRole === 'admin') {
+            this.fetchUserById(userId);
+        }
+    },
+    mounted() {
+        setTimeout(() => {
+            if (this.isFieldsEmpty()) {
+                this.showAlert();
+            }
+        }, 3000);
+    },
     methods: {
-        ...mapActions(['fetchUser', 'updateUser', 'resendVerificationEmail']),
+        ...mapActions(['fetchUser', 'fetchUserById', 'updateUser', 'resendVerificationEmail']),
         startEditing() {
             this.isEditing = true;
             this.originalUser = {
@@ -120,6 +138,22 @@ export default {
                 });
             }
         },
+        goBack() {
+            this.$router.go(-1);
+        },
+        showAlert() {
+            Swal.fire({
+                title: 'Uwaga!',
+                text: 'Proszę wrócić do poprzedniej strony.',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+            }).then(() => {
+                this.goBack();
+            });
+        },
+        isFieldsEmpty() {
+            return !this.user.first_name && !this.user.last_name && !this.user.email && !this.user.phone_number && !this.user.pesel && !this.user.bank_name && !this.user.bank_account_number;
+        },
     },
 };
 </script>
@@ -127,7 +161,7 @@ export default {
 <style lang="scss" scoped>
 .driver-details {
     margin: 0 auto;
-    max-width: 800px;
+    max-width: 710px;
     padding: 20px;
 }
 
@@ -326,6 +360,26 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+.back-button {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    color: $primary-color;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.back-button i {
+    margin-right: 5px;
+}
+
+.back-button:hover {
+    color: $secondary-color;
 }
 
 @media (max-width: 768px) {

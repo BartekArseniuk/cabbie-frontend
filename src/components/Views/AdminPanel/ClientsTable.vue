@@ -160,7 +160,12 @@ export default {
             this.clickedUserId = this.clickedUserId === userId ? null : userId;
         },
         showDetails(userId) {
-            console.log(`Wyświetlanie szczegółów dla użytkownika: ${userId}`);
+            this.$router.push({
+                name: 'DriverDetails',
+                params: {
+                    id: userId
+                }
+            });
         },
         beforeEnter(el) {
             el.style.opacity = 0;

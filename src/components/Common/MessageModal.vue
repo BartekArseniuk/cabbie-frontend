@@ -247,13 +247,13 @@ button:hover {
     input:checked+span::after {
         content: "";
         position: absolute;
-        top: 50%;
+        top: 40%;
         left: 50%;
         width: 10px;
         height: 6px;
         border: solid $tertiary-color;
         border-width: 0 0 2px 2px;
-        transform: translate(-50%, -50%) rotate(-45deg);
+        transform: translate(-50%, -40%) rotate(-45deg);
     }
 
     span:hover {
