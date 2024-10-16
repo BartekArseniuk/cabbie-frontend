@@ -1,7 +1,7 @@
 <template>
 <div class="driver-details">
     <button v-if="getRole === 'admin'" class="back-button" @click="goBack">
-        <i class="fas fa-arrow-left"></i> Wróć
+        <i class="fas fa-arrow-left"></i>
     </button>
 
     <p class="title">Dane kierowcy</p>
@@ -29,7 +29,8 @@
     </div>
 
     <div v-if="!isEmailVerified && getRole != 'admin'" class="resend-verification-container">
-        <button class="resend-verification" @click="resendVerificationEmail(user.id)">Wyślij ponownie e-mail weryfikacyjny</button>
+        <button class="resend-verification" @click="resendVerificationEmail(user.id)">Wyślij ponownie e-mail
+            weryfikacyjny</button>
     </div>
 
     <div v-if="getRole != 'admin'" class="button-container">
@@ -48,9 +49,22 @@
             <li><a href="#link2" target="_blank">Umowa Najmu</a></li>
         </ul>
     </div>
+
+    <div class="input-row single">
+        <p class="custom-label">CZY ZWERYFIKOWANY FORMULARZ OSOBOWY:</p>
+        <div :class="['custom-dropdown', { open: dropdownOpen, 'success-bg': isFormVerified, 'warning-bg': !isFormVerified }]" @click="toggleDropdown">
+            <div class="dropdown-selected">
+                {{ isFormVerified ? 'TAK' : 'NIE' }}
+            </div>
+            <ul :class="['dropdown-list', { open: dropdownOpen }]">
+                <li @click="selectOption(true)">TAK</li>
+                <li @click="selectOption(false)">NIE</li>
+            </ul>
+        </div>
+    </div>
 </div>
 </template>
-  
+
 <script>
 import Swal from 'sweetalert2';
 import {
@@ -63,10 +77,11 @@ export default {
         return {
             isEditing: false,
             originalUser: {},
+            dropdownOpen: false,
         };
     },
     computed: {
-        ...mapGetters(['getUser', 'isEmailVerified', 'getRole']),
+        ...mapGetters(['getUser', 'isEmailVerified', 'getRole', 'isFormVerified']),
         user() {
             return this.getUser || {};
         },
@@ -86,7 +101,36 @@ export default {
         }, 3000);
     },
     methods: {
-        ...mapActions(['fetchUser', 'fetchUserById', 'updateUser', 'resendVerificationEmail']),
+        ...mapActions(['fetchUser', 'fetchUserById', 'updateUser', 'resendVerificationEmail', 'updateFormVerificationStatus']),
+        toggleDropdown() {
+            this.dropdownOpen = !this.dropdownOpen;
+        },
+        async selectOption(value) {
+            this.isFormVerified = value;
+            this.dropdownOpen = false;
+            const userId = this.user.id;
+
+            try {
+                await this.$store.dispatch('updateFormVerificationStatus', {
+                    userId,
+                    isVerified: value
+                });
+                Swal.fire({
+                    title: 'Sukces!',
+                    text: 'Status weryfikacji formularza został zaktualizowany.',
+                    icon: 'success',
+                    confirmButtonText: 'OK',
+                });
+            } catch (error) {
+                Swal.fire({
+                    title: 'Błąd!',
+                    text: error.message || 'Nie udało się zaktualizować statusu weryfikacji formularza.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                });
+            }
+            this.dropdownOpen = false;
+        },
         startEditing() {
             this.isEditing = true;
             this.originalUser = {
@@ -188,6 +232,10 @@ export default {
 
 .input-row.single {
     justify-content: left;
+}
+
+.input-row.single:last-child {
+    margin-top: 50px;
 }
 
 .input-container {
@@ -382,6 +430,75 @@ a:hover {
     color: $secondary-color;
 }
 
+.custom-label {
+    font-size: 16px;
+    color: $white;
+    margin-right: 10px;
+    font-family: 'Roboto-Light', sans-serif;
+}
+
+.custom-dropdown {
+    font-family: 'Roboto-Light', sans-serif;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: $secondary-color;
+    border: none;
+    border-radius: 15px;
+    color: $white;
+    width: 100px;
+    text-align: center;
+    user-select: none;
+    transition: border-radius 0.3s ease;
+}
+
+.custom-dropdown.open {
+    border-radius: 15px 15px 0 0;
+}
+
+.dropdown-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: $secondary-color;
+    border: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 0 0 15px 15px;
+    z-index: 10;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.dropdown-list.open {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.dropdown-list li {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-list li:hover {
+    background-color: $primary-color;
+}
+
+.success-bg {
+    background-color: $success-color;
+}
+
+.warning-bg {
+    background-color: $warning-color;
+}
+
 @media (max-width: 768px) {
     .title {
         text-align: center;
@@ -393,6 +510,10 @@ a:hover {
 
     .input-field {
         width: 100%;
+    }
+
+    .custom-dropdown {
+        padding: 10px;
     }
 }
 </style>

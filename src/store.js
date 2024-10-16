@@ -22,7 +22,9 @@ export default createStore({
     messages: [],
     isUserEmailVerified: false,
     hasUnreadMessages: false,
+    isFormVerified: false,
   },
+
   mutations: {
     SET_AUTHENTICATED(state, status) {
       state.isAuthenticated = status;
@@ -78,8 +80,13 @@ export default createStore({
         message.read = true;
       }
     },
+
     SET_HAS_UNREAD_MESSAGES(state, status) {
       state.hasUnreadMessages = status;
+    },
+
+    SET_FORM_VERIFIED(state, isVerified) {
+      state.isFormVerified = isVerified;
     },
   },
 
@@ -231,6 +238,7 @@ export default createStore({
         const response = await apiService.get(`users/${userId}`);
         commit('setUser', response.data);
         commit('setIsEmailVerified', response.data.email_verified_at != null);
+        commit('SET_FORM_VERIFIED', response.data.is_form_verified);
       } catch (error) {
         console.error('Error fetching user by ID:', error);
       }
@@ -365,6 +373,18 @@ export default createStore({
         commit('SET_HAS_UNREAD_MESSAGES', false);
       }
     },
+
+    async updateFormVerificationStatus({ commit }, { userId, isVerified }) {
+      try {
+        await apiService.put(`/users/${userId}/verify-form`, {
+          is_form_verified: isVerified,
+        });
+        commit('SET_FORM_VERIFIED', isVerified);
+      } catch (error) {
+        console.error('Error updating verification status:', error);
+        throw new Error('Nie udało się zaktualizować statusu weryfikacji formularza.');
+      }
+    }
   },
 
   getters: {
@@ -377,6 +397,7 @@ export default createStore({
     isEmailVerified: state => state.isUserEmailVerified,
     getReviews: (state) => state.reviews,
     getMessages: (state) => state.messages,
+    isFormVerified: state => state.isFormVerified,
     hasUnreadMessages: (state) => {
       return state.hasUnreadMessages;
     },
