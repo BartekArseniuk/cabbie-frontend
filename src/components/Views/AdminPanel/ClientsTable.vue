@@ -194,6 +194,7 @@ export default {
 .user-table {
     font-family: "Roboto-Light", sans-serif;
     margin: 20px;
+    height: 100vh;
 }
 
 .table-container {

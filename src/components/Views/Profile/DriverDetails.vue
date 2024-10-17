@@ -45,12 +45,12 @@
         <ul class="document-list"></ul>
         <p class="subtitle">Do pobrania</p>
         <ul class="document-list">
-            <li><a href="#link1" target="_blank">Umowa Zlecenie + Kwestionariusze do wypełnienia</a></li>
-            <li><a href="#link2" target="_blank">Umowa Najmu</a></li>
+            <li v-if="!isFormVerified"><a href="#link1">Kwestionariusze do wypełnienia</a></li>
+            <li v-if="isFormVerified"><a href="#link2">Umowa Zlecenie</a></li>
         </ul>
     </div>
 
-    <div class="input-row single">
+    <div class="input-row single" v-if="getRole === 'admin'" >
         <p class="custom-label">CZY ZWERYFIKOWANY FORMULARZ OSOBOWY:</p>
         <div :class="['custom-dropdown', { open: dropdownOpen, 'success-bg': isFormVerified, 'warning-bg': !isFormVerified }]" @click="toggleDropdown">
             <div class="dropdown-selected">
@@ -60,6 +60,26 @@
                 <li @click="selectOption(true)">TAK</li>
                 <li @click="selectOption(false)">NIE</li>
             </ul>
+        </div>
+    </div>
+
+    <div class="survey-answers-container" v-if="getRole === 'admin'">
+        <div v-if="getUserSurveyData" @click="toggleAnswers">
+            <p class="survey-title" >ODPOWIEDZI Z ANKIETY</p>
+            <div class="survey-answers" v-bind:class="{ 'slide-open': show }" >
+                <p class="survey-answer">1. Czy jesteś aktywnym kierowcą aplikacji Taxi? <strong class="survey-answer-highlight">{{ userSurveyData.isDriver }} </strong></p>
+                <p class="survey-answer">2. Samochód <strong class="survey-answer-highlight">{{ userSurveyData.carType }}</strong></p>
+                <p class="survey-answer" v-if="userSurveyData.taxtRegistry != null">2.1 Czy posiada wpis TAXI w dowodzie? <strong class="survey-answer-highlight">{{ userSurveyData.taxtRegistry }}</strong></p>
+                <p class="survey-answer">3. Status <strong class="survey-answer-highlight">{{ userSurveyData.jobStatus }}</strong></p>
+                <p class="survey-answer">4. Jak szybko chcesz rozpaczać pracę? <strong class="survey-answer-highlight">{{ userSurveyData.startTime }}</strong></p>
+                <p class="survey-answer">5. Ile czasu Tygodniowo chcesz przeznaczyć na prace jak kierowca TAXI? <strong class="survey-answer-highlight">{{ userSurveyData.weeklyHours  }}</strong></p>
+                <p class="survey-answer">6. Skąd się dowiedziałeś o Cabbie? <strong class="survey-answer-highlight">{{ userSurveyData.foundVia }}</strong></p>
+            </div>
+        </div>
+        <div v-else class="empty-survey-container">
+           <p class="empty-survey-title" > 
+             UŻYTKOWNIK NIE WYPEŁNIŁ ANKIETY
+           </p> 
         </div>
     </div>
 </div>
@@ -78,12 +98,16 @@ export default {
             isEditing: false,
             originalUser: {},
             dropdownOpen: false,
+            show:false
         };
     },
     computed: {
-        ...mapGetters(['getUser', 'isEmailVerified', 'getRole', 'isFormVerified']),
+        ...mapGetters(['getUser', 'isEmailVerified', 'getRole', 'isFormVerified', 'getUserSurveyData']),
         user() {
             return this.getUser || {};
+        },
+        userSurveyData() {
+            return this.getUserSurveyData;
         },
     },
     created() {
@@ -91,6 +115,10 @@ export default {
 
         if (this.getRole === 'admin') {
             this.fetchUserById(userId);
+        }
+
+        if (this.getRole === 'admin') {
+            this.$store.dispatch('fetchUserSurveyData', { userId });
         }
     },
     mounted() {
@@ -198,6 +226,9 @@ export default {
         isFieldsEmpty() {
             return !this.user.first_name && !this.user.last_name && !this.user.email && !this.user.phone_number && !this.user.pesel && !this.user.bank_name && !this.user.bank_account_number;
         },
+        toggleAnswers() {
+           this.show = !this.show;
+        }
     },
 };
 </script>
@@ -497,6 +528,64 @@ a:hover {
 
 .warning-bg {
     background-color: $warning-color;
+}
+
+.survey-answers-container {
+    position: relative;
+    background-color: $tr_color;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.survey-title {
+    font-family: 'Roboto-Light', sans-serif;
+    color: $white;
+    padding: 20px 0px 0px 0px;
+    margin-left: 20px;
+}
+
+.survey-answers {
+    background-color: $secondary-color;
+    width: 100%;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.survey-answer {
+    color: $footer-background;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-left: 20px;
+    font-family: 'Roboto-Light', sans-serif;
+    opacity: 1;
+}
+
+.survey-answer-highlight {
+    color: $white;
+}
+
+.empty-survey-container {
+    padding: 5px;
+}
+
+.empty-survey-title {
+    color: $white;
+    font-family: 'Roboto-Light', sans-serif;
+    margin-left: 20px;
+}
+
+.survey-answers {
+  max-height: 0px;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.slide-open {
+  max-height: 500px;
+  opacity: 1;
 }
 
 @media (max-width: 768px) {

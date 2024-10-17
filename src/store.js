@@ -16,13 +16,14 @@ export default createStore({
     userRole: null,
     firstLogin: true,
     isLoggedIn: false,
+    isUserEmailVerified: false,
+    hasUnreadMessages: false,
+    isFormVerified: false,
     users: [],
     blogs: [],
     reviews: [],
     messages: [],
-    isUserEmailVerified: false,
-    hasUnreadMessages: false,
-    isFormVerified: false,
+    userSurveyData: {},
   },
 
   mutations: {
@@ -87,6 +88,10 @@ export default createStore({
 
     SET_FORM_VERIFIED(state, isVerified) {
       state.isFormVerified = isVerified;
+    },
+
+    SET_USER_SURVEY_DATA(state, payload) {
+      state.userSurveyData = payload;
     },
   },
 
@@ -222,6 +227,7 @@ export default createStore({
         const userId = decrypt(encryptedUserId);
         const response = await apiService.get(`users/${userId}`);
         commit('setUser', response.data);
+        commit('SET_FORM_VERIFIED', response.data.is_form_verified);
         if (response.data.email_verified_at != null) {
           commit('setIsEmailVerified', true);
         } else {
@@ -384,7 +390,35 @@ export default createStore({
         console.error('Error updating verification status:', error);
         throw new Error('Nie udało się zaktualizować statusu weryfikacji formularza.');
       }
-    }
+    },
+
+    async fetchUserSurveyData({ commit }, { userId }) {
+      commit('SET_USER_SURVEY_DATA', null);
+
+      try {
+        const response = await apiService.get(`/survey/user/${userId}`);
+        const data = response.data;
+        
+        const selectedData = {
+          isDriver: data.isDriver,
+          carType: data.carType,
+          taxiRegistry: data.taxiRegistry,
+          jobStatus: data.jobStatus,
+          startTime: data.startTime,
+          weeklyHours: data.weeklyHours,
+          foundVia: data.foundVia,
+        };
+
+        if(data.isDriver != null) {
+          commit('SET_USER_SURVEY_DATA', selectedData);
+        } else {
+          commit('SET_USER_SURVEY_DATA', null);
+        }
+
+      } catch (error) {
+        console.error("Failed to fetch user survey data:", error);
+      }
+    },
   },
 
   getters: {
@@ -401,5 +435,6 @@ export default createStore({
     hasUnreadMessages: (state) => {
       return state.hasUnreadMessages;
     },
+    getUserSurveyData: (state) => state.userSurveyData,
   },
 });
