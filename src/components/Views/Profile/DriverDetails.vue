@@ -50,7 +50,7 @@
         </ul>
     </div>
 
-    <div class="input-row single" v-if="getRole === 'admin'" >
+    <div class="verify-form-row" v-if="getRole === 'admin'">
         <p class="custom-label">CZY ZWERYFIKOWANY FORMULARZ OSOBOWY:</p>
         <div :class="['custom-dropdown', { open: dropdownOpen, 'success-bg': isFormVerified, 'warning-bg': !isFormVerified }]" @click="toggleDropdown">
             <div class="dropdown-selected">
@@ -65,8 +65,8 @@
 
     <div class="survey-answers-container" v-if="getRole === 'admin'">
         <div v-if="getUserSurveyData" @click="toggleAnswers">
-            <p class="survey-title" >ODPOWIEDZI Z ANKIETY</p>
-            <div class="survey-answers" v-bind:class="{ 'slide-open': show }" >
+            <p class="survey-title">ODPOWIEDZI Z ANKIETY</p>
+            <div class="survey-answers" v-bind:class="{ 'slide-open': show }">
                 <p class="survey-answer">1. Czy jesteś aktywnym kierowcą aplikacji Taxi? <strong class="survey-answer-highlight">{{ userSurveyData.isDriver }} </strong></p>
                 <p class="survey-answer">2. Samochód <strong class="survey-answer-highlight">{{ userSurveyData.carType }}</strong></p>
                 <p class="survey-answer" v-if="userSurveyData.taxtRegistry != null">2.1 Czy posiada wpis TAXI w dowodzie? <strong class="survey-answer-highlight">{{ userSurveyData.taxtRegistry }}</strong></p>
@@ -77,9 +77,9 @@
             </div>
         </div>
         <div v-else class="empty-survey-container">
-           <p class="empty-survey-title" > 
-             UŻYTKOWNIK NIE WYPEŁNIŁ ANKIETY
-           </p> 
+            <p class="empty-survey-title">
+                UŻYTKOWNIK NIE WYPEŁNIŁ ANKIETY
+            </p>
         </div>
     </div>
 </div>
@@ -98,7 +98,7 @@ export default {
             isEditing: false,
             originalUser: {},
             dropdownOpen: false,
-            show:false
+            show: false
         };
     },
     computed: {
@@ -118,7 +118,9 @@ export default {
         }
 
         if (this.getRole === 'admin') {
-            this.$store.dispatch('fetchUserSurveyData', { userId });
+            this.$store.dispatch('fetchUserSurveyData', {
+                userId
+            });
         }
     },
     mounted() {
@@ -227,7 +229,7 @@ export default {
             return !this.user.first_name && !this.user.last_name && !this.user.email && !this.user.phone_number && !this.user.pesel && !this.user.bank_name && !this.user.bank_account_number;
         },
         toggleAnswers() {
-           this.show = !this.show;
+            this.show = !this.show;
         }
     },
 };
@@ -257,16 +259,19 @@ export default {
     margin-bottom: 10px;
 }
 
+.verify-form-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 30px;
+    margin-left: 5px;
+}
+
 .input-row.last-row {
-    margin-top: 50px;
+    margin-top: 30px;
 }
 
 .input-row.single {
     justify-content: left;
-}
-
-.input-row.single:last-child {
-    margin-top: 50px;
 }
 
 .input-container {
@@ -328,8 +333,8 @@ export default {
     top: 50%;
     transform: translateY(-50%) translateX(-10px);
     padding: 5px;
-    background-color: #333;
-    color: #fff;
+    background-color: $secondary-color;
+    color: $white;
     border-radius: 3px;
     white-space: nowrap;
     font-family: 'Roboto-Extra-Light', sans-serif;
@@ -343,7 +348,7 @@ export default {
 }
 
 .resend-verification-container {
-    margin-top: 20px;
+    margin-top: 30px;
     text-align: left;
 }
 
@@ -531,8 +536,8 @@ a:hover {
 }
 
 .survey-answers-container {
-    position: relative;
     background-color: $tr_color;
+    margin-top: 30px;
     border-radius: 15px;
     cursor: pointer;
 }
@@ -540,7 +545,7 @@ a:hover {
 .survey-title {
     font-family: 'Roboto-Light', sans-serif;
     color: $white;
-    padding: 20px 0px 0px 0px;
+    padding: 15px 0px 0px 0px;
     margin-left: 20px;
 }
 
@@ -577,15 +582,15 @@ a:hover {
 }
 
 .survey-answers {
-  max-height: 0px;
-  opacity: 0;
-  overflow: hidden;
-  transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    max-height: 0px;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
 }
 
 .slide-open {
-  max-height: 500px;
-  opacity: 1;
+    max-height: 500px;
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -593,7 +598,8 @@ a:hover {
         text-align: center;
     }
 
-    .input-row {
+    .input-row,
+    .verify-form-row {
         flex-direction: column;
     }
 
