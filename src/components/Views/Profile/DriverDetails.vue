@@ -124,11 +124,13 @@ export default {
         }
     },
     mounted() {
-        setTimeout(() => {
-            if (this.isFieldsEmpty()) {
-                this.showAlert();
-            }
-        }, 3000);
+        if (this.getRole === 'admin') {
+            setTimeout(() => {
+                if (this.isFieldsEmpty()) {
+                    this.showAlert();
+                }
+            }, 3000);
+        }
     },
     methods: {
         ...mapActions(['fetchUser', 'fetchUserById', 'updateUser', 'resendVerificationEmail', 'updateFormVerificationStatus']),
