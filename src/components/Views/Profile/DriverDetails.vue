@@ -46,9 +46,15 @@
         <p class="subtitle">Do pobrania</p>
         <ul class="document-list">
             <li v-if="!isFormVerified"><a href="#link1">Kwestionariusze do wypełnienia</a></li>
-            <li v-if="isFormVerified"><a href="#link2">Umowa Zlecenie</a></li>
+            <li v-if="isFormVerified" @click="openModal">
+                <a href="#link2">Umowa Zlecenie</a>
+            </li>
         </ul>
     </div>
+
+    <ModalPdfForm :isVisible="isModalVisible" @close="closeModal">
+      <UmowaZlecenie />
+    </ModalPdfForm>
 
     <div class="verify-form-row" v-if="getRole === 'admin'">
         <p class="custom-label">CZY ZWERYFIKOWANY FORMULARZ OSOBOWY:</p>
@@ -86,6 +92,8 @@
 </template>
 
 <script>
+import ModalPdfForm from '@/assets/pdf/ModalPdfForm.vue';
+import UmowaZlecenie from '@/assets/pdf/UmowaZlecenie.vue';
 import Swal from 'sweetalert2';
 import {
     mapGetters,
@@ -98,9 +106,15 @@ export default {
             isEditing: false,
             originalUser: {},
             dropdownOpen: false,
-            show: false
+            show: false,
+            isModalVisible: false,
         };
     },
+    components: {
+        ModalPdfForm,
+        UmowaZlecenie,
+    },
+
     computed: {
         ...mapGetters(['getUser', 'isEmailVerified', 'getRole', 'isFormVerified', 'getUserSurveyData']),
         user() {
@@ -232,7 +246,13 @@ export default {
         },
         toggleAnswers() {
             this.show = !this.show;
-        }
+        },
+        openModal() {
+            this.isModalVisible = true;
+        },
+        closeModal() {
+        this.isModalVisible = false;
+        },
     },
 };
 </script>
