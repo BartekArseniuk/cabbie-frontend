@@ -62,8 +62,8 @@ export default {
 }
 
 .logo img {
-    max-height: 75%;
-    max-width: 75%;
+    max-height: 100%;
+    max-width: 100%;
     height: auto;
     width: auto;
 }
@@ -103,8 +103,8 @@ export default {
     }
 
     .logo img {
-        max-height: 50%;
-        max-width: 50%;
+        max-height: 75%;
+        max-width: 75%;
         height: auto;
         width: auto;
     }
