@@ -8,6 +8,7 @@ import ProfilePage from './components/Views/Profile/ProfilePage.vue';
 import SurveyPage from './components/Views/Profile/SurveyPage.vue';
 import AdminPanel from './components/Views/AdminPanel/AdminPanel.vue';
 import DriverDetails from './components/Views/Profile/DriverDetails.vue';
+import FAQComponent from './components/Views/FAQ/FAQComponent.vue';
 
 const routes = [
   {
@@ -80,6 +81,14 @@ const routes = [
     component: DriverDetails,
     meta: {
       title: 'Cabbie - Szczegóły kierowcy'
+    }
+  },
+  {
+    path: '/FAQ',
+    name: 'FAQ',
+    component: FAQComponent,
+    meta: {
+      title: 'Cabbie - FAQ'
     }
   },
 ];

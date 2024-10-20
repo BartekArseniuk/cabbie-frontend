@@ -104,7 +104,11 @@ export default {
                 {
                     label: 'KONTAKT',
                     route: 'Contact'
-                }
+                },
+                {
+                    label: 'FAQ',
+                    route: 'FAQ'
+                },
             ],
             profileMenuItemsUser: [
                 'DANE I DOKUMENTY',
