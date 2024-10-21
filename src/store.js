@@ -198,13 +198,13 @@ export default createStore({
     async logout({ commit }) {
       try {
         await apiService.post('/logout');
-        localStorage.removeItem('T94&hgK%');
-        localStorage.removeItem('U&58hf*p');
-        localStorage.removeItem('R&4jH4@');
         commit('SET_AUTHENTICATED', false);
         commit('setFirstLogin', null);
         commit('SET_LOGGED_IN', false);
         commit('setUserRole', null);
+        localStorage.removeItem('T94&hgK%');
+        localStorage.removeItem('U&58hf*p');
+        localStorage.removeItem('R&4jH4@');
       } catch (error) {
         console.error('Logout failed', error);
       }
