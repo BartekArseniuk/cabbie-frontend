@@ -505,6 +505,32 @@ export default createStore({
         console.error('Error deleting question:', error);
       }
     },
+
+    async sendContactEmail(_, { first_name, last_name, email, message }) {
+      try {
+        const response = await apiService.post('/send-email', {
+          first_name,
+          last_name,
+          email,
+          message
+        });
+        Swal.fire({
+          title: 'Sukces',
+          text: 'Wiadomość została wysłana pomyślnie.',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+        return response.data;
+      } catch (error) {
+        Swal.fire({
+          title: 'Błąd',
+          text: 'Wystąpił problem podczas wysyłania wiadomości. Spróbuj ponownie.',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        throw new Error('Błąd wysyłania wiadomości');
+      }
+    },    
   },
 
   getters: {

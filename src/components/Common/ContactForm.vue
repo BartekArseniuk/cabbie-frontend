@@ -1,13 +1,13 @@
 <template>
     <div class="contact">
         <p v-if="props.showTitle" class="title">SKONTAKTUJ SIĘ Z NAMI</p>
-        <form class="contact-form">
+        <form class="contact-form" @submit.prevent="submitContactForm">
             <div class="input-row">
-                <input v-model="firstName" type="text" placeholder="IMIĘ" class="input-field" />
-                <input v-model="lastName" type="text" placeholder="NAZWISKO" class="input-field" />
-                <input v-model="email" type="email" placeholder="E-MAIL" class="input-field" />
+                <input v-model="firstName" type="text" placeholder="IMIĘ" class="input-field" required />
+                <input v-model="lastName" type="text" placeholder="NAZWISKO" class="input-field" required />
+                <input v-model="email" type="email" placeholder="E-MAIL" class="input-field" required />
             </div>
-            <textarea v-model="message" placeholder="TREŚĆ TWOJEJ WIADOMOŚCI" class="input-description"></textarea>
+            <textarea v-model="message" placeholder="TREŚĆ TWOJEJ WIADOMOŚCI" class="input-description" required></textarea>
             <button type="submit" class="send">WYŚLIJ</button>
         </form>
     </div>
@@ -15,6 +15,7 @@
 
 <script setup>
 import { ref, defineProps } from 'vue';
+import { useStore } from 'vuex';
 
 const props = defineProps({
     showTitle: {
@@ -23,10 +24,30 @@ const props = defineProps({
     }
 });
 
+const store = useStore();
+
 const firstName = ref('');
 const lastName = ref('');
 const email = ref('');
 const message = ref('');
+
+const submitContactForm = async () => {
+    try {
+        await store.dispatch('sendContactEmail', {
+            first_name: firstName.value,
+            last_name: lastName.value,
+            email: email.value,
+            message: message.value
+        });
+        
+        firstName.value = '';
+        lastName.value = '';
+        email.value = '';
+        message.value = '';
+    } catch (error) {
+        console.error('Błąd podczas wysyłania formularza:', error);
+    }
+};
 </script>
 
 <style lang="scss" scoped>
