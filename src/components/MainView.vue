@@ -478,7 +478,7 @@ body {
     }
 
     .nav--open {
-        max-height: 500px;
+        max-height: 600px;
         opacity: 1;
         transform: scaleY(1);
     }
