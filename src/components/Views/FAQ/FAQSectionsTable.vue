@@ -7,14 +7,14 @@
         <ul class="faq-sections-list">
             <li v-for="section in sections" :key="section.id" class="faq-section-item">
                 <div class="faq-section-content">
-                    <strong>ID:</strong> {{ section.id }}<br />
-                    <strong>Nazwa Sekcji:</strong> {{ section.name }}<br />
-                    <strong>DATA DODANIA:</strong> {{ formatDate(section.created_at) }}<br />
-                    <strong>DATA MODYFIKACJI:</strong> {{ formatDate(section.updated_at) }}<br />
+                    <strong>ID:</strong> {{ section.id }}
+                    <strong>Nazwa Sekcji:</strong> {{ section.title }}
+                    <strong>DATA DODANIA:</strong> {{ formatDate(section.created_at) }}
+                    <strong>DATA MODYFIKACJI:</strong> {{ formatDate(section.updated_at) }}
                 </div>
                 <div class="faq-section-actions">
                     <button class="action-button" @click="openEditSectionModal(section)">EDYTUJ</button>
-                    <button class="action-button" @click="deleteSection(section.id)">USUŃ</button>
+                    <button class="action-button" @click="confirmDeleteSection(section.id)">USUŃ</button>
                 </div>
             </li>
         </ul>
@@ -25,9 +25,9 @@
             <div class="modal">
                 <h3>{{ isEditing ? 'EDYTUJ SEKCJĘ' : 'DODAJ SEKCJĘ' }}</h3>
                 <div class="modal-inputs">
-                    <input v-model="currentSection.name" placeholder="Nazwa Sekcji" />
+                    <input v-model="currentSection.title" placeholder="Nazwa Sekcji" />
                 </div>
-                <button class="send" @click="isEditing ? updateSection() : createSection()">
+                <button class="send" @click="isEditing ? updateSectionInStore({ sectionId: currentSection.id, updatedData: { title: currentSection.title } }) : createSection()">
                     {{ isEditing ? 'AKTUALIZUJ' : 'DODAJ' }}
                 </button>
                 <button class="send" @click="closeModal">ANULUJ</button>
@@ -38,6 +38,12 @@
 </template>
 
 <script>
+import {
+    mapActions,
+    mapGetters
+} from 'vuex';
+import Swal from 'sweetalert2';
+
 export default {
     data() {
         return {
@@ -45,54 +51,38 @@ export default {
             isEditing: false,
             currentSection: {
                 id: null,
-                name: '',
-                created_at: '',
-                updated_at: '',
+                title: '',
             },
-            sections: [{
-                    id: 1,
-                    name: 'Sekcja 1',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 2,
-                    name: 'Sekcja 2',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 3,
-                    name: 'Sekcja 3',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 4,
-                    name: 'Sekcja 4',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 5,
-                    name: 'Sekcja 5',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-            ],
         };
     },
+    computed: {
+        ...mapGetters(['getSections']),
+        sections() {
+            return this.getSections;
+        },
+    },
     methods: {
+        ...mapActions(['addSection', 'updateSection', 'deleteSection', 'fetchSections']),
+
+        async updateSectionInStore(data) {
+            try {
+                await this.updateSection(data);
+                Swal.fire('Sukces!', 'Sekcja została zaktualizowana.', 'success');
+                this.closeModal();
+            } catch (error) {
+                Swal.fire('Błąd', 'Nie udało się zaktualizować sekcji.', 'error');
+            }
+        },
+
         openAddSectionModal() {
             this.isEditing = false;
             this.currentSection = {
                 id: null,
-                name: '',
-                created_at: '',
-                updated_at: '',
+                title: ''
             };
             this.isModalVisible = true;
         },
+
         openEditSectionModal(section) {
             this.isEditing = true;
             this.currentSection = {
@@ -100,51 +90,75 @@ export default {
             };
             this.isModalVisible = true;
         },
+
         closeModal() {
             this.isModalVisible = false;
         },
-        formatDate(dateString) {
-            return new Date(dateString).toLocaleString();
+
+        async createSection() {
+            try {
+                await this.addSection({
+                    title: this.currentSection.title
+                });
+                Swal.fire('Sukces!', 'Sekcja została dodana.', 'success');
+                this.closeModal();
+            } catch (error) {
+                Swal.fire('Błąd', 'Nie udało się dodać sekcji.', 'error');
+            }
         },
-        createSection() {
-            const newId = this.sections.length ? Math.max(...this.sections.map((s) => s.id)) + 1 : 1;
-            this.sections.push({
-                ...this.currentSection,
-                id: newId,
-                created_at: new Date(),
-                updated_at: new Date(),
+
+        confirmDeleteSection(sectionId) {
+            Swal.fire({
+                title: 'Czy na pewno chcesz usunąć tę sekcję?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Tak, usuń!',
+                cancelButtonText: 'Anuluj',
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await this.handleDeleteSection(sectionId);
+                }
             });
-            this.closeModal();
         },
-        updateSection() {
-            const index = this.sections.findIndex((s) => s.id === this.currentSection.id);
-            if (index !== -1) {
-                this.sections[index] = {
-                    ...this.currentSection,
-                    updated_at: new Date(),
-                };
-            }
-            this.closeModal();
-        },
-        deleteSection(id) {
-            if (confirm('Czy na pewno chcesz usunąć tę sekcję?')) {
-                this.sections = this.sections.filter((section) => section.id !== id);
+
+        async handleDeleteSection(sectionId) {
+            try {
+                await this.deleteSection(sectionId);
+                Swal.fire('Usunięto!', 'Sekcja została usunięta.', 'success');
+            } catch (error) {
+                Swal.fire('Błąd', 'Nie udało się usunąć sekcji.', 'error');
             }
         },
+
+        formatDate(dateString) {
+            return new Date(dateString).toLocaleString('pl-PL', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        },
+
         beforeEnterModal(el) {
             el.style.opacity = 0;
         },
+
         enterModal(el, done) {
             el.offsetHeight;
             el.style.transition = 'opacity 0.3s ease';
             el.style.opacity = 1;
             done();
         },
+
         leaveModal(el, done) {
             el.style.transition = 'opacity 0.3s ease';
             el.style.opacity = 0;
             setTimeout(done, 300);
         },
+    },
+    mounted() {
+        this.fetchSections();
     },
 };
 </script>

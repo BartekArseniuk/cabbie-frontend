@@ -7,16 +7,16 @@
         <ul class="faq-questions-list">
             <li v-for="question in questions" :key="question.id" class="faq-question-item">
                 <div class="faq-question-content">
-                    <strong>ID:</strong> {{ question.id }}<br />
-                    <strong>ID SEKCJI:</strong> {{ question.section_id }}<br />
-                    <strong>PYTANIE:</strong> {{ question.question }}<br />
-                    <strong>ODPOWIEDŹ:</strong> {{ question.answer }}<br />
-                    <strong>DATA DODANIA:</strong> {{ formatDate(question.created_at) }}<br />
-                    <strong>DATA MODYFIKACJI:</strong> {{ formatDate(question.updated_at) }}<br />
+                    <strong>ID:</strong> {{ question.id }}
+                    <strong>ID SEKCJI:</strong> {{ question.section_id }}
+                    <strong>PYTANIE:</strong> {{ question.question }}
+                    <strong>ODPOWIEDŹ:</strong> {{ question.answer }}
+                    <strong>DATA DODANIA:</strong> {{ formatDate(question.created_at) }}
+                    <strong>DATA MODYFIKACJI:</strong> {{ formatDate(question.updated_at) }}
                 </div>
                 <div class="faq-question-actions">
                     <button class="action-button" @click="openEditQuestionModal(question)">EDYTUJ</button>
-                    <button class="action-button" @click="deleteQuestion(question.id)">USUŃ</button>
+                    <button class="action-button" @click="confirmDeleteQuestion(question.id)">USUŃ</button>
                 </div>
             </li>
         </ul>
@@ -31,7 +31,7 @@
                     <input v-model="currentQuestion.question" placeholder="Pytanie" />
                     <textarea v-model="currentQuestion.answer" placeholder="Odpowiedź"></textarea>
                 </div>
-                <button class="send" @click="isEditing ? updateQuestion() : createQuestion()">
+                <button class="send" @click="isEditing ? updateQuestionInStore() : createQuestion()">
                     {{ isEditing ? 'AKTUALIZUJ' : 'DODAJ' }}
                 </button>
                 <button class="send" @click="closeModal">ANULUJ</button>
@@ -42,6 +42,12 @@
 </template>
 
 <script>
+import {
+    mapActions,
+    mapGetters
+} from 'vuex';
+import Swal from 'sweetalert2';
+
 export default {
     data() {
         return {
@@ -52,143 +58,109 @@ export default {
                 section_id: null,
                 question: '',
                 answer: '',
-                created_at: '',
-                updated_at: '',
             },
-            questions: [{
-                    id: 1,
-                    section_id: 1,
-                    question: 'Co to jest FAQ?',
-                    answer: 'Cabbie zapewnia kompleksową obsługę dla kierowców, w tym prowadzenie konta, ułatwianie współpracy z platformami takimi jak Uber, Bolt i Free Now, oraz bezpieczne rozliczanie na podstawie danych z tych aplikacji. Dodatkowo, oferujemy udział w akcjach promocyjnych, gdzie nasi kierowcy mogą zdobywać atrakcyjne rabaty i nagrody za aktywne uczestnictwo.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 2,
-                    section_id: 1,
-                    question: 'Jak mogę dodać pytanie?',
-                    answer: 'Możesz dodać pytanie klikając przycisk "DODAJ PYTANIE".',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 3,
-                    section_id: 2,
-                    question: 'Jak edytować pytanie?',
-                    answer: 'Aby edytować pytanie, kliknij przycisk "Edytuj" obok pytania.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 4,
-                    section_id: 2,
-                    question: 'Czy mogę usunąć pytanie?',
-                    answer: 'Tak, klikając przycisk "Usuń".',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 5,
-                    section_id: 3,
-                    question: 'Jakie są zalety FAQ?',
-                    answer: 'FAQ pomaga szybko znaleźć odpowiedzi na popularne pytania.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 6,
-                    section_id: 3,
-                    question: 'Jak dodać sekcję FAQ?',
-                    answer: 'Musisz skontaktować się z administratorem.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 7,
-                    section_id: 4,
-                    question: 'Jak mogę zgłosić problem?',
-                    answer: 'Skontaktuj się z nami przez formularz kontaktowy.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 8,
-                    section_id: 4,
-                    question: 'Jakie informacje są potrzebne?',
-                    answer: 'Podaj szczegóły dotyczące problemu.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 9,
-                    section_id: 5,
-                    question: 'Gdzie mogę znaleźć więcej informacji?',
-                    answer: 'Zajrzyj do sekcji Kontakt.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-                {
-                    id: 10,
-                    section_id: 5,
-                    question: 'Czy FAQ jest dostępne w innych językach?',
-                    answer: 'Tak, FAQ jest dostępne w wielu językach.',
-                    created_at: new Date(),
-                    updated_at: new Date()
-                },
-            ],
         };
     },
+    computed: {
+        ...mapGetters(['getQuestions']),
+        questions() {
+            return this.getQuestions;
+        },
+    },
     methods: {
+        ...mapActions(['addQuestion', 'updateQuestion', 'deleteQuestion', 'fetchQuestions']),
+
+        async updateQuestionInStore() {
+            try {
+                await this.updateQuestion({
+                    questionId: this.currentQuestion.id,
+                    updatedData: {
+                        section_id: this.currentQuestion.section_id,
+                        question: this.currentQuestion.question,
+                        answer: this.currentQuestion.answer,
+                    },
+                });
+                Swal.fire('Sukces!', 'Pytanie zostało zaktualizowane.', 'success');
+                this.closeModal();
+            } catch (error) {
+                Swal.fire('Błąd', 'Nie udało się zaktualizować pytania.', 'error');
+            }
+        },
+
         openAddQuestionModal() {
             this.isEditing = false;
+            this.resetCurrentQuestion();
+            this.isModalVisible = true;
+        },
+
+        openEditQuestionModal(question) {
+            this.isEditing = true;
+            this.currentQuestion = {
+                ...question
+            };
+            this.isModalVisible = true;
+        },
+
+        resetCurrentQuestion() {
             this.currentQuestion = {
                 id: null,
                 section_id: null,
                 question: '',
                 answer: '',
-                created_at: '',
-                updated_at: '',
             };
-            this.isModalVisible = true;
         },
-        openEditQuestionModal(question) {
-            this.isEditing = true;
-            this.currentQuestion = {
-                ...question,
-            };
-            this.isModalVisible = true;
-        },
+
         closeModal() {
             this.isModalVisible = false;
         },
-        formatDate(dateString) {
-            return new Date(dateString).toLocaleString();
+
+        async createQuestion() {
+            try {
+                await this.addQuestion({
+                    section_id: this.currentQuestion.section_id,
+                    question: this.currentQuestion.question,
+                    answer: this.currentQuestion.answer,
+                });
+                Swal.fire('Sukces!', 'Pytanie zostało dodane.', 'success');
+                this.closeModal();
+            } catch (error) {
+                Swal.fire('Błąd', 'Nie udało się dodać pytania.', 'error');
+            }
         },
-        createQuestion() {
-            const newId = this.questions.length ? Math.max(...this.questions.map((q) => q.id)) + 1 : 1;
-            this.questions.push({
-                ...this.currentQuestion,
-                id: newId,
-                created_at: new Date(),
-                updated_at: new Date(),
+
+        confirmDeleteQuestion(questionId) {
+            Swal.fire({
+                title: 'Czy na pewno chcesz usunąć to pytanie?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Tak, usuń!',
+                cancelButtonText: 'Anuluj',
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await this.handleDeleteQuestion(questionId);
+                }
             });
-            this.closeModal();
         },
-        updateQuestion() {
-            const index = this.questions.findIndex((q) => q.id === this.currentQuestion.id);
-            if (index !== -1) {
-                this.questions[index] = {
-                    ...this.currentQuestion,
-                    updated_at: new Date(),
-                };
-            }
-            this.closeModal();
-        },
-        deleteQuestion(id) {
-            if (confirm('Czy na pewno chcesz usunąć to pytanie?')) {
-                this.questions = this.questions.filter((question) => question.id !== id);
+
+        async handleDeleteQuestion(questionId) {
+            try {
+                await this.deleteQuestion(questionId);
+                Swal.fire('Usunięto!', 'Pytanie zostało usunięte.', 'success');
+            } catch (error) {
+                Swal.fire('Błąd', 'Nie udało się usunąć pytania.', 'error');
             }
         },
+
+        formatDate(dateString) {
+            return new Date(dateString).toLocaleString('pl-PL', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        },
+
         beforeEnterModal(el) {
             el.style.opacity = 0;
         },
@@ -203,6 +175,9 @@ export default {
             el.style.opacity = 0;
             setTimeout(done, 300);
         },
+    },
+    mounted() {
+        this.fetchQuestions();
     },
 };
 </script>

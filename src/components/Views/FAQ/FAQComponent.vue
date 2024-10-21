@@ -10,7 +10,7 @@
         <div v-if="showManageModal" class="modal-backdrop" @click.self="closeManageModal">
             <transition name="modal-content" @before-enter="beforeEnterModal" @enter="enterModal" @leave="leaveModal">
                 <div class="modal">
-                    <ManageFAQ @close="closeManageModal" @selectOption="handleOptionSelection" />
+                    <ManageFAQ @close="closeManageModal" />
                 </div>
             </transition>
         </div>
@@ -23,12 +23,12 @@
                 {{ section.title }}
             </h3>
             <div v-show="activeSection === sectionIndex" class="faq-answers">
-                <div class="faq-question" v-for="(question, questionIndex) in section.questions" :key="questionIndex" @click="toggleAnswer(question.key)">
+                <div class="faq-question" v-for="question in section.questions" :key="question.id" @click="toggleAnswer(question.id)">
                     <p>
-                        <i :class="['fas', activeAnswer === question.key ? 'fa-chevron-up' : 'fa-chevron-down', 'arrow-icon']"></i>
-                        {{ question.text }}
+                        <i :class="['fas', activeAnswer === question.id ? 'fa-chevron-up' : 'fa-chevron-down', 'arrow-icon']"></i>
+                        {{ question.question }}
                     </p>
-                    <div v-show="activeAnswer === question.key" class="faq-answer">
+                    <div v-show="activeAnswer === question.id" class="faq-answer">
                         <p>{{ question.answer }}</p>
                     </div>
                 </div>
@@ -53,37 +53,18 @@ export default {
             activeAnswer: null,
             activeSection: null,
             showManageModal: false,
-            faqSections: [{
-                    title: "O Nas",
-                    questions: [{
-                            key: "question1",
-                            text: "Czym zajmuje się firma Cabbie?",
-                            answer: "Cabbie to innowacyjna platforma łącząca kierowców z aplikacjami przewozowymi...",
-                        },
-                        {
-                            key: "question2",
-                            text: "Jakie usługi oferuje Cabbie?",
-                            answer: "Cabbie zapewnia kompleksową obsługę dla kierowców...",
-                        },
-                        {
-                            key: "question3",
-                            text: "W jakich miastach znajdę Cabbie?",
-                            answer: "Cabbie obecnie znajdziesz w: Białymstoku, Białej Podlaskiej...",
-                        },
-                    ],
-                },
-                {
-                    title: "Umowy z Cabbie",
-                    questions: [{
-                        key: "question4",
-                        text: "Jakie umowy muszę podpisać?",
-                        answer: "Rozpoczynając współpracę z Cabbie, masz kilka opcji do wyboru...",
-                    }, ],
-                },
-            ],
         };
     },
+    computed: {
+        ...mapGetters(["getRole", "getSections"]),
+        faqSections() {
+            return this.getSections;
+        },
+    },
     methods: {
+        async fetchSections() {
+            await this.$store.dispatch("fetchSections");
+        },
         toggleAnswer(answer) {
             this.activeAnswer = this.activeAnswer === answer ? null : answer;
         },
@@ -99,13 +80,6 @@ export default {
         handleKeyDown(event) {
             if (event.key === "Escape") {
                 this.closeManageModal();
-            }
-        },
-        handleOptionSelection(option) {
-            if (option === "sections") {
-                console.log("Zarządzanie sekcjami");
-            } else if (option === "questions") {
-                console.log("Zarządzanie pytaniami");
             }
         },
         beforeEnterOverlay(el) {
@@ -141,10 +115,8 @@ export default {
             setTimeout(done, 300);
         },
     },
-    computed: {
-        ...mapGetters(["getRole"]),
-    },
     mounted() {
+        this.fetchSections();
         window.addEventListener("keydown", this.handleKeyDown);
     },
     beforeUnmount() {
@@ -173,9 +145,13 @@ main {
 }
 
 .faq-section-title {
-    color: $primary-color;
+    color: $white;
     font-family: "Roboto-Light", sans-serif;
     cursor: pointer;
+}
+
+.arrow-icon {
+    color: $primary-color;
 }
 
 .faq-question {
@@ -190,6 +166,7 @@ main {
     width: 75%;
     margin-left: 25px;
     font-family: "Roboto-Extra-Light", sans-serif;
+    white-space: pre-line;
 }
 
 .admin-button {

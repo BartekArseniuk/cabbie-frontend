@@ -24,6 +24,8 @@ export default createStore({
     reviews: [],
     messages: [],
     userSurveyData: {},
+    sections: [],
+    questions: [],
   },
 
   mutations: {
@@ -92,6 +94,14 @@ export default createStore({
 
     SET_USER_SURVEY_DATA(state, payload) {
       state.userSurveyData = payload;
+    },
+
+    SET_SECTIONS(state, sections) {
+      state.sections = sections;
+    },
+
+    SET_QUESTIONS(state, questions) {
+      state.questions = questions;
     },
   },
 
@@ -398,7 +408,7 @@ export default createStore({
       try {
         const response = await apiService.get(`/survey/user/${userId}`);
         const data = response.data;
-        
+
         const selectedData = {
           isDriver: data.isDriver,
           carType: data.carType,
@@ -409,7 +419,7 @@ export default createStore({
           foundVia: data.foundVia,
         };
 
-        if(data.isDriver != null) {
+        if (data.isDriver != null) {
           commit('SET_USER_SURVEY_DATA', selectedData);
         } else {
           commit('SET_USER_SURVEY_DATA', null);
@@ -417,6 +427,82 @@ export default createStore({
 
       } catch (error) {
         console.error("Failed to fetch user survey data:", error);
+      }
+    },
+
+    async fetchSections({ commit }) {
+      try {
+        const response = await apiService.get('/sections');
+        commit('SET_SECTIONS', response.data);
+      } catch (error) {
+        console.error('Error fetching sections:', error);
+      }
+    },
+
+    async addSection({ dispatch }, sectionData) {
+      try {
+        await apiService.post('/sections', { title: sectionData.title });
+        await dispatch('fetchSections');
+      } catch (error) {
+        console.error('Error adding section:', error);
+      }
+    },
+
+
+    async updateSection({ dispatch }, { sectionId, updatedData }) {
+      try {
+        await apiService.put(`/sections/${sectionId}`, updatedData);
+        await dispatch('fetchSections');
+      } catch (error) {
+        console.error('Error updating section:', error);
+      }
+    },
+
+    async deleteSection({ dispatch }, sectionId) {
+      try {
+        await apiService.delete(`/sections/${sectionId}`);
+        await dispatch('fetchSections');
+      } catch (error) {
+        console.error('Error deleting section:', error);
+      }
+    },
+
+    async fetchQuestions({ commit }) {
+      try {
+        const response = await apiService.get('/questions');
+        commit('SET_QUESTIONS', response.data);
+      } catch (error) {
+        console.error('Error fetching questions:', error);
+      }
+    },
+
+    async addQuestion({ dispatch }, questionData) {
+      try {
+        await apiService.post('/questions', questionData);
+        await dispatch('fetchSections');
+        await dispatch('fetchQuestions');
+      } catch (error) {
+        console.error('Error adding question:', error);
+      }
+    },
+
+    async updateQuestion({ dispatch }, { questionId, updatedData }) {
+      try {
+        await apiService.put(`/questions/${questionId}`, updatedData);
+        await dispatch('fetchSections');
+        await dispatch('fetchQuestions');
+      } catch (error) {
+        console.error('Error updating question:', error);
+      }
+    },
+
+    async deleteQuestion({ dispatch }, questionId) {
+      try {
+        await apiService.delete(`/questions/${questionId}`);
+        await dispatch('fetchSections');
+        await dispatch('fetchQuestions');
+      } catch (error) {
+        console.error('Error deleting question:', error);
       }
     },
   },
@@ -432,6 +518,8 @@ export default createStore({
     getReviews: (state) => state.reviews,
     getMessages: (state) => state.messages,
     isFormVerified: state => state.isFormVerified,
+    getSections: state => state.sections,
+    getQuestions: state => state.questions,
     hasUnreadMessages: (state) => {
       return state.hasUnreadMessages;
     },
