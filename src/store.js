@@ -146,6 +146,7 @@ export default createStore({
 
         await apiService.get('/test-session');
       } catch (error) {
+        dispatch('logout');
         throw new Error('Login failed');
       }
     },
@@ -172,13 +173,13 @@ export default createStore({
         if (response.data.logged_in) {
           commit('SET_LOGGED_IN', true);
         } else {
-          localStorage.removeItem('T94&hgK%');
-          localStorage.removeItem('U&58hf*p');
-          localStorage.removeItem('R&4jH4@');
           commit('SET_AUTHENTICATED', false);
           commit('setFirstLogin', null);
           commit('SET_LOGGED_IN', false);
           commit('setUserRole', null);
+          localStorage.removeItem('T94&hgK%');
+          localStorage.removeItem('U&58hf*p');
+          localStorage.removeItem('R&4jH4@');
 
           Swal.fire({
             title: 'Sesja wygasła',
