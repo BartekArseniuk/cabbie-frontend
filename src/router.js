@@ -9,8 +9,6 @@ import SurveyPage from './components/Views/Profile/SurveyPage.vue';
 import AdminPanel from './components/Views/AdminPanel/AdminPanel.vue';
 import DriverDetails from './components/Views/Profile/DriverDetails.vue';
 import FAQComponent from './components/Views/FAQ/FAQComponent.vue';
-import AdminVerification from './components/Views/AdminPanel/AdminVerification.vue';
-
 const routes = [
   {
     path: '/',
@@ -92,14 +90,6 @@ const routes = [
       title: 'Cabbie - FAQ'
     }
   },
-  {
-    path: '/admin-verification',
-    name: 'AdminVerification',
-    component: AdminVerification,
-    meta: {
-      title: 'Cabbie - weryfikacja'
-    }
-  }
 ];
 
 const router = createRouter({

@@ -133,6 +133,11 @@ export default createStore({
     async login({ commit, dispatch }, { email, password }) {
       try {
         const response = await apiService.post('/login', { email, password });
+
+        if (response.data.message === 'verification_required') {
+          return response.data;
+        }
+
         const { token, userId, role } = response.data;
 
         const encryptedToken = encrypt(token);
@@ -531,7 +536,51 @@ export default createStore({
         });
         throw new Error('Błąd wysyłania wiadomości');
       }
-    },    
+    },
+
+    async verifyCode({ commit, dispatch }, code) {
+      try {
+        const response = await apiService.post('/admin/verify-code', { code });
+
+        const { message, token, userId, role } = response.data;
+
+        const encryptedToken = encrypt(token);
+        localStorage.setItem('T94&hgK%', encryptedToken);
+
+        commit('SET_LOGGED_IN', true);
+        commit('SET_AUTHENTICATED', true);
+        commit('setUserId', userId);
+        commit('setUserRole', role);
+
+        await dispatch('fetchUser');
+
+        Swal.fire({
+          title: 'Success',
+          text: message,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          Swal.fire({
+            title: 'Error',
+            text: message,
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        } else {
+          Swal.fire({
+            title: 'Error',
+            text: 'An unexpected error occurred.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+          });
+        }
+        throw new Error('Verification failed');
+      }
+    },
   },
 
   getters: {

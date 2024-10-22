@@ -20,65 +20,120 @@
             </button>
         </div>
     </form>
+
+    <transition name="modal" @before-enter="beforeEnterOverlay" @enter="enterOverlay" @leave="leaveOverlay">
+        <div v-if="showVerification" class="modal-backdrop" @click.self="closeVerification">
+            <transition name="modal-content" @before-enter="beforeEnterModal" @enter="enterModal" @leave="leaveModal">
+                <div class="modal">
+                    <AdminVerification @close-verification="closeVerification" />
+                </div>
+            </transition>
+        </div>
+    </transition>
 </div>
 </template>
 
 <script>
 import Swal from 'sweetalert2';
+import AdminVerification from '../AdminPanel/AdminVerification.vue';
 
 export default {
+    components: {
+        AdminVerification,
+    },
     data() {
         return {
             email: '',
             password: '',
+            showVerification: false,
         };
     },
     methods: {
         async login() {
             try {
-                await this.$store.dispatch('login', {
+                const response = await this.$store.dispatch('login', {
                     email: this.email,
-                    password: this.password
+                    password: this.password,
                 });
+
+                if (response && response.message === 'verification_required') {
+                    this.showVerification = true;
+                    return;
+                }
 
                 const firstLogin = this.$store.getters.getFirstLogin;
 
                 if (firstLogin) {
-                    Swal.fire({
+                    await Swal.fire({
                         title: 'Witamy!',
                         text: 'Zalogowano pomyślnie. Zostaniesz przekierowany do formularza początkowego.',
                         icon: 'info',
                         confirmButtonText: 'OK',
-                    }).then(() => {
-                        this.$emit('login');
-                        this.$router.push({
-                            name: 'Survey'
-                        });
+                    });
+                    this.$emit('login');
+                    this.$router.push({
+                        name: 'Survey'
                     });
                 } else {
-                    Swal.fire({
+                    await Swal.fire({
                         title: 'Sukces!',
                         text: 'Logowanie przebiegło pomyślnie.',
                         icon: 'success',
                         confirmButtonText: 'OK',
-                    }).then(() => {
-                        this.$emit('login');
                     });
+                    this.$emit('login');
                 }
             } catch (error) {
-                Swal.fire({
+                await Swal.fire({
                     title: 'Błąd!',
-                    text: 'Wystąpił problem z logowaniem. Sprawdź dane i spróbuj ponownie.',
+                    text: error.message || 'Wystąpił problem z logowaniem. Sprawdź dane i spróbuj ponownie.',
                     icon: 'error',
                     confirmButtonText: 'OK',
                 });
             }
+
         },
         remindPassword() {
             this.$emit('switch-form', 'RemindPassword');
         },
         switchToRegister() {
             this.$emit('switch-form', 'RegisterForm');
+        },
+        closeVerification() {
+            this.showVerification = false;
+            this.$emit('login');
+        },
+        beforeEnterOverlay(el) {
+            el.style.opacity = 0;
+            el.style.visibility = 'visible';
+        },
+        enterOverlay(el, done) {
+            el.offsetHeight;
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = 1;
+            done();
+        },
+        leaveOverlay(el, done) {
+            el.style.transition = 'opacity 0.3s ease';
+            el.style.opacity = 0;
+            setTimeout(done, 300);
+        },
+        beforeEnterModal(el) {
+            el.style.transform = 'scale(0.7)';
+            el.style.opacity = 0;
+        },
+        enterModal(el, done) {
+            el.offsetHeight;
+            el.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            el.style.transform = 'scale(1)';
+            el.style.opacity = 1;
+            done();
+        },
+        leaveModal(el, done) {
+            el.style.transition = 'transform 0.3s ease, opacity 0.3s ease';
+            el.style.transform = 'scale(0.7)';
+            el.style.opacity = 0;
+            setTimeout(done, 300);
         },
     },
 };
