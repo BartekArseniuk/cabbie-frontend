@@ -48,6 +48,9 @@ export default {
             showVerification: false,
         };
     },
+    created() {
+        this.$store.dispatch('logout');
+    },  
     methods: {
         async login() {
             try {
